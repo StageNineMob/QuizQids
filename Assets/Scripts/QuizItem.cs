@@ -31,15 +31,15 @@ public class QuizItem : CameraDragger
             {
                 image.color = Color.green;
                 image.raycastTarget = false;
-                // TODO: update score
+                GameFieldManager.singleton.rightAnswers++;
                 // TODO: begin correct answer animation
             }
             else
             {
                 image.color = Color.red;
                 image.raycastTarget = false;
-                // TODO: update score
-                // TODO: begin correct answer animation
+                GameFieldManager.singleton.wrongAnswers++;
+                // TODO: begin wrong answer animation
             }
         }
     }

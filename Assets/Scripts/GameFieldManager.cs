@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using StageNine;
 
@@ -18,8 +19,13 @@ public class GameFieldManager : MonoBehaviour
 
     [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY;
     [SerializeField] private Canvas gameplayCanvas;
-    
+
     [SerializeField] private GameObject quizItemPrefab;
+
+    private int _rightAnswers = 0;
+    private int _wrongAnswers = 0;
+    [SerializeField] private Text rightAnswersCounter;
+    [SerializeField] private Text wrongAnswersCounter;
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null;
@@ -30,6 +36,26 @@ public class GameFieldManager : MonoBehaviour
     {
         // implement this
         get { return true; }
+    }
+
+    public int rightAnswers
+    {
+        get { return _rightAnswers; }
+        set
+        {
+            _rightAnswers = value;
+            rightAnswersCounter.text = "Right: " + _rightAnswers; 
+        }
+    }
+
+    public int wrongAnswers
+    {
+        get { return _wrongAnswers; }
+        set
+        {
+            _wrongAnswers = value;
+            wrongAnswersCounter.text = "Wrong: " + _wrongAnswers;
+        }
     }
 
     //methods
