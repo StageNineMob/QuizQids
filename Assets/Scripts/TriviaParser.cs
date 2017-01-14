@@ -72,6 +72,7 @@ public class TriviaParser : MonoBehaviour {
         }
         Debug.Log("[TriviaParser:LoadTrivia] prompts: " + prompts[0] + " rightAnswers: " + rightAnswers[prompts[0]][0].value + " wrongAnswers: "
              + wrongAnswers[0].value);
+        GameFieldManager.singleton.CreateQuizItem(wrongAnswers[0]);
     }
 
     #endregion

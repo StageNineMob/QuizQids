@@ -17,6 +17,10 @@ public class GameFieldManager : MonoBehaviour
     //private data
 
     [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY;
+    [SerializeField] private Canvas gameplayCanvas;
+    
+    [SerializeField] private GameObject quizItemPrefab;
+
     private float worldUnitsPerPixel;
     private string currentPrompt = null;
 
@@ -50,6 +54,13 @@ public class GameFieldManager : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public void CreateQuizItem(TriviaPair triviaPair)
+    {
+        QuizItem quizItem = Instantiate(quizItemPrefab).GetComponent<QuizItem>();
+        quizItem.transform.SetParent(gameplayCanvas.transform);
+        quizItem.Initialize(triviaPair, Vector2.zero);
     }
 
     #endregion
