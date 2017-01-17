@@ -17,7 +17,7 @@ public class GameFieldManager : MonoBehaviour
 
     //private data
 
-    [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY;
+    [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY, linearMaxSpeed;
     [SerializeField] private Canvas gameplayCanvas;
 
     [SerializeField] private GameObject quizItemPrefab;
@@ -67,6 +67,37 @@ public class GameFieldManager : MonoBehaviour
         // cameraInterrupt = true;
     }
 
+    public Vector3 ScreenWrapInBounds(Vector2 basePos)
+    {
+        float outputX, outputY;
+        if (basePos.x < cameraMinX)
+        {
+            outputX = basePos.x + (cameraMaxX - cameraMinX);
+        }
+        else if (basePos.x > cameraMaxX)
+        {
+            outputX = basePos.x - (cameraMaxX - cameraMinX);
+        }
+        else
+        {
+            outputX = basePos.x;
+        }
+        // now do it for Y
+        if (basePos.y < cameraMinY)
+        {
+            outputY = basePos.y + (cameraMaxY - cameraMinY);
+        }
+        else if (basePos.y > cameraMaxY)
+        {
+            outputY = basePos.y - (cameraMaxY - cameraMinY);
+        }
+        else
+        {
+            outputY = basePos.y;
+        }
+        return new Vector3(outputX, outputY);
+    }
+
     public bool QuizCorrectAnswer(TriviaPair trivia)
     {
         if (currentPrompt != null)
@@ -88,7 +119,9 @@ public class GameFieldManager : MonoBehaviour
         quizItem.transform.SetParent(gameplayCanvas.transform);
         float xx = Random.Range(cameraMinX, cameraMaxX);
         float yy = Random.Range(cameraMinY, cameraMaxY);
-        quizItem.Initialize(triviaPair, new Vector2(xx, yy));
+        float vx = Random.Range(-linearMaxSpeed, linearMaxSpeed);
+        float vy = Random.Range(-linearMaxSpeed, linearMaxSpeed);
+        quizItem.Initialize(triviaPair, new Vector2(xx, yy), new Vector2(vx, vy));
     }
 
     #endregion

@@ -17,6 +17,7 @@ public class QuizItem : CameraDragger
     //private data
     TriviaPair data;
     [SerializeField] Text answerText;
+    Vector2 linearVelocity;
     //public properties
 
     //methods
@@ -44,7 +45,7 @@ public class QuizItem : CameraDragger
         }
     }
 
-    public void Initialize(TriviaPair newData, Vector2 position)
+    public void Initialize(TriviaPair newData, Vector2 position, Vector2 velocity)
     {
         var image = GetComponent<Image>();
         image.color = Color.white;
@@ -52,6 +53,7 @@ public class QuizItem : CameraDragger
 
         answerText.text = newData.value;
         data = newData;
+        linearVelocity = velocity;
         transform.localPosition = position;
         GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * widthFactor, answerText.fontSize * heightFactor);
     }
@@ -63,7 +65,10 @@ public class QuizItem : CameraDragger
     #endregion
 
     #region monobehaviors
-
+    void Update()
+    {
+        transform.localPosition = GameFieldManager.singleton.ScreenWrapInBounds((Vector2)transform.localPosition + (linearVelocity * Time.deltaTime));
+    }
     #endregion
 
 }
