@@ -86,7 +86,9 @@ public class GameFieldManager : MonoBehaviour
     {
         QuizItem quizItem = Instantiate(quizItemPrefab).GetComponent<QuizItem>();
         quizItem.transform.SetParent(gameplayCanvas.transform);
-        quizItem.Initialize(triviaPair, Vector2.zero);
+        float xx = Random.Range(cameraMinX, cameraMaxX);
+        float yy = Random.Range(cameraMinY, cameraMaxY);
+        quizItem.Initialize(triviaPair, new Vector2(xx, yy));
     }
 
     #endregion
@@ -141,6 +143,33 @@ public class GameFieldManager : MonoBehaviour
         }
     }
 
+
+    void Start()
+    {
+        int rightAnswerCount = 15;
+        int wrongAnswerCount = 15;
+
+        TriviaParser.singleton.RandomizeAnswerLists();
+
+        int promptNumber = 0;
+        int answerNumber = 0;
+
+        for (int ii = 0; ii < rightAnswerCount; ++ii)
+        {
+            CreateQuizItem(TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptNumber]][answerNumber]);
+            ++answerNumber;
+            if(answerNumber >= TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptNumber]].Count)
+            {
+                answerNumber = 0;
+                ++promptNumber;
+            }
+        }
+
+        for (int ii = 0; ii < wrongAnswerCount; ++ii)
+        {
+            CreateQuizItem(TriviaParser.singleton.wrongAnswers[ii]);
+        }
+    }
     #endregion
 
 

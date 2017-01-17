@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using StageNine;
+using Random = UnityEngine.Random;
 
 public class TriviaParser : MonoBehaviour {
 
@@ -17,23 +18,37 @@ public class TriviaParser : MonoBehaviour {
 
     //private data
     string categoryName;
-    Dictionary<string, List<TriviaPair>> rightAnswers;
-    List<TriviaPair> wrongAnswers;
-    List<string> prompts;
+    private Dictionary<string, List<TriviaPair>> _rightAnswers;
+    private List<TriviaPair> _wrongAnswers;
+    private List<string> _prompts;
 
     //public properties
+    public Dictionary<string, List<TriviaPair>> rightAnswers
+    {
+        get { return _rightAnswers; }
+    }
+
+    public List<TriviaPair> wrongAnswers
+    {
+        get { return _wrongAnswers; }
+    }
+
+    public List<string> prompts
+    {
+        get { return _prompts; }
+    }
 
     //methods
     #region public methods
 
-        public void LoadTrivia(string filePath)
+    public void LoadTrivia(string filePath)
     {
         //confirm that filePath exists?
         StreamReader reader = File.OpenText(filePath);
         string line;
-        rightAnswers = new Dictionary<string, List<TriviaPair>>();
-        wrongAnswers = new List<TriviaPair>();
-        prompts = new List<string>();
+        _rightAnswers = new Dictionary<string, List<TriviaPair>>();
+        _wrongAnswers = new List<TriviaPair>();
+        _prompts = new List<string>();
         while ((line = reader.ReadLine()) != null && line != "")
         {
             categoryName = line;
@@ -46,16 +61,16 @@ public class TriviaParser : MonoBehaviour {
                 TriviaPair pair = new TriviaPair();
                 pair.value = items[0];
                 pair.prompt = items[1];
-                if(rightAnswers.ContainsKey(pair.prompt))
+                if(_rightAnswers.ContainsKey(pair.prompt))
                 {
-                    rightAnswers[pair.prompt].Add(pair);
+                    _rightAnswers[pair.prompt].Add(pair);
                 }
                 else
                 {
                     List<TriviaPair> triviaPairList = new List<TriviaPair>();
                     triviaPairList.Add(pair);
-                    rightAnswers.Add(pair.prompt, triviaPairList);
-                    prompts.Add(pair.prompt);
+                    _rightAnswers.Add(pair.prompt, triviaPairList);
+                    _prompts.Add(pair.prompt);
                 }
             }
             else
@@ -68,12 +83,20 @@ public class TriviaParser : MonoBehaviour {
             TriviaPair triviaPair = new TriviaPair();
             triviaPair.prompt = null;
             triviaPair.value = line;
-            wrongAnswers.Add(triviaPair);
+            _wrongAnswers.Add(triviaPair);
         }
-        Debug.Log("[TriviaParser:LoadTrivia] prompts: " + prompts[0] + " rightAnswers: " + rightAnswers[prompts[0]][0].value + " wrongAnswers: "
-             + wrongAnswers[0].value);
-        GameFieldManager.singleton.CreateQuizItem(rightAnswers[prompts[0]][0]);
     }
+
+    public void RandomizeAnswerLists()
+    {
+        Shuffle(_wrongAnswers);
+        Shuffle(_prompts);
+        foreach(var prompt in _prompts)
+        {
+            Shuffle(_rightAnswers[prompt]);
+        }
+    }
+
 
     #endregion
 
@@ -81,6 +104,19 @@ public class TriviaParser : MonoBehaviour {
     private void InitializeFields()
     {
         LoadTrivia("C:/Users/Starbuck/Desktop/state capitals and fakes.txt");
+    }
+
+    private void Shuffle<T>(IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            int k = Random.Range(0, n);
+            n--;
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
     #endregion
 
