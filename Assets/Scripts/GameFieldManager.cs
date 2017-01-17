@@ -70,30 +70,24 @@ public class GameFieldManager : MonoBehaviour
     public Vector3 ScreenWrapInBounds(Vector2 basePos)
     {
         float outputX, outputY;
-        if (basePos.x < cameraMinX)
+        outputX = basePos.x;
+        while (outputX < Camera.main.transform.position.x + cameraMinX)
         {
-            outputX = basePos.x + (cameraMaxX - cameraMinX);
+            outputX += (cameraMaxX - cameraMinX);
         }
-        else if (basePos.x > cameraMaxX)
+        while (outputX > Camera.main.transform.position.x + cameraMaxX)
         {
-            outputX = basePos.x - (cameraMaxX - cameraMinX);
-        }
-        else
-        {
-            outputX = basePos.x;
+            outputX -= (cameraMaxX - cameraMinX);
         }
         // now do it for Y
-        if (basePos.y < cameraMinY)
+        outputY = basePos.y;
+        while (outputY < Camera.main.transform.position.y + cameraMinY)
         {
-            outputY = basePos.y + (cameraMaxY - cameraMinY);
+            outputY += (cameraMaxY - cameraMinY);
         }
-        else if (basePos.y > cameraMaxY)
+        while (outputY > Camera.main.transform.position.y + cameraMaxY)
         {
-            outputY = basePos.y - (cameraMaxY - cameraMinY);
-        }
-        else
-        {
-            outputY = basePos.y;
+            outputY -= (cameraMaxY - cameraMinY);
         }
         return new Vector3(outputX, outputY);
     }
