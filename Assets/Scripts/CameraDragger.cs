@@ -51,7 +51,10 @@ public abstract class CameraDragger : MonoBehaviour, IBeginDragHandler, IDragHan
     public void OnDrag(PointerEventData eventData)
     {
         var touch = touches[eventData.pointerId];
-        GameFieldManager.singleton.CameraPan(touch.screenPos - eventData.position);
+        if (GameFieldManager.singleton.canTapQuizItems)
+        {
+            GameFieldManager.singleton.CameraPan(touch.screenPos - eventData.position);
+        }
         touch.screenPos = eventData.position;
     }
 
