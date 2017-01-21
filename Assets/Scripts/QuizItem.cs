@@ -22,9 +22,11 @@ public class QuizItem : CameraDragger
     //public data
 
     //private data
-    TriviaPair data;
-    [SerializeField] Text answerText;
-    Vector2 linearVelocity;
+    private TriviaPair data;
+    [SerializeField] private Text answerText;
+    private Vector2 linearVelocity;
+    private bool overlapNudging;
+
     //public properties
 
     //methods
@@ -35,6 +37,7 @@ public class QuizItem : CameraDragger
         var image = GetComponent<Image>();
         if(GameFieldManager.singleton.canTapQuizItems)
         {
+            overlapNudging = false;
             if(GameFieldManager.singleton.QuizCorrectAnswer(data))
             {
                 image.color = Color.green;
@@ -54,6 +57,25 @@ public class QuizItem : CameraDragger
         }
     }
 
+    public void Initialize(TriviaPair newData, Vector2 position, Vector2 velocity)
+    {
+        var image = GetComponent<Image>();
+        image.color = Color.white;
+        image.raycastTarget = true;
+
+        overlapNudging = true;
+
+        answerText.text = newData.value;
+        data = newData;
+        linearVelocity = velocity;
+        transform.localPosition = position;
+        GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * widthFactor, answerText.fontSize * heightFactor);
+        GetComponent<BoxCollider2D>().size = GetComponent<RectTransform>().sizeDelta;
+    }
+
+    #endregion
+
+    #region private methods
     private IEnumerator AnswerCorrectVanish()
     {
         float time = 0f;
@@ -78,14 +100,14 @@ public class QuizItem : CameraDragger
         transform.SetAsLastSibling();
         float randomAngle = Random.Range(-1f, 1f);
         float twistRate = INCORRECT_ROTATION_SPEED;
-        if(Random.Range(0,2) == 0)
+        if (Random.Range(0, 2) == 0)
         {
             twistRate = -INCORRECT_ROTATION_SPEED;
         }
         linearVelocity += (Vector2.left * Mathf.Sin(randomAngle) + Vector2.up * Mathf.Cos(randomAngle)) * INCORRECT_BUMP_VELOCITY;
         while (transform.position.y < Camera.main.transform.position.y + DISTANCE_OFFSCREEN)
         {
-            
+
             time += Time.deltaTime;
             linearVelocity += Vector2.down * INCORRECT_GRAVITY * Time.deltaTime;
             transform.localRotation = Quaternion.Euler(0, 0, twistRate * time);
@@ -94,30 +116,25 @@ public class QuizItem : CameraDragger
         }
         gameObject.SetActive(false);  // TODO return to object pool
     }
-
-    public void Initialize(TriviaPair newData, Vector2 position, Vector2 velocity)
-    {
-        var image = GetComponent<Image>();
-        image.color = Color.white;
-        image.raycastTarget = true;
-
-        answerText.text = newData.value;
-        data = newData;
-        linearVelocity = velocity;
-        transform.localPosition = position;
-        GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * widthFactor, answerText.fontSize * heightFactor);
-    }
-
-    #endregion
-
-    #region private methods
-
     #endregion
 
     #region monobehaviors
     void Update()
     {
         transform.localPosition = GameFieldManager.singleton.ScreenWrapInBounds((Vector2)transform.localPosition + (linearVelocity * Time.deltaTime));
+        if (overlapNudging)
+        {
+            foreach(var item in GameFieldManager.singleton.quizItems)
+            {
+                if(item != this)
+                {
+                    if (GetComponent<Collider2D>().IsTouching(item.GetComponent<Collider2D>()))
+                    {
+                        Debug.Log("[QuizItem : Update] 2 items are touching");
+                    }
+                }
+            }
+        }
     }
     #endregion
 

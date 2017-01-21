@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using StageNine;
+using System.Collections.Generic;
 
 public class GameFieldManager : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class GameFieldManager : MonoBehaviour
     private const float DIMMER_MAX_ALPHA = 0.7f;
 
     //public data
+    public List<QuizItem> quizItems;
 
     //private data
     GameState gameState = GameState.PREGAME;
@@ -134,6 +136,8 @@ public class GameFieldManager : MonoBehaviour
         float vx = Random.Range(-linearMaxSpeed, linearMaxSpeed);
         float vy = Random.Range(-linearMaxSpeed, linearMaxSpeed);
         quizItem.Initialize(triviaPair, new Vector2(xx, yy), new Vector2(vx, vy));
+
+        quizItems.Add(quizItem);
     }
 
     #endregion
@@ -193,6 +197,7 @@ public class GameFieldManager : MonoBehaviour
 
     private void InitializeFields()
     {
+        quizItems = new List<QuizItem>();
         UpdateWorldUnitsPerPixel();
     }
 
