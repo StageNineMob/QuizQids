@@ -17,12 +17,17 @@ public class TriviaParser : MonoBehaviour {
     //public data
 
     //private data
-    string categoryName;
+    string _categoryName;
     private Dictionary<string, List<TriviaPair>> _rightAnswers;
     private List<TriviaPair> _wrongAnswers;
     private List<string> _prompts;
 
     //public properties
+    public string categoryName
+    {
+        get { return _categoryName; }
+    }
+
     public Dictionary<string, List<TriviaPair>> rightAnswers
     {
         get { return _rightAnswers; }
@@ -51,7 +56,7 @@ public class TriviaParser : MonoBehaviour {
         _prompts = new List<string>();
         while ((line = reader.ReadLine()) != null && line != "")
         {
-            categoryName = line;
+            _categoryName = line;
         }
         while ((line = reader.ReadLine()) != null && line != "")
         {

@@ -6,17 +6,27 @@ using StageNine;
 public class GameFieldManager : MonoBehaviour
 {
     //enums
+     enum GameState
+    {
+        PREGAME,
+        PLAY,
+        MAIN_MENU,
+        POSTSCREEN,
 
+    };
     //subclasses
 
     //consts and static data
 
     public static GameFieldManager singleton;
+    private const float PREGAME_WAIT_TIME = 1.5f;
+    private const float PREGAME_FADE_TIME = 0.5f;
+    private const float DIMMER_MAX_ALPHA = 0.7f;
 
     //public data
 
     //private data
-
+    GameState gameState = GameState.PREGAME;
     [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY, linearMaxSpeed;
     [SerializeField] private Canvas gameplayCanvas;
 
@@ -26,6 +36,8 @@ public class GameFieldManager : MonoBehaviour
     private int _wrongAnswers = 0;
     [SerializeField] private Text rightAnswersCounter;
     [SerializeField] private Text wrongAnswersCounter;
+    [SerializeField] private Image screenDimmer;
+    [SerializeField] private Text screenCenterText;
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null;
@@ -35,7 +47,13 @@ public class GameFieldManager : MonoBehaviour
     public bool canTapQuizItems
     {
         // implement this
-        get { return true; }
+        get {
+            if(gameState == GameState.PLAY)
+            {
+                return true;
+            }
+            return false;
+             }
     }
 
     public int rightAnswers
@@ -140,6 +158,33 @@ public class GameFieldManager : MonoBehaviour
             Camera.main.transform.position += Vector3.up * (cameraMaxY - cameraMinY);
         }
     }
+    private IEnumerator DisplayTopic()
+    {
+        screenDimmer.color = new Color(0f, 0f, 0f, DIMMER_MAX_ALPHA);
+        screenCenterText.color = Color.white;
+        screenCenterText.text = TriviaParser.singleton.categoryName;
+
+        float time = 0f;
+        while(time < PREGAME_WAIT_TIME)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        time = 0f;
+        while(time < PREGAME_FADE_TIME)
+        {
+            time += Time.deltaTime;
+            float alpha = (PREGAME_FADE_TIME - time) / PREGAME_FADE_TIME;
+            screenDimmer.color = new Color(0f, 0f, 0f, DIMMER_MAX_ALPHA * alpha);
+            screenCenterText.color = new Color(1f, 1f, 1f, alpha);
+            yield return null;
+        }
+
+        screenDimmer.color = new Color(0f, 0f, 0f, 0f);
+        screenCenterText.color = new Color(1f, 1f, 1f, 0f);
+        gameState = GameState.PLAY;
+    }
 
     private void UpdateWorldUnitsPerPixel()
     {
@@ -196,6 +241,9 @@ public class GameFieldManager : MonoBehaviour
         {
             CreateQuizItem(TriviaParser.singleton.wrongAnswers[ii]);
         }
+
+        gameState = GameState.PREGAME;
+        StartCoroutine(DisplayTopic());
     }
     #endregion
 
