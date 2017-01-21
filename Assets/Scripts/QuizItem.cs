@@ -11,9 +11,11 @@ public class QuizItem : CameraDragger
 
     //consts and static data
     const float widthFactor = 0.6f, heightFactor = 1.1f;
+    const float CORRECT_FADE_TIME = .4f;
+    const float CORRECT_SCALE_AMOUNT = 1.3f;
 
     //public data
-    
+
     //private data
     TriviaPair data;
     [SerializeField] Text answerText;
@@ -34,6 +36,7 @@ public class QuizItem : CameraDragger
                 image.raycastTarget = false;
                 GameFieldManager.singleton.rightAnswers++;
                 // TODO: begin correct answer animation
+                StartCoroutine(AnswerCorrectVanish());
             }
             else
             {
@@ -43,6 +46,24 @@ public class QuizItem : CameraDragger
                 // TODO: begin wrong answer animation
             }
         }
+    }
+
+    private IEnumerator AnswerCorrectVanish()
+    {
+        float time = 0f;
+        transform.SetAsLastSibling();
+        while (time < CORRECT_FADE_TIME)
+        {
+            time += Time.deltaTime;
+            float alpha = (CORRECT_FADE_TIME - time) / CORRECT_FADE_TIME;
+            float scale = Mathf.Lerp(1f, CORRECT_SCALE_AMOUNT, time / CORRECT_FADE_TIME);
+            //MAYBEDO: Lighten colors as they fade out? 
+            answerText.color = new Color(0f, 0f, 0f, alpha);
+            GetComponent<Image>().color = new Color(0f, 1f, 0f, alpha);
+            transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+        gameObject.SetActive(false);  // TODO return to object pool
     }
 
     public void Initialize(TriviaPair newData, Vector2 position, Vector2 velocity)
