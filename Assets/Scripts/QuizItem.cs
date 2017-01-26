@@ -19,6 +19,7 @@ public class QuizItem : CameraDragger
     const float INCORRECT_ROTATION_SPEED = 18f;
     const float INCORRECT_DARKEN_RATE = 1f;
     const float NUDGING_ACCEL = 200f;
+    const float NUDGING_CURVE_POWER = 0.25f;
 
     //public data
 
@@ -117,22 +118,27 @@ public class QuizItem : CameraDragger
         gameObject.SetActive(false);  // TODO return to object pool
     }
 
-    private bool IsColliding(Rect otherRect)
+    private bool IsColliding(RectTransform otherRect)
     {
-        var ourRect = GetComponent<RectTransform>().rect;
-        return (ourRect.xMax > otherRect.xMin
-            || ourRect.xMin < otherRect.xMax)
-            && (ourRect.yMax > otherRect.yMin
-            || ourRect.yMin < otherRect.yMax);
+        var ourRect = GetComponent<RectTransform>();
+        var ourPos = ourRect.localPosition;
+        var otherPos = otherRect.localPosition;
+        var halfWidths = (ourRect.rect.width + otherRect.rect.width) * 0.5;
+        var halfHeights = (ourRect.rect.height + otherRect.rect.height) * 0.5;
+        return (Mathf.Abs(otherPos.x - ourPos.x) < halfWidths) && (Mathf.Abs(otherPos.y - ourPos.y) < halfHeights);
     }
 
-    private float GetOverlapArea(Rect otherRect)
+    private float GetOverlapArea(RectTransform otherRect)
     {
-        var ourRect = GetComponent<RectTransform>().rect;
-        return (Mathf.Min(ourRect.xMax, otherRect.xMax) - 
-            Mathf.Max(ourRect.xMin, otherRect.xMin)) * 
-            (Mathf.Min(ourRect.yMax, otherRect.yMax) - 
-            Mathf.Max(ourRect.yMin, otherRect.yMin));
+        var ourRect = GetComponent<RectTransform>();
+        var ourHalfWidth = ourRect.rect.width * 0.5f;
+        var ourHalfHeight = ourRect.rect.height * 0.5f;
+        var otherHalfWidth = otherRect.rect.width * 0.5f;
+        var otherHalfHeight = otherRect.rect.height * 0.5f;
+        return (Mathf.Min(ourRect.localPosition.x + ourHalfWidth, otherRect.localPosition.x + otherHalfWidth) - 
+            Mathf.Max(ourRect.localPosition.x - ourHalfWidth, otherRect.localPosition.x - otherHalfWidth)) * 
+            (Mathf.Min(ourRect.localPosition.y + ourHalfHeight, otherRect.localPosition.y + otherHalfHeight) - 
+            Mathf.Max(ourRect.localPosition.y - ourHalfHeight, otherRect.localPosition.y - otherHalfHeight));
     }
 
     private float GetMaximumOverlapArea(Rect otherRect)
@@ -149,15 +155,18 @@ public class QuizItem : CameraDragger
         transform.localPosition = GameFieldManager.singleton.ScreenWrapInBounds((Vector2)transform.localPosition + (linearVelocity * Time.deltaTime));
         if (overlapNudging)
         {
+            // collision testing
+            GetComponent<Image>().color = Color.white;
             foreach(var item in GameFieldManager.singleton.quizItems)
             {
                 if(item != this)
                 {
-                    var otherRect = item.GetComponent<RectTransform>().rect;
+                    var otherRect = item.GetComponent<RectTransform>();
                     if (IsColliding(otherRect))
                     {
+                        GetComponent<Image>().color = Color.yellow;
                         var offsetVector = (Vector2)(transform.localPosition - item.transform.localPosition);
-                        var magnitude = GetOverlapArea(otherRect) / GetMaximumOverlapArea(otherRect);
+                        var magnitude = Mathf.Pow(GetOverlapArea(otherRect) / GetMaximumOverlapArea(otherRect.rect),NUDGING_CURVE_POWER);
                         linearVelocity += offsetVector.normalized * magnitude * Time.deltaTime * NUDGING_ACCEL;
                     }
                 }
