@@ -18,7 +18,7 @@ public class QuizItem : CameraDragger
     const float INCORRECT_BUMP_VELOCITY = 1000f;
     const float INCORRECT_ROTATION_SPEED = 18f;
     const float INCORRECT_DARKEN_RATE = 1f;
-    const float NUDGING_ACCEL = 20000f;
+    const float NUDGING_ACCEL = 200f;
 
     //public data
 
@@ -125,6 +125,22 @@ public class QuizItem : CameraDragger
             && (ourRect.yMax > otherRect.yMin
             || ourRect.yMin < otherRect.yMax);
     }
+
+    private float GetOverlapArea(Rect otherRect)
+    {
+        var ourRect = GetComponent<RectTransform>().rect;
+        return (Mathf.Min(ourRect.xMax, otherRect.xMax) - 
+            Mathf.Max(ourRect.xMin, otherRect.xMin)) * 
+            (Mathf.Min(ourRect.yMax, otherRect.yMax) - 
+            Mathf.Max(ourRect.yMin, otherRect.yMin));
+    }
+
+    private float GetMaximumOverlapArea(Rect otherRect)
+    {
+        var ourRect = GetComponent<RectTransform>().rect;
+        return Mathf.Min(ourRect.width, otherRect.width) *
+            Mathf.Min(ourRect.height, otherRect.height);
+    }
     #endregion
 
     #region monobehaviors
@@ -137,14 +153,12 @@ public class QuizItem : CameraDragger
             {
                 if(item != this)
                 {
-                    if(IsColliding(item.GetComponent<RectTransform>().rect))
+                    var otherRect = item.GetComponent<RectTransform>().rect;
+                    if (IsColliding(otherRect))
                     {
                         var offsetVector = (Vector2)(transform.localPosition - item.transform.localPosition);
-                        var magnitude = offsetVector.magnitude;
-                        if (magnitude != 0)
-                        {
-                            linearVelocity += (offsetVector.normalized / magnitude) * Time.deltaTime * NUDGING_ACCEL;
-                        }
+                        var magnitude = GetOverlapArea(otherRect) / GetMaximumOverlapArea(otherRect);
+                        linearVelocity += offsetVector.normalized * magnitude * Time.deltaTime * NUDGING_ACCEL;
                     }
                 }
             }
