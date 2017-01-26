@@ -18,6 +18,7 @@ public class QuizItem : CameraDragger
     const float INCORRECT_BUMP_VELOCITY = 1000f;
     const float INCORRECT_ROTATION_SPEED = 18f;
     const float INCORRECT_DARKEN_RATE = 1f;
+    const float NUDGING_ACCEL = 20000f;
 
     //public data
 
@@ -70,7 +71,6 @@ public class QuizItem : CameraDragger
         linearVelocity = velocity;
         transform.localPosition = position;
         GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * widthFactor, answerText.fontSize * heightFactor);
-        GetComponent<BoxCollider2D>().size = GetComponent<RectTransform>().sizeDelta;
     }
 
     #endregion
@@ -116,6 +116,15 @@ public class QuizItem : CameraDragger
         }
         gameObject.SetActive(false);  // TODO return to object pool
     }
+
+    private bool IsColliding(Rect otherRect)
+    {
+        var ourRect = GetComponent<RectTransform>().rect;
+        return (ourRect.xMax > otherRect.xMin
+            || ourRect.xMin < otherRect.xMax)
+            && (ourRect.yMax > otherRect.yMin
+            || ourRect.yMin < otherRect.yMax);
+    }
     #endregion
 
     #region monobehaviors
@@ -128,9 +137,14 @@ public class QuizItem : CameraDragger
             {
                 if(item != this)
                 {
-                    if (GetComponent<Collider2D>().IsTouching(item.GetComponent<Collider2D>()))
+                    if(IsColliding(item.GetComponent<RectTransform>().rect))
                     {
-                        Debug.Log("[QuizItem : Update] 2 items are touching");
+                        var offsetVector = (Vector2)(transform.localPosition - item.transform.localPosition);
+                        var magnitude = offsetVector.magnitude;
+                        if (magnitude != 0)
+                        {
+                            linearVelocity += (offsetVector.normalized / magnitude) * Time.deltaTime * NUDGING_ACCEL;
+                        }
                     }
                 }
             }
