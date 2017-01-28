@@ -18,10 +18,10 @@ public class QuizItem : CameraDragger
     const float INCORRECT_BUMP_VELOCITY = 1000f;
     const float INCORRECT_ROTATION_SPEED = 18f;
     const float INCORRECT_DARKEN_RATE = 1f;
-    const float NUDGING_ACCEL = 200f;
-    const float NUDGING_CURVE_POWER = 0.25f;
-    const float SPEED_DAMPENING_THRESHOLD = 50f;
-    const float SPEED_DAMPENING_RATE = 1f;
+    const float NUDGING_ACCEL = 1000f;
+    const float NUDGING_CURVE_POWER = 0.3f;
+    const float SPEED_DAMPENING_THRESHOLD = 350f;
+    const float SPEED_DAMPENING_RATE = 0.5f;
 
     //public data
 

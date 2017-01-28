@@ -49,24 +49,36 @@ public class TriviaParser : MonoBehaviour {
     public void LoadTrivia(string filePath)
     {
         //confirm that filePath exists?
-        StreamReader reader = File.OpenText(filePath);
-        string line;
+        string text = "";
+        try
+        {
+            TextAsset tAsset = Resources.Load(filePath) as TextAsset;
+            text = tAsset.text;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("[TriviaParser:LoadTrivia] R");
+        }
+        text = text.Replace("\r", "");
+        var lines = text.Split('\n');
+        int lineNum = 0;
+
         _rightAnswers = new Dictionary<string, List<TriviaPair>>();
         _wrongAnswers = new List<TriviaPair>();
         _prompts = new List<string>();
-        while ((line = reader.ReadLine()) != null && line != "")
+        for(; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
         {
-            _categoryName = line;
+            _categoryName = lines[lineNum];
         }
-        while ((line = reader.ReadLine()) != null && line != "")
+        for (++lineNum; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
         {
-            string[] items = line.Split(';');
-            if(items.Length >= 2)
+            string[] items = lines[lineNum].Split(';');
+            if (items.Length >= 2)
             {
                 TriviaPair pair = new TriviaPair();
                 pair.value = items[0];
                 pair.prompt = items[1];
-                if(_rightAnswers.ContainsKey(pair.prompt))
+                if (_rightAnswers.ContainsKey(pair.prompt))
                 {
                     _rightAnswers[pair.prompt].Add(pair);
                 }
@@ -83,11 +95,11 @@ public class TriviaParser : MonoBehaviour {
                 // wig out?
             }
         }
-        while ((line = reader.ReadLine()) != null && line != "")
+        for (++lineNum; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
         {
             TriviaPair triviaPair = new TriviaPair();
             triviaPair.prompt = null;
-            triviaPair.value = line;
+            triviaPair.value = lines[lineNum];
             _wrongAnswers.Add(triviaPair);
         }
     }
@@ -108,7 +120,7 @@ public class TriviaParser : MonoBehaviour {
     #region private methods
     private void InitializeFields()
     {
-        LoadTrivia("C:/Users/Starbuck/Desktop/state capitals and fakes.txt");
+        LoadTrivia("Trivia/state capitals and fakes");
     }
 
     private void Shuffle<T>(IList<T> list)
