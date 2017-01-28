@@ -20,6 +20,8 @@ public class QuizItem : CameraDragger
     const float INCORRECT_DARKEN_RATE = 1f;
     const float NUDGING_ACCEL = 200f;
     const float NUDGING_CURVE_POWER = 0.25f;
+    const float SPEED_DAMPENING_THRESHOLD = 50f;
+    const float SPEED_DAMPENING_RATE = 1f;
 
     //public data
 
@@ -28,6 +30,7 @@ public class QuizItem : CameraDragger
     [SerializeField] private Text answerText;
     private Vector2 linearVelocity;
     private bool overlapNudging;
+    private bool speedDampening;
 
     //public properties
 
@@ -40,11 +43,13 @@ public class QuizItem : CameraDragger
         if(GameFieldManager.singleton.canTapQuizItems)
         {
             overlapNudging = false;
+            speedDampening = false;
+            GameFieldManager.singleton.quizItems.Remove(this);
             if(GameFieldManager.singleton.QuizCorrectAnswer(data))
             {
                 image.color = Color.green;
                 image.raycastTarget = false;
-                GameFieldManager.singleton.rightAnswers++;
+                GameFieldManager.singleton.rightAnswerCount++;
                 // TODO: begin correct answer animation
                 StartCoroutine(AnswerCorrectVanish());
             }
@@ -52,7 +57,7 @@ public class QuizItem : CameraDragger
             {
                 image.color = Color.red;
                 image.raycastTarget = false;
-                GameFieldManager.singleton.wrongAnswers++;
+                GameFieldManager.singleton.wrongAnswerCount++;
                 // TODO: begin wrong answer animation
                 StartCoroutine(AnswerIncorrectVanish());
             }
@@ -66,6 +71,7 @@ public class QuizItem : CameraDragger
         image.raycastTarget = true;
 
         overlapNudging = true;
+        speedDampening = true;
 
         answerText.text = newData.value;
         data = newData;
@@ -175,6 +181,14 @@ public class QuizItem : CameraDragger
                         linearVelocity += offsetVector.normalized * magnitude * Time.deltaTime * NUDGING_ACCEL;
                     }
                 }
+            }
+        }
+        if(speedDampening)
+        {
+            if (linearVelocity.magnitude > SPEED_DAMPENING_THRESHOLD)
+            {
+                float overflow = linearVelocity.magnitude - SPEED_DAMPENING_THRESHOLD;
+                linearVelocity *= (linearVelocity.magnitude - overflow * SPEED_DAMPENING_RATE * Time.deltaTime ) / linearVelocity.magnitude;
             }
         }
     }

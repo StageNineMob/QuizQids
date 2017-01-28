@@ -58,7 +58,7 @@ public class GameFieldManager : MonoBehaviour
              }
     }
 
-    public int rightAnswers
+    public int rightAnswerCount
     {
         get { return _rightAnswerCount; }
         set
@@ -68,7 +68,7 @@ public class GameFieldManager : MonoBehaviour
         }
     }
 
-    public int wrongAnswers
+    public int wrongAnswerCount
     {
         get { return _wrongAnswerCount; }
         set
