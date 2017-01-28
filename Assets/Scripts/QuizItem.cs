@@ -10,7 +10,7 @@ public class QuizItem : CameraDragger
     //subclasses
 
     //consts and static data
-    const float widthFactor = 0.6f, heightFactor = 1.1f;
+    const float WIDTH_FACTOR = 0.6f, HEIGHT_FACTOR = 1.1f;
     const float CORRECT_FADE_TIME = .4f;
     const float CORRECT_SCALE_AMOUNT = 1.3f;
     const float INCORRECT_GRAVITY = 6500f;
@@ -71,7 +71,7 @@ public class QuizItem : CameraDragger
         data = newData;
         linearVelocity = velocity;
         transform.localPosition = position;
-        GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * widthFactor, answerText.fontSize * heightFactor);
+        GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * WIDTH_FACTOR, answerText.fontSize * HEIGHT_FACTOR);
     }
 
     #endregion

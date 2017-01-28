@@ -34,8 +34,8 @@ public class GameFieldManager : MonoBehaviour
 
     [SerializeField] private GameObject quizItemPrefab;
 
-    private int _rightAnswers = 0;
-    private int _wrongAnswers = 0;
+    private int _rightAnswerCount = 0;
+    private int _wrongAnswerCount = 0;
     [SerializeField] private Text rightAnswersCounter;
     [SerializeField] private Text wrongAnswersCounter;
     [SerializeField] private Image screenDimmer;
@@ -60,21 +60,21 @@ public class GameFieldManager : MonoBehaviour
 
     public int rightAnswers
     {
-        get { return _rightAnswers; }
+        get { return _rightAnswerCount; }
         set
         {
-            _rightAnswers = value;
-            rightAnswersCounter.text = "Right: " + _rightAnswers; 
+            _rightAnswerCount = value;
+            rightAnswersCounter.text = "Right: " + _rightAnswerCount; 
         }
     }
 
     public int wrongAnswers
     {
-        get { return _wrongAnswers; }
+        get { return _wrongAnswerCount; }
         set
         {
-            _wrongAnswers = value;
-            wrongAnswersCounter.text = "Wrong: " + _wrongAnswers;
+            _wrongAnswerCount = value;
+            wrongAnswersCounter.text = "Wrong: " + _wrongAnswerCount;
         }
     }
 
