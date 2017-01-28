@@ -155,8 +155,10 @@ public class QuizItem : CameraDragger
         transform.localPosition = GameFieldManager.singleton.ScreenWrapInBounds((Vector2)transform.localPosition + (linearVelocity * Time.deltaTime));
         if (overlapNudging)
         {
+#if DEBUG_DRAW
             // collision testing
             GetComponent<Image>().color = Color.white;
+#endif
             foreach(var item in GameFieldManager.singleton.quizItems)
             {
                 if(item != this)
@@ -164,7 +166,10 @@ public class QuizItem : CameraDragger
                     var otherRect = item.GetComponent<RectTransform>();
                     if (IsColliding(otherRect))
                     {
+#if DEBUG_DRAW
+                        // collision testing
                         GetComponent<Image>().color = Color.yellow;
+#endif
                         var offsetVector = (Vector2)(transform.localPosition - item.transform.localPosition);
                         var magnitude = Mathf.Pow(GetOverlapArea(otherRect) / GetMaximumOverlapArea(otherRect.rect),NUDGING_CURVE_POWER);
                         linearVelocity += offsetVector.normalized * magnitude * Time.deltaTime * NUDGING_ACCEL;
