@@ -23,7 +23,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
-    private const float INITIAL_TIME = 600f;
+    private const float INITIAL_TIME = 20f;
     private const int TIMER_FONT_SMALL = 40;
     private const int TIMER_FONT_BIGGER = 12;
     private const int TIMER_FONT_BIGGER_CRITICAL = 24;
@@ -55,6 +55,11 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text timerDisplay;
     [SerializeField] private Image screenDimmer;
     [SerializeField] private Text screenCenterText;
+    [SerializeField] private Text scoreUIRightText;
+    [SerializeField] private Text scoreUIWrongText;
+    [SerializeField] private Text scoreUIAccuracyText;
+    [SerializeField] private Text scoreUIArbitraryText;
+
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null;
@@ -334,6 +339,27 @@ public class GameFieldManager : MonoBehaviour
 
     private void ShowScoreScreen()
     {
+        float elapsedTime = _timer;
+        if(_timedMode)
+        {
+            elapsedTime = INITIAL_TIME - _timer;
+        }
+
+        scoreUIRightText.text = _rightAnswerCount.ToString();
+        scoreUIWrongText.text = _wrongAnswerCount.ToString();
+        float accuracy = 0f;
+        if(_rightAnswerCount + _wrongAnswerCount > 0)
+        {
+            accuracy = (float) _rightAnswerCount / (_rightAnswerCount + _wrongAnswerCount);
+        }
+        string accuracyText = (accuracy * 100).ToString("##0") + "%";
+        if (accuracy < 1 && accuracyText == "100%")
+        {
+            accuracyText = "99%";
+        }
+        scoreUIAccuracyText.text = accuracyText;
+        scoreUIArbitraryText.text = (Mathf.FloorToInt(rightAnswerCount * accuracy / elapsedTime * 1000)).ToString();
+
         interfaceCanvas.gameObject.SetActive(false);
         gameState = GameState.POSTSCREEN;
         scoreCanvas.gameObject.SetActive(true);
