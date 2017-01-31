@@ -23,7 +23,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
-    private const float INITIAL_TIME = 60f;
+    private const float INITIAL_TIME = 600f;
     private const int TIMER_FONT_SMALL = 40;
     private const int TIMER_FONT_BIGGER = 12;
     private const int TIMER_FONT_BIGGER_CRITICAL = 24;
@@ -257,23 +257,45 @@ public class GameFieldManager : MonoBehaviour
 
     private void GenerateQuizItem()
     {
-        if(rightAnswersInPlay == 0 || Random.Range(0f,1f) >= chanceOfRightAnswer)
-        {
-            CreateQuizItem(TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]][rightAnswerIndex]);
-            ++rightAnswerIndex;
-
-            if (rightAnswerIndex >= TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]].Count)
+        if (promptIndex >= TriviaParser.singleton.prompts.Count)
+        {   // Out of right answers
+            if (rightAnswersInPlay == 0 || wrongAnswerIndex >= TriviaParser.singleton.wrongAnswers.Count)
             {
-                rightAnswerIndex = 0;
-                ++promptIndex;
+                //  and we need a right answer
+                ShowScoreScreen();
             }
-            ++rightAnswersInPlay;
+            else
+            {
+                GenerateWrongAnswer();
+            }
+        }
+        else if (rightAnswersInPlay == 0 || wrongAnswerIndex >= TriviaParser.singleton.wrongAnswers.Count || Random.Range(0f, 1f) >= chanceOfRightAnswer)
+        {
+            GenerateRightAnswer();
         }
         else
         {
-            CreateQuizItem(TriviaParser.singleton.wrongAnswers[wrongAnswerIndex++]);
-            ++wrongAnswersInPlay;
+            GenerateWrongAnswer();
         }
+    }
+
+    private void GenerateRightAnswer()
+    {
+        CreateQuizItem(TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]][rightAnswerIndex]);
+        ++rightAnswerIndex;
+
+        if (rightAnswerIndex >= TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]].Count)
+        {
+            rightAnswerIndex = 0;
+            ++promptIndex;
+        }
+        ++rightAnswersInPlay;
+    }
+
+    private void GenerateWrongAnswer()
+    {
+        CreateQuizItem(TriviaParser.singleton.wrongAnswers[wrongAnswerIndex++]);
+        ++wrongAnswersInPlay;
     }
 
     #endregion
@@ -304,13 +326,17 @@ public class GameFieldManager : MonoBehaviour
 
                 if(_timer <= 0f)
                 {
-                    // TODO: game ends
-                    interfaceCanvas.gameObject.SetActive(false);
-                    gameState = GameState.POSTSCREEN;
-                    scoreCanvas.gameObject.SetActive(true);
+                    ShowScoreScreen();
                 }
             }
         }
+    }
+
+    private void ShowScoreScreen()
+    {
+        interfaceCanvas.gameObject.SetActive(false);
+        gameState = GameState.POSTSCREEN;
+        scoreCanvas.gameObject.SetActive(true);
     }
 
     void Awake()
