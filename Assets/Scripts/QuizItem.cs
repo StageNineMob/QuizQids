@@ -193,5 +193,4 @@ public class QuizItem : CameraDragger
         }
     }
     #endregion
-
 }

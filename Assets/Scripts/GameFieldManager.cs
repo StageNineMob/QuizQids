@@ -23,6 +23,16 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
+    private const float INITIAL_TIME = 20f;
+    private const int TIMER_FONT_SMALL = 40;
+    private const int TIMER_FONT_BIGGER = 12;
+    private const int TIMER_FONT_BIGGER_CRITICAL = 24;
+    private const float TIMER_PULSE_SIZE_EXPONENT = 8.0f;
+    private const float TIMER_PULSE_SIZE_EXPONENT_CRITICAL = 0.4f;
+    private const float TIMER_PULSE_COLOR_EXPONENT = 0.4f;
+    private const float CRITICAL_TIME_THRESHOLD = 10;
+    private readonly Color TIMER_COLOR_NORMAL = Color.white;
+    private readonly Color TIMER_COLOR_CRITICAL = Color.red;
 
     //public data
     public List<QuizItem> quizItems;
@@ -36,8 +46,11 @@ public class GameFieldManager : MonoBehaviour
 
     private int _rightAnswerCount = 0;
     private int _wrongAnswerCount = 0;
+    private float _timer = 0;
+    private bool _timedMode = true;
     [SerializeField] private Text rightAnswersCounter;
     [SerializeField] private Text wrongAnswersCounter;
+    [SerializeField] private Text timerDisplay;
     [SerializeField] private Image screenDimmer;
     [SerializeField] private Text screenCenterText;
 
@@ -162,6 +175,7 @@ public class GameFieldManager : MonoBehaviour
             Camera.main.transform.position += Vector3.up * (cameraMaxY - cameraMinY);
         }
     }
+
     private IEnumerator DisplayTopic()
     {
         screenDimmer.color = new Color(0f, 0f, 0f, DIMMER_MAX_ALPHA);
@@ -187,6 +201,7 @@ public class GameFieldManager : MonoBehaviour
 
         screenDimmer.color = new Color(0f, 0f, 0f, 0f);
         screenCenterText.color = new Color(1f, 1f, 1f, 0f);
+        _timer = INITIAL_TIME;
         gameState = GameState.PLAY;
     }
 
@@ -204,6 +219,37 @@ public class GameFieldManager : MonoBehaviour
     #endregion
 
     #region monobehaviors
+    void Update()
+    {
+        if(gameState == GameState.PLAY)
+        {
+            if (_timedMode == true)
+            {
+                _timer -= Time.deltaTime;
+                int seconds = Mathf.CeilToInt(_timer);
+                float pulseAmount = _timer - seconds + 1;
+                int minutes = seconds / 60;
+                seconds -= minutes * 60;
+                timerDisplay.text = minutes.ToString("0") + ":" + seconds.ToString("00");
+                if (seconds > CRITICAL_TIME_THRESHOLD || minutes > 0)
+                {
+                    timerDisplay.fontSize = Mathf.FloorToInt(TIMER_FONT_SMALL + (TIMER_FONT_BIGGER * Mathf.Pow(pulseAmount, TIMER_PULSE_SIZE_EXPONENT)));
+                }
+                else
+                {
+                    timerDisplay.fontSize = Mathf.FloorToInt(TIMER_FONT_SMALL + (TIMER_FONT_BIGGER_CRITICAL * Mathf.Pow(pulseAmount, TIMER_PULSE_SIZE_EXPONENT_CRITICAL)));
+                    pulseAmount = Mathf.Pow(pulseAmount, TIMER_PULSE_COLOR_EXPONENT);
+                    timerDisplay.color = TIMER_COLOR_CRITICAL * pulseAmount + TIMER_COLOR_NORMAL * (1 - pulseAmount);
+                }
+
+                if(_timer <= 0f)
+                {
+                    // TODO: game ends
+                }
+            }
+        }
+    }
+
     void Awake()
     {
         Debug.Log("[GameFieldManager:Awake]");
@@ -251,6 +297,4 @@ public class GameFieldManager : MonoBehaviour
         StartCoroutine(DisplayTopic());
     }
     #endregion
-
-
 }
