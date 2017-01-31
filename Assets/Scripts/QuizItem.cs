@@ -24,9 +24,9 @@ public class QuizItem : CameraDragger
     const float SPEED_DAMPENING_RATE = 0.5f;
 
     //public data
+    public TriviaPair data;
 
     //private data
-    private TriviaPair data;
     [SerializeField] private Text answerText;
     private Vector2 linearVelocity;
     private bool overlapNudging;
@@ -44,21 +44,17 @@ public class QuizItem : CameraDragger
         {
             overlapNudging = false;
             speedDampening = false;
-            GameFieldManager.singleton.quizItems.Remove(this);
+            GameFieldManager.singleton.RemoveQuizItem(this);
             if(GameFieldManager.singleton.QuizCorrectAnswer(data))
             {
                 image.color = Color.green;
                 image.raycastTarget = false;
-                GameFieldManager.singleton.rightAnswerCount++;
-                // TODO: begin correct answer animation
                 StartCoroutine(AnswerCorrectVanish());
             }
             else
             {
                 image.color = Color.red;
                 image.raycastTarget = false;
-                GameFieldManager.singleton.wrongAnswerCount++;
-                // TODO: begin wrong answer animation
                 StartCoroutine(AnswerIncorrectVanish());
             }
         }

@@ -23,7 +23,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
-    private const float INITIAL_TIME = 20f;
+    private const float INITIAL_TIME = 60f;
     private const int TIMER_FONT_SMALL = 40;
     private const int TIMER_FONT_BIGGER = 12;
     private const int TIMER_FONT_BIGGER_CRITICAL = 24;
@@ -39,8 +39,10 @@ public class GameFieldManager : MonoBehaviour
 
     //private data
     GameState gameState = GameState.PREGAME;
-    [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY, linearMaxSpeed;
+    [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY, cameraHalfHeight, linearMaxSpeed;
     [SerializeField] private Canvas gameplayCanvas;
+    [SerializeField] private Canvas interfaceCanvas;
+    [SerializeField] private Canvas scoreCanvas;
 
     [SerializeField] private GameObject quizItemPrefab;
 
@@ -56,6 +58,13 @@ public class GameFieldManager : MonoBehaviour
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null;
+    private int rightAnswersInPlay = 0;
+    private int wrongAnswersInPlay = 0;
+    private int initialQuizItemCount = 30;
+    private int promptIndex = 0;
+    private int rightAnswerIndex = 0;
+    private int wrongAnswerIndex = 0;
+    private float chanceOfRightAnswer = .5f;
 
     //public properties
 
@@ -144,8 +153,20 @@ public class GameFieldManager : MonoBehaviour
     {
         QuizItem quizItem = Instantiate(quizItemPrefab).GetComponent<QuizItem>();
         quizItem.transform.SetParent(gameplayCanvas.transform);
-        float xx = Random.Range(cameraMinX, cameraMaxX);
-        float yy = Random.Range(cameraMinY, cameraMaxY);
+        float xx;
+        float yy;
+        if (gameState == GameState.PLAY)
+        {
+            xx = Random.Range(cameraMinX, cameraMaxX);
+            yy = Random.Range(2 * cameraHalfHeight, cameraMaxY - cameraMinY);
+            yy += Camera.main.transform.position.y - cameraHalfHeight;
+            // TODO: make this a little less messy, and maybe allow it to be within the currently illegal y range if it's in an offscreen x range?
+        }
+        else
+        {
+            xx = Random.Range(cameraMinX, cameraMaxX);
+            yy = Random.Range(cameraMinY, cameraMaxY);
+        }
         float vx = Random.Range(-linearMaxSpeed, linearMaxSpeed);
         float vy = Random.Range(-linearMaxSpeed, linearMaxSpeed);
         quizItem.Initialize(triviaPair, new Vector2(xx, yy), new Vector2(vx, vy));
@@ -153,6 +174,24 @@ public class GameFieldManager : MonoBehaviour
         quizItems.Add(quizItem);
     }
 
+    public void RemoveQuizItem(QuizItem toRemove)
+    {
+        if (QuizCorrectAnswer(toRemove.data))
+        {
+            ++rightAnswerCount;
+            --rightAnswersInPlay;
+        }
+        else
+        {
+            ++wrongAnswerCount;
+            --wrongAnswersInPlay;
+        }
+        if (_timedMode)
+        {
+            GenerateQuizItem();
+        }
+        quizItems.Remove(toRemove);
+    }
     #endregion
 
     #region private methods
@@ -216,6 +255,27 @@ public class GameFieldManager : MonoBehaviour
         UpdateWorldUnitsPerPixel();
     }
 
+    private void GenerateQuizItem()
+    {
+        if(rightAnswersInPlay == 0 || Random.Range(0f,1f) >= chanceOfRightAnswer)
+        {
+            CreateQuizItem(TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]][rightAnswerIndex]);
+            ++rightAnswerIndex;
+
+            if (rightAnswerIndex >= TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]].Count)
+            {
+                rightAnswerIndex = 0;
+                ++promptIndex;
+            }
+            ++rightAnswersInPlay;
+        }
+        else
+        {
+            CreateQuizItem(TriviaParser.singleton.wrongAnswers[wrongAnswerIndex++]);
+            ++wrongAnswersInPlay;
+        }
+    }
+
     #endregion
 
     #region monobehaviors
@@ -245,6 +305,9 @@ public class GameFieldManager : MonoBehaviour
                 if(_timer <= 0f)
                 {
                     // TODO: game ends
+                    interfaceCanvas.gameObject.SetActive(false);
+                    gameState = GameState.POSTSCREEN;
+                    scoreCanvas.gameObject.SetActive(true);
                 }
             }
         }
@@ -269,28 +332,18 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
-        int rightAnswerCount = 15;
-        int wrongAnswerCount = 15;
+        scoreCanvas.gameObject.SetActive(false);
 
         TriviaParser.singleton.RandomizeAnswerLists();
 
-        int promptNumber = 0;
-        int answerNumber = 0;
-
-        for (int ii = 0; ii < rightAnswerCount; ++ii)
+        rightAnswersInPlay = 0;
+        wrongAnswersInPlay = 0;
+        promptIndex = 0;
+        rightAnswerIndex = 0;
+        wrongAnswerIndex = 0;
+        for (int ii = 0; ii < initialQuizItemCount; ++ii)
         {
-            CreateQuizItem(TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptNumber]][answerNumber]);
-            ++answerNumber;
-            if(answerNumber >= TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptNumber]].Count)
-            {
-                answerNumber = 0;
-                ++promptNumber;
-            }
-        }
-
-        for (int ii = 0; ii < wrongAnswerCount; ++ii)
-        {
-            CreateQuizItem(TriviaParser.singleton.wrongAnswers[ii]);
+            GenerateQuizItem();
         }
 
         gameState = GameState.PREGAME;
