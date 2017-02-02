@@ -24,9 +24,9 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
     private const float INITIAL_TIME = 20f;
-    private const int TIMER_FONT_SMALL = 40;
-    private const int TIMER_FONT_BIGGER = 12;
-    private const int TIMER_FONT_BIGGER_CRITICAL = 24;
+    private const int TIMER_FONT_SMALL = 50;
+    private const int TIMER_FONT_BIGGER = 15;
+    private const int TIMER_FONT_BIGGER_CRITICAL = 30;
     private const float TIMER_PULSE_SIZE_EXPONENT = 8.0f;
     private const float TIMER_PULSE_SIZE_EXPONENT_CRITICAL = 0.4f;
     private const float TIMER_PULSE_COLOR_EXPONENT = 0.4f;
@@ -371,6 +371,11 @@ public class GameFieldManager : MonoBehaviour
         rightAnswerCount = 0;
         wrongAnswerCount = 0;
         timerDisplay.color = TIMER_COLOR_NORMAL;
+        timerDisplay.fontSize = TIMER_FONT_SMALL;
+        int seconds = Mathf.CeilToInt(INITIAL_TIME);
+        int minutes = seconds / 60;
+        seconds -= minutes * 60;
+        timerDisplay.text = minutes.ToString("0") + ":" + seconds.ToString("00");
     }
 
 
@@ -427,6 +432,7 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
+        ClearGameData();
         GameSetup();
     }
 
