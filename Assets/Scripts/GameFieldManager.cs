@@ -197,6 +197,13 @@ public class GameFieldManager : MonoBehaviour
         }
         quizItems.Remove(toRemove);
     }
+
+    public void PlayAgainButton()
+    {
+        ClearGameData();
+        GameSetup();
+    }
+
     #endregion
 
     #region private methods
@@ -303,6 +310,70 @@ public class GameFieldManager : MonoBehaviour
         ++wrongAnswersInPlay;
     }
 
+
+    private void GameSetup()
+    {
+        scoreCanvas.gameObject.SetActive(false);
+        interfaceCanvas.gameObject.SetActive(true);
+
+        TriviaParser.singleton.RandomizeAnswerLists();
+
+        rightAnswersInPlay = 0;
+        wrongAnswersInPlay = 0;
+        promptIndex = 0;
+        rightAnswerIndex = 0;
+        wrongAnswerIndex = 0;
+        for (int ii = 0; ii < initialQuizItemCount; ++ii)
+        {
+            GenerateQuizItem();
+        }
+
+        gameState = GameState.PREGAME;
+        StartCoroutine(DisplayTopic());
+    }
+
+    private void ShowScoreScreen()
+    {
+        float elapsedTime = _timer;
+        if (_timedMode)
+        {
+            elapsedTime = INITIAL_TIME - _timer;
+        }
+
+        scoreUIRightText.text = _rightAnswerCount.ToString();
+        scoreUIWrongText.text = _wrongAnswerCount.ToString();
+        float accuracy = 0f;
+        if (_rightAnswerCount + _wrongAnswerCount > 0)
+        {
+            accuracy = (float)_rightAnswerCount / (_rightAnswerCount + _wrongAnswerCount);
+        }
+        string accuracyText = (accuracy * 100).ToString("##0") + "%";
+        if (accuracy < 1 && accuracyText == "100%")
+        {
+            accuracyText = "99%";
+        }
+        scoreUIAccuracyText.text = accuracyText;
+        scoreUIArbitraryText.text = (Mathf.FloorToInt(rightAnswerCount * accuracy / elapsedTime * 1000)).ToString();
+
+        interfaceCanvas.gameObject.SetActive(false);
+        gameState = GameState.POSTSCREEN;
+        scoreCanvas.gameObject.SetActive(true);
+    }
+
+
+    private void ClearGameData()
+    {
+        foreach (var item in quizItems)
+        {
+            Destroy(item.gameObject);
+        }
+        quizItems.Clear();
+        rightAnswerCount = 0;
+        wrongAnswerCount = 0;
+        timerDisplay.color = TIMER_COLOR_NORMAL;
+    }
+
+
     #endregion
 
     #region monobehaviors
@@ -337,34 +408,6 @@ public class GameFieldManager : MonoBehaviour
         }
     }
 
-    private void ShowScoreScreen()
-    {
-        float elapsedTime = _timer;
-        if(_timedMode)
-        {
-            elapsedTime = INITIAL_TIME - _timer;
-        }
-
-        scoreUIRightText.text = _rightAnswerCount.ToString();
-        scoreUIWrongText.text = _wrongAnswerCount.ToString();
-        float accuracy = 0f;
-        if(_rightAnswerCount + _wrongAnswerCount > 0)
-        {
-            accuracy = (float) _rightAnswerCount / (_rightAnswerCount + _wrongAnswerCount);
-        }
-        string accuracyText = (accuracy * 100).ToString("##0") + "%";
-        if (accuracy < 1 && accuracyText == "100%")
-        {
-            accuracyText = "99%";
-        }
-        scoreUIAccuracyText.text = accuracyText;
-        scoreUIArbitraryText.text = (Mathf.FloorToInt(rightAnswerCount * accuracy / elapsedTime * 1000)).ToString();
-
-        interfaceCanvas.gameObject.SetActive(false);
-        gameState = GameState.POSTSCREEN;
-        scoreCanvas.gameObject.SetActive(true);
-    }
-
     void Awake()
     {
         Debug.Log("[GameFieldManager:Awake]");
@@ -384,22 +427,8 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
-        scoreCanvas.gameObject.SetActive(false);
-
-        TriviaParser.singleton.RandomizeAnswerLists();
-
-        rightAnswersInPlay = 0;
-        wrongAnswersInPlay = 0;
-        promptIndex = 0;
-        rightAnswerIndex = 0;
-        wrongAnswerIndex = 0;
-        for (int ii = 0; ii < initialQuizItemCount; ++ii)
-        {
-            GenerateQuizItem();
-        }
-
-        gameState = GameState.PREGAME;
-        StartCoroutine(DisplayTopic());
+        GameSetup();
     }
+
     #endregion
 }
