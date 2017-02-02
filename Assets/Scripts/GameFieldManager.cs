@@ -236,6 +236,8 @@ public class GameFieldManager : MonoBehaviour
             {
                 item.gameObject.SetActive(false);
             }
+            screenDimmer.color = Color.black * DIMMER_MAX_ALPHA;
+            screenCenterText.color = Color.white;
         }
     }
 
@@ -249,6 +251,8 @@ public class GameFieldManager : MonoBehaviour
             {
                 item.gameObject.SetActive(true);
             }
+            screenDimmer.color = Color.clear;
+            screenCenterText.color = Color.clear;
         }
     }
 
