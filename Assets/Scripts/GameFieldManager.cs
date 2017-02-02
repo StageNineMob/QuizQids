@@ -11,6 +11,7 @@ public class GameFieldManager : MonoBehaviour
     {
         PREGAME,
         PLAY,
+        PAUSE,
         MAIN_MENU,
         POSTSCREEN,
 
@@ -59,6 +60,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text scoreUIWrongText;
     [SerializeField] private Text scoreUIAccuracyText;
     [SerializeField] private Text scoreUIArbitraryText;
+    [SerializeField] private Text pauseButtonText;
 
 
     private float worldUnitsPerPixel;
@@ -106,7 +108,24 @@ public class GameFieldManager : MonoBehaviour
     }
 
     //methods
-    #region public methods
+#region public methods
+    
+    public void PressedPauseButton()
+    {
+        switch (gameState)
+        {
+            case GameState.PLAY:
+                PauseGame();
+                break;
+            case GameState.PAUSE:
+                UnpauseGame();
+                break;
+            default:
+                break;
+        }
+
+    }
+
     public void CameraPan(Vector2 pan)
     {
         Camera.main.transform.position += (Vector3)(pan * worldUnitsPerPixel);
@@ -206,7 +225,33 @@ public class GameFieldManager : MonoBehaviour
 
     #endregion
 
-    #region private methods
+#region private methods
+    private void PauseGame()
+    {
+        if(gameState == GameState.PLAY)
+        {
+            gameState = GameState.PAUSE;
+            pauseButtonText.text = "Resume";
+            foreach (var item in quizItems)
+            {
+                item.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void UnpauseGame()
+    {
+        if (gameState == GameState.PAUSE)
+        {
+            gameState = GameState.PLAY;
+            pauseButtonText.text = "Pause";
+            foreach (var item in quizItems)
+            {
+                item.gameObject.SetActive(true);
+            }
+        }
+    }
+
     private void CameraWrap()
     {
         if(Camera.main.transform.position.x > cameraMaxX)
