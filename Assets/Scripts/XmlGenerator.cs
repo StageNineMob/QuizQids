@@ -38,7 +38,7 @@ namespace StageNine
             return answer;
         }
 
-        public static void ParseLineSeparatedToXML(string filePath)
+        public static string ParseLineSeparatedToXML(string filePath)
         {
             string text = "";
             try
@@ -49,7 +49,7 @@ namespace StageNine
             catch (System.Exception ex)
             {
                 Debug.LogError("[XmlGenerator:ParseLineSeparatedToXML] File Read Error");
-                return;
+                return null;
             }
             text = text.Replace("\r", "");
             var lines = text.Split('\n');
@@ -105,8 +105,7 @@ namespace StageNine
             rootElement.AppendChild(allAnswers);
             document.AppendChild(rootElement);
 
-            // TODO: DO SOMETHING USEFUL WITH THIS!!!
-            Debug.Log(document.OuterXml);
+            return document.OuterXml;
         }
     }
 }

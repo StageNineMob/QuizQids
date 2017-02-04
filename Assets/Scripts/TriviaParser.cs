@@ -64,7 +64,7 @@ public class TriviaParser : MonoBehaviour {
 
     public void LoadTrivia(string filePath)
     {
-        XmlGenerator.ParseLineSeparatedToXML(filePath);
+        System.IO.File.WriteAllText(@"C:\Users\Starbuck\Desktop\US Cities.xml", XmlGenerator.ParseLineSeparatedToXML(filePath));
 
         //confirm that filePath exists?
         string text = "";
