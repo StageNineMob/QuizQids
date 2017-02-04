@@ -9,7 +9,11 @@ using System.Xml.Linq;
 public class TriviaParser : MonoBehaviour {
 
     //enums
-
+    public enum TriviaMode
+    {
+        GENERAL,
+        SPECIFIC,
+    };
     //subclasses
 
     //consts and static data
@@ -62,10 +66,8 @@ public class TriviaParser : MonoBehaviour {
     //    return null;
     //}
 
-    public void LoadTrivia(string filePath)
+    public void LoadTrivia(string filePath, int categoryNumber, TriviaMode mode)
     {
-        System.IO.File.WriteAllText(@"C:\Users\Starbuck\Desktop\US Cities.xml", XmlGenerator.ParseLineSeparatedToXML(filePath));
-
         //confirm that filePath exists?
         string text = "";
         try
@@ -75,52 +77,137 @@ public class TriviaParser : MonoBehaviour {
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("[TriviaParser:LoadTrivia] R");
+            Debug.LogError("[TriviaParser:LoadTrivia] FileReadError");
+            return;
         }
-        text = text.Replace("\r", "");
-        var lines = text.Split('\n');
-        int lineNum = 0;
 
         _rightAnswers = new Dictionary<string, List<TriviaPair>>();
         _wrongAnswers = new List<TriviaPair>();
         _prompts = new List<string>();
-        for(; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
+        if(mode == TriviaMode.GENERAL)
         {
-            _categoryName = lines[lineNum];
+            _prompts.Add("null");
         }
-        for (++lineNum; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
+
+        XmlDocument triviaDocument = new XmlDocument();
+        triviaDocument.LoadXml(text);
+
+        var nodeList = triviaDocument.SelectNodes("/Root/Categories/Category");
+        var categoryList = new List<string>();
+        foreach (XmlElement node in nodeList)
         {
-            string[] items = lines[lineNum].Split(';');
-            if (items.Length >= 2)
+            // TODO: Add support for gameplay types by category here
+            categoryList.Add(node.Attributes["Name"].Value);
+        }
+        string category = categoryList[categoryNumber];
+
+        nodeList = triviaDocument.SelectNodes("/Root/AllAnswers/Answer");
+        foreach(XmlElement node in nodeList)
+        {
+            var categoryNodes = node.SelectNodes("Category");
+            foreach(XmlElement categoryNode in categoryNodes)
             {
-                TriviaPair pair = new TriviaPair();
-                pair.value = items[0];
-                pair.prompt = items[1];
-                if (_rightAnswers.ContainsKey(pair.prompt))
+                //if this answer is supposed to appear for this category...
+                if (categoryNode.Attributes["Name"].Value == category)
                 {
-                    _rightAnswers[pair.prompt].Add(pair);
-                }
-                else
-                {
-                    List<TriviaPair> triviaPairList = new List<TriviaPair>();
-                    triviaPairList.Add(pair);
-                    _rightAnswers.Add(pair.prompt, triviaPairList);
-                    _prompts.Add(pair.prompt);
+                    TriviaPair tp = new TriviaPair();
+                    tp.value = node.Attributes["Name"].Value;
+
+                    //get all the corresponding prompts...
+                    var promptNodes = categoryNode.SelectNodes("Prompt");
+                    foreach(XmlElement promptNode in promptNodes)
+                    {
+                        tp.prompts.Add(promptNode.Attributes["Name"].Value);
+
+                        //if we're in specific mode, add prompts as we find them
+                        if (mode == TriviaMode.SPECIFIC && promptNode.Attributes["Name"].Value != "null")
+                        {
+                            if(!_prompts.Contains(promptNode.Attributes["Name"].Value))
+                            {
+                                _prompts.Add(promptNode.Attributes["Name"].Value);
+                            }
+                        }
+                    }
+                    // if there is at least one prompt for which this is correct
+                    // it is a right answer
+                    if(tp.prompts.Count > 0)
+                    {
+                        // TODO: Add support for SPECIFIC mode and for
+                        // one answer being correct for multiple prompts
+                        if(!_rightAnswers.ContainsKey("null"))
+                        {
+                            _rightAnswers.Add("null", new List<TriviaPair>());
+                        }
+                        _rightAnswers["null"].Add(tp);
+                    }
+                    else
+                    {
+                        _wrongAnswers.Add(tp);
+                    }
                 }
             }
-            else
-            {
-                // wig out?
-            }
-        }
-        for (++lineNum; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
-        {
-            TriviaPair triviaPair = new TriviaPair();
-            triviaPair.prompt = null;
-            triviaPair.value = lines[lineNum];
-            _wrongAnswers.Add(triviaPair);
         }
     }
+
+    //public void OldLoadTrivia(string filePath)
+    //{
+    //    System.IO.File.WriteAllText(@"C:\Users\Starbuck\Desktop\US Cities.xml", XmlGenerator.ParseLineSeparatedToXML(filePath));
+
+    //    //confirm that filePath exists?
+    //    string text = "";
+    //    try
+    //    {
+    //        TextAsset tAsset = Resources.Load(filePath) as TextAsset;
+    //        text = tAsset.text;
+    //    }
+    //    catch (System.Exception ex)
+    //    {
+    //        Debug.LogError("[TriviaParser:LoadTrivia] R");
+    //    }
+    //    text = text.Replace("\r", "");
+    //    var lines = text.Split('\n');
+    //    int lineNum = 0;
+
+    //    _rightAnswers = new Dictionary<string, List<TriviaPair>>();
+    //    _wrongAnswers = new List<TriviaPair>();
+    //    _prompts = new List<string>();
+    //    for(; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
+    //    {
+    //        _categoryName = lines[lineNum];
+    //    }
+    //    for (++lineNum; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
+    //    {
+    //        string[] items = lines[lineNum].Split(';');
+    //        if (items.Length >= 2)
+    //        {
+    //            TriviaPair pair = new TriviaPair();
+    //            pair.value = items[0];
+    //            pair.prompt = items[1];
+    //            if (_rightAnswers.ContainsKey(pair.prompt))
+    //            {
+    //                _rightAnswers[pair.prompt].Add(pair);
+    //            }
+    //            else
+    //            {
+    //                List<TriviaPair> triviaPairList = new List<TriviaPair>();
+    //                triviaPairList.Add(pair);
+    //                _rightAnswers.Add(pair.prompt, triviaPairList);
+    //                _prompts.Add(pair.prompt);
+    //            }
+    //        }
+    //        else
+    //        {
+    //            // wig out?
+    //        }
+    //    }
+    //    for (++lineNum; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
+    //    {
+    //        TriviaPair triviaPair = new TriviaPair();
+    //        triviaPair.prompt = null;
+    //        triviaPair.value = lines[lineNum];
+    //        _wrongAnswers.Add(triviaPair);
+    //    }
+    //}
 
     public void RandomizeAnswerLists()
     {
@@ -138,7 +225,7 @@ public class TriviaParser : MonoBehaviour {
     #region private methods
     private void InitializeFields()
     {
-        LoadTrivia("Trivia/state capitals and fakes");
+        LoadTrivia("Trivia/US Cities", 0, TriviaMode.GENERAL);
     }
 
     private void Shuffle<T>(IList<T> list)

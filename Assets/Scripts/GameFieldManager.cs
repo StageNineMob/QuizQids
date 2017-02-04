@@ -162,12 +162,12 @@ public class GameFieldManager : MonoBehaviour
     {
         if (currentPrompt != null)
         {
-            if (trivia.prompt == currentPrompt)
+            if (trivia.prompts.Contains(currentPrompt))
                 return true;
         }
         else
         {
-            if (trivia.prompt != null)
+            if (trivia.prompts.Contains("null"))
                 return true;
         }
         return false;
