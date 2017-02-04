@@ -48,6 +48,8 @@ public class TriviaParser : MonoBehaviour {
 
     public void LoadTrivia(string filePath)
     {
+        XmlGenerator.ParseLineSeparatedToXML(filePath);
+
         //confirm that filePath exists?
         string text = "";
         try

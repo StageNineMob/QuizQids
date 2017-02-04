@@ -1,0 +1,110 @@
+Aberdeen
+Albuquerque
+Allentown
+Anchorage
+Aurora
+Baltimore
+Bangor
+Bellevue
+Biloxi
+Billings
+Birmingham
+Bridgeport
+Buffalo
+Burlington
+Casper
+Cedar Rapids
+Charlotte
+Chesapeake
+Chicago
+Cincinnati
+Cleveland
+Colorado Springs
+Cranston
+Dallas
+Davenport
+Detroit
+Eugene
+Evansville
+Fairbanks
+Fargo
+Fayetteville
+Fort Smith
+Fort Wayne
+Frederick
+Gaithersburg
+Grand Forks
+Grand Rapids
+Great Falls
+Green Bay
+Greensboro
+Gulfport
+Henderson
+Hilo
+Houston
+Huntington
+Idaho Falls
+Jacksonville
+Jersey City
+Kailua
+Kansas City
+Knoxville
+Laramie
+Las Cruces
+Las Vegas
+Lewiston
+Lexington
+Los Angeles
+Louisville
+Manchester
+Memphis
+Mesa
+Miami
+Milwaukee
+Minneapolis
+Missoula
+Mobile
+Nampa
+Nashua
+Newark
+New Haven
+New Orleans
+New York City
+Norfolk
+Norman
+North Charleston
+Omaha
+Overland Park
+Owensboro
+Parkersburg
+Paterson
+Philadelphia
+Pittsburgh
+Provo
+Portland
+Rapid City
+Reno
+Rochester
+Rio Rancho
+Rockford
+Rutland
+Saint Louis
+San Antonio
+San Diego
+San Jose
+Seattle
+Shreveport
+Sioux Falls
+South Burlington
+Spokane
+Tacoma
+Tampa
+Tucson
+Tulsa
+Virginia Beach
+Warren
+Warwick
+West Valley City
+Wichita
+Wilmington
+Worcester
