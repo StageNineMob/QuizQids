@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using StageNine;
 using Random = UnityEngine.Random;
+using System.Xml;
+using System.Xml.Linq;
 
 public class TriviaParser : MonoBehaviour {
 
@@ -45,6 +47,20 @@ public class TriviaParser : MonoBehaviour {
 
     //methods
     #region public methods
+    //public XElement GetWrongAnswers()
+    //{
+    //    from answer in _wrongAnswers
+    //    let fields = str
+    //    select new XElement("Answer",
+    //        new XAttribute("name", fields),
+    //        new XElement("Category",
+    //            new XAttribute("name", lines1[0])
+    //        )
+    //    )
+
+    //    //XElement wrongAnswers = new XElement("AllAnswers",);
+    //    return null;
+    //}
 
     public void LoadTrivia(string filePath)
     {
