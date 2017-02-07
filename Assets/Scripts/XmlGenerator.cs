@@ -9,6 +9,23 @@ namespace StageNine
 {
     public class XmlGenerator
     {
+        private class SongInfo
+        {
+            public HashSet<string> decades;
+            public HashSet<string> artists;
+            public SongInfo(string decade, string artist)
+            {
+                decades = new HashSet<string>();
+                artists = new HashSet<string>();
+                Add(decade, artist);
+            }
+
+            public void Add(string decade, string artist)
+            {
+                decades.Add(decade);
+                artists.Add(artist);
+            }
+        }
         public static XmlElement GenerateAnswer(XmlDocument document, string name, string[] categories, string[][] prompts)
         {
             var answer = document.CreateElement("Answer");
@@ -107,5 +124,96 @@ namespace StageNine
 
             return document.OuterXml;
         }
+
+        public static string ParseChartToppersToXML(string filePath)
+        {
+            const string BY_ARTIST = "Hot 100 Chart Toppers by Artist";
+            const string BY_DECADE = "Hot 100 Chart Toppers by Decade";
+            string text = "";
+            try
+            {
+                TextAsset tAsset = Resources.Load(filePath) as TextAsset;
+                text = tAsset.text;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("[XmlGenerator:ParseLineSeparatedToXML] File Read Error");
+                return null;
+            }
+            text = text.Replace("\r", "");
+            var lines = text.Split('\n');
+
+            XmlDocument document = new XmlDocument();
+            List<string> categoryNames = new List<string>();
+            var rootElement = document.CreateElement("Root");
+            var categoriesElement = document.CreateElement("Categories");
+
+            var categoryElement = document.CreateElement("Category");
+            var nameAttribute = document.CreateAttribute("Name");
+            nameAttribute.Value = BY_ARTIST;
+            categoryNames.Add(BY_ARTIST);
+            categoryElement.Attributes.Append(nameAttribute);
+            categoriesElement.AppendChild(categoryElement);
+
+            categoryElement = document.CreateElement("Category");
+            nameAttribute = document.CreateAttribute("Name");
+            nameAttribute.Value = BY_DECADE;
+            categoryNames.Add(BY_DECADE);
+            categoryElement.Attributes.Append(nameAttribute);
+            categoriesElement.AppendChild(categoryElement);
+
+            rootElement.AppendChild(categoriesElement);
+            string[] categoriesArray = categoryNames.ToArray();
+            var allAnswers = document.CreateElement("AllAnswers");
+
+            string currentDecade = "";
+            Dictionary<string, SongInfo> songs = new Dictionary<string, SongInfo>();
+
+            for (int lineNum = 0; lineNum < lines.Length && lines[lineNum] != ""; ++lineNum)
+            {
+                string[] items = lines[lineNum].Split('\t');
+                if (items.Length < 3)
+                {
+                    if(items[0][items[0].Length-1] == 's')
+                    {
+                        currentDecade = items[0];
+                    }
+                }
+                else
+                {
+                    string name = items[1];
+                    string artist = items[2];
+                    if(songs.ContainsKey(name))
+                    {
+                        songs[name].Add(currentDecade, artist);
+                    }
+                    else
+                    {
+                        songs.Add(name, new SongInfo(currentDecade, artist));
+                    }
+                }
+            }
+            foreach (var song in songs)
+            {
+                string[][] promptsArray = new string[categoriesArray.Length][];
+                for (int catIndex = 0; catIndex < categoriesArray.Length; ++catIndex)
+                {
+                    if(categoriesArray[catIndex] == BY_DECADE)
+                    {
+                        promptsArray[catIndex] = song.Value.decades.ToArray();
+                    }
+                    else if (categoriesArray[catIndex] == BY_ARTIST)
+                    {
+                        promptsArray[catIndex] = song.Value.artists.ToArray();
+                    }
+                }
+                allAnswers.AppendChild(GenerateAnswer(document, song.Key, categoriesArray, promptsArray));
+            }
+            rootElement.AppendChild(allAnswers);
+            document.AppendChild(rootElement);
+
+            return document.OuterXml;
+        }
+
     }
 }

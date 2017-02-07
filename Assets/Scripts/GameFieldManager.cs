@@ -24,7 +24,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
-    private const float INITIAL_TIME = 20f;
+    private const float INITIAL_TIME = 120f;
     private const int TIMER_FONT_SMALL = 50;
     private const int TIMER_FONT_BIGGER = 15;
     private const int TIMER_FONT_BIGGER_CRITICAL = 30;
@@ -54,6 +54,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text rightAnswersCounter;
     [SerializeField] private Text wrongAnswersCounter;
     [SerializeField] private Text timerDisplay;
+    [SerializeField] private Text promptDisplay;
     [SerializeField] private Image screenDimmer;
     [SerializeField] private Text screenCenterText;
     [SerializeField] private Text scoreUIRightText;
@@ -68,7 +69,7 @@ public class GameFieldManager : MonoBehaviour
     private int rightAnswersInPlay = 0;
     private int wrongAnswersInPlay = 0;
     private int initialQuizItemCount = 30;
-    private int promptIndex = 0;
+    //private int promptIndex = 0;
     private int rightAnswerIndex = 0;
     private int wrongAnswerIndex = 0;
     private float chanceOfRightAnswer = .5f;
@@ -298,7 +299,7 @@ public class GameFieldManager : MonoBehaviour
             screenCenterText.color = new Color(1f, 1f, 1f, alpha);
             yield return null;
         }
-
+        
         screenDimmer.color = new Color(0f, 0f, 0f, 0f);
         screenCenterText.color = new Color(1f, 1f, 1f, 0f);
         _timer = INITIAL_TIME;
@@ -318,7 +319,7 @@ public class GameFieldManager : MonoBehaviour
 
     private void GenerateQuizItem()
     {
-        if (promptIndex >= TriviaParser.singleton.prompts.Count)
+        if (rightAnswerIndex >= TriviaParser.singleton.rightAnswers.Count)
         {   // Out of right answers
             if (rightAnswersInPlay == 0 || wrongAnswerIndex >= TriviaParser.singleton.wrongAnswers.Count)
             {
@@ -342,14 +343,14 @@ public class GameFieldManager : MonoBehaviour
 
     private void GenerateRightAnswer()
     {
-        CreateQuizItem(TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]][rightAnswerIndex]);
+        CreateQuizItem(TriviaParser.singleton.rightAnswers[rightAnswerIndex]);
         ++rightAnswerIndex;
 
-        if (rightAnswerIndex >= TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]].Count)
-        {
-            rightAnswerIndex = 0;
-            ++promptIndex;
-        }
+        //if (rightAnswerIndex >= TriviaParser.singleton.rightAnswers[TriviaParser.singleton.prompts[promptIndex]].Count)
+        //{
+        //    rightAnswerIndex = 0;
+        //    ++promptIndex;
+        //}
         ++rightAnswersInPlay;
     }
 
@@ -369,7 +370,7 @@ public class GameFieldManager : MonoBehaviour
 
         rightAnswersInPlay = 0;
         wrongAnswersInPlay = 0;
-        promptIndex = 0;
+        //promptIndex = 0;
         rightAnswerIndex = 0;
         wrongAnswerIndex = 0;
         for (int ii = 0; ii < initialQuizItemCount; ++ii)
@@ -417,6 +418,7 @@ public class GameFieldManager : MonoBehaviour
             Destroy(item.gameObject);
         }
         quizItems.Clear();
+        currentPrompt = null;
         rightAnswerCount = 0;
         wrongAnswerCount = 0;
         timerDisplay.color = TIMER_COLOR_NORMAL;
@@ -427,7 +429,11 @@ public class GameFieldManager : MonoBehaviour
         timerDisplay.text = minutes.ToString("0") + ":" + seconds.ToString("00");
     }
 
-
+    private IEnumerator DisplayNewPrompt()
+    {
+        promptDisplay.text = currentPrompt;
+        yield return null;
+    }
     #endregion
 
     #region monobehaviors
@@ -435,6 +441,15 @@ public class GameFieldManager : MonoBehaviour
     {
         if(gameState == GameState.PLAY)
         {
+            if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+            {
+                // also change prompt if nothing matching current prompt is in play
+                if(currentPrompt == null || NothingMatches())
+                {
+                    currentPrompt = quizItems[0].data.prompts[0];
+                    StartCoroutine(DisplayNewPrompt());
+                }
+            }
             if (_timedMode == true)
             {
                 _timer -= Time.deltaTime;
@@ -460,6 +475,16 @@ public class GameFieldManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool NothingMatches()
+    {
+        foreach(var item in quizItems)
+        {
+            if (QuizCorrectAnswer(item.data))
+                return false;
+        }
+        return true;
     }
 
     void Awake()

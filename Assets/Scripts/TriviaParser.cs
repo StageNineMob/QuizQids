@@ -24,9 +24,11 @@ public class TriviaParser : MonoBehaviour {
 
     //private data
     string _categoryName;
-    private Dictionary<string, List<TriviaPair>> _rightAnswers;
+    private TriviaMode _triviaMode;
+    //private Dictionary<string, List<TriviaPair>> _rightAnswers;
+    private List<TriviaPair> _rightAnswers;
     private List<TriviaPair> _wrongAnswers;
-    private List<string> _prompts;
+    //private List<string> _prompts;
 
     //public properties
     public string categoryName
@@ -34,7 +36,8 @@ public class TriviaParser : MonoBehaviour {
         get { return _categoryName; }
     }
 
-    public Dictionary<string, List<TriviaPair>> rightAnswers
+    //public Dictionary<string, List<TriviaPair>> rightAnswers
+    public List<TriviaPair> rightAnswers
     {
         get { return _rightAnswers; }
     }
@@ -44,10 +47,15 @@ public class TriviaParser : MonoBehaviour {
         get { return _wrongAnswers; }
     }
 
-    public List<string> prompts
+    public TriviaMode triviaMode
     {
-        get { return _prompts; }
+        get { return _triviaMode; }
     }
+
+    //public List<string> prompts
+    //{
+    //    get { return _prompts; }
+    //}
 
     //methods
     #region public methods
@@ -68,6 +76,8 @@ public class TriviaParser : MonoBehaviour {
 
     public void LoadTrivia(string filePath, int categoryNumber, TriviaMode mode)
     {
+        //File.WriteAllText(@"C:\Users\Starbuck\Desktop\Chart Toppers.xml", XmlGenerator.ParseChartToppersToXML("Trivia/chart toppers"));
+
         //confirm that filePath exists?
         string text = "";
         try
@@ -80,14 +90,14 @@ public class TriviaParser : MonoBehaviour {
             Debug.LogError("[TriviaParser:LoadTrivia] FileReadError");
             return;
         }
-
-        _rightAnswers = new Dictionary<string, List<TriviaPair>>();
+        _triviaMode = mode;
+        _rightAnswers = new List<TriviaPair>();
         _wrongAnswers = new List<TriviaPair>();
-        _prompts = new List<string>();
-        if(mode == TriviaMode.GENERAL)
-        {
-            _prompts.Add("null");
-        }
+        //_prompts = new List<string>();
+        //if(mode == TriviaMode.GENERAL)
+        //{
+        //    _prompts.Add("null");
+        //}
 
         XmlDocument triviaDocument = new XmlDocument();
         triviaDocument.LoadXml(text);
@@ -120,25 +130,30 @@ public class TriviaParser : MonoBehaviour {
                         tp.prompts.Add(promptNode.Attributes["Name"].Value);
 
                         //if we're in specific mode, add prompts as we find them
-                        if (mode == TriviaMode.SPECIFIC && promptNode.Attributes["Name"].Value != "null")
-                        {
-                            if(!_prompts.Contains(promptNode.Attributes["Name"].Value))
-                            {
-                                _prompts.Add(promptNode.Attributes["Name"].Value);
-                            }
-                        }
+                        //if (mode == TriviaMode.SPECIFIC && promptNode.Attributes["Name"].Value != "null")
+                        //{
+                        //    if(!_prompts.Contains(promptNode.Attributes["Name"].Value))
+                        //    {
+                        //        _prompts.Add(promptNode.Attributes["Name"].Value);
+                        //    }
+                        //}
                     }
+                    //pick our prompt from something on screen
                     // if there is at least one prompt for which this is correct
                     // it is a right answer
                     if(tp.prompts.Count > 0)
                     {
                         // TODO: Add support for SPECIFIC mode and for
                         // one answer being correct for multiple prompts
-                        if(!_rightAnswers.ContainsKey("null"))
-                        {
-                            _rightAnswers.Add("null", new List<TriviaPair>());
-                        }
-                        _rightAnswers["null"].Add(tp);
+                        //if (mode == TriviaMode.GENERAL)
+                        //{
+                        //    if (!_rightAnswers.ContainsKey("null"))
+                        //    {
+                        //        _rightAnswers.Add("null", new List<TriviaPair>());
+                        //    }
+                        //    _rightAnswers["null"].Add(tp);
+                        //}
+                        _rightAnswers.Add(tp);
                     }
                     else
                     {
@@ -212,11 +227,12 @@ public class TriviaParser : MonoBehaviour {
     public void RandomizeAnswerLists()
     {
         Shuffle(_wrongAnswers);
-        Shuffle(_prompts);
-        foreach(var prompt in _prompts)
-        {
-            Shuffle(_rightAnswers[prompt]);
-        }
+        Shuffle(_rightAnswers);
+        //Shuffle(_prompts);
+        //foreach(var prompt in _prompts)
+        //{
+        //    Shuffle(_rightAnswers[prompt]);
+        //}
     }
 
 
@@ -225,7 +241,7 @@ public class TriviaParser : MonoBehaviour {
     #region private methods
     private void InitializeFields()
     {
-        LoadTrivia("Trivia/US Cities", 0, TriviaMode.GENERAL);
+        LoadTrivia("Trivia/Chart Toppers", 1, TriviaMode.SPECIFIC);
     }
 
     private void Shuffle<T>(IList<T> list)
