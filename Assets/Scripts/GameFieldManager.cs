@@ -24,7 +24,8 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
-    private const float INITIAL_TIME = 120f;
+    private const float INITIAL_TIME = 121f;
+    private const int CENTER_FONT_SIZE = 60;
     private const int TIMER_FONT_SMALL = 50;
     private const int TIMER_FONT_BIGGER = 15;
     private const int TIMER_FONT_BIGGER_CRITICAL = 30;
@@ -34,8 +35,8 @@ public class GameFieldManager : MonoBehaviour
     private const float CRITICAL_TIME_THRESHOLD = 10;
     private readonly Color TIMER_COLOR_NORMAL = Color.white;
     private readonly Color TIMER_COLOR_CRITICAL = Color.red;
-    private const float PROMPT_FONT_END_SIZE = 250;
-    private const float PROMPT_FONT_START_SIZE = 0;
+    private const int PROMPT_FONT_END_SIZE = 250;
+    private const int PROMPT_FONT_START_SIZE = 0;
     private const float PROMPT_PULSE_SIZE_EXPONENT = 2f;
     private const float PROMPT_PULSE_DURATION = 1.5f;
     private const float PROMPT_PULSE_DURATION_INVERSE = 1.0f/PROMPT_PULSE_DURATION;
@@ -246,7 +247,14 @@ public class GameFieldManager : MonoBehaviour
                 item.gameObject.SetActive(false);
             }
             screenDimmer.color = Color.black * DIMMER_MAX_ALPHA;
+            screenCenterText.fontSize = CENTER_FONT_SIZE;
             screenCenterText.color = Color.white;
+            string text = TriviaParser.singleton.categoryName;
+            if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+            {
+                text += System.Environment.NewLine + currentPrompt;
+            }
+            screenCenterText.text = text;
         }
     }
 
@@ -290,6 +298,7 @@ public class GameFieldManager : MonoBehaviour
         screenDimmer.color = new Color(0f, 0f, 0f, DIMMER_MAX_ALPHA);
         screenCenterText.color = Color.white;
         screenCenterText.text = TriviaParser.singleton.categoryName;
+        screenCenterText.fontSize = CENTER_FONT_SIZE;
 
         float time = 0f;
         while(time < PREGAME_WAIT_TIME)
