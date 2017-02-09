@@ -34,6 +34,12 @@ public class GameFieldManager : MonoBehaviour
     private const float CRITICAL_TIME_THRESHOLD = 10;
     private readonly Color TIMER_COLOR_NORMAL = Color.white;
     private readonly Color TIMER_COLOR_CRITICAL = Color.red;
+    private const float PROMPT_FONT_END_SIZE = 250;
+    private const float PROMPT_FONT_START_SIZE = 0;
+    private const float PROMPT_PULSE_SIZE_EXPONENT = 2f;
+    private const float PROMPT_PULSE_DURATION = 1.5f;
+    private const float PROMPT_PULSE_DURATION_INVERSE = 1.0f/PROMPT_PULSE_DURATION;
+    private const float MAX_PROMPT_DURATION = 10f;
 
     //public data
     public List<QuizItem> quizItems;
@@ -73,6 +79,8 @@ public class GameFieldManager : MonoBehaviour
     private int rightAnswerIndex = 0;
     private int wrongAnswerIndex = 0;
     private float chanceOfRightAnswer = .5f;
+
+    private float currentPromptDuration = 0f;
 
     //public properties
 
@@ -432,7 +440,25 @@ public class GameFieldManager : MonoBehaviour
     private IEnumerator DisplayNewPrompt()
     {
         promptDisplay.text = currentPrompt;
-        yield return null;
+        screenCenterText.text = currentPrompt;
+        float timeRemaining = PROMPT_PULSE_DURATION;
+
+        screenCenterText.color = Color.white;
+        while(timeRemaining > 0)
+        {
+            if(!(gameState == GameState.PAUSE))
+            {
+                float pulseAmount = Mathf.Pow(timeRemaining * PROMPT_PULSE_DURATION_INVERSE, PROMPT_PULSE_SIZE_EXPONENT);
+                float fontSize = Mathf.Lerp(PROMPT_FONT_END_SIZE, PROMPT_FONT_START_SIZE, pulseAmount);
+
+                screenCenterText.fontSize = (int)fontSize;
+                screenCenterText.color = new Color (1,1,1,timeRemaining * PROMPT_PULSE_DURATION_INVERSE);
+                timeRemaining -= Time.deltaTime;
+            }
+            yield return null;
+        }
+        screenCenterText.color = Color.clear;
+
     }
     #endregion
 
@@ -443,11 +469,17 @@ public class GameFieldManager : MonoBehaviour
         {
             if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
             {
+                currentPromptDuration += Time.deltaTime;
                 // also change prompt if nothing matching current prompt is in play
-                if(currentPrompt == null || NothingMatches())
+                if(currentPrompt == null || NothingMatches() || currentPromptDuration >= MAX_PROMPT_DURATION)
                 {
-                    currentPrompt = quizItems[0].data.prompts[0];
-                    StartCoroutine(DisplayNewPrompt());
+                    //this should be a random one, rather than always quiz item 0
+                    //Also want to make sure the prompt is never the same as it just was unless there's no other option
+                    currentPromptDuration = 0f;
+                    if(ChooseRandomPrompt())
+                    {
+                        StartCoroutine(DisplayNewPrompt());
+                    }
                 }
             }
             if (_timedMode == true)
@@ -475,6 +507,25 @@ public class GameFieldManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool ChooseRandomPrompt()
+    {
+        string lastPrompt = currentPrompt;
+        TriviaParser.Shuffle(quizItems);
+        foreach (var item in quizItems)
+        {
+            foreach (var prompt in item.data.prompts)
+            {
+                if (prompt != lastPrompt)
+                {
+                    currentPrompt = prompt;
+                    return true;
+                }
+            }
+        }
+        // if we never found a new prompt, return false
+        return false;
     }
 
     private bool NothingMatches()

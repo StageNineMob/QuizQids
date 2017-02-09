@@ -59,6 +59,20 @@ public class TriviaParser : MonoBehaviour {
 
     //methods
     #region public methods
+    // this should go somewhere better!
+    public static void Shuffle<T>(IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            int k = Random.Range(0, n);
+            n--;
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+
     //public XElement GetWrongAnswers()
     //{
     //    from answer in _wrongAnswers
@@ -110,6 +124,7 @@ public class TriviaParser : MonoBehaviour {
             categoryList.Add(node.Attributes["Name"].Value);
         }
         string category = categoryList[categoryNumber];
+        _categoryName = category;
 
         nodeList = triviaDocument.SelectNodes("/Root/AllAnswers/Answer");
         foreach(XmlElement node in nodeList)
@@ -242,19 +257,6 @@ public class TriviaParser : MonoBehaviour {
     private void InitializeFields()
     {
         LoadTrivia("Trivia/Chart Toppers", 1, TriviaMode.SPECIFIC);
-    }
-
-    private void Shuffle<T>(IList<T> list)
-    {
-        int n = list.Count;
-        while (n > 1)
-        {
-            int k = Random.Range(0, n);
-            n--;
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
-        }
     }
     #endregion
 
