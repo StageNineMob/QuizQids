@@ -4524,7 +4524,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="Don t You">
+    <Answer Name="Don't You">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Simple Minds" />
       </Category>
@@ -4822,7 +4822,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="Papa Don t Preach">
+    <Answer Name="Papa Don't Preach">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Madonna" />
       </Category>
@@ -5038,7 +5038,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="I Still Haven t Found What I m Looking For">
+    <Answer Name="I Still Haven t Found What I'm Looking For">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="U2" />
       </Category>
@@ -5416,7 +5416,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="When I m With You">
+    <Answer Name="When I'm With You">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Sheriff" />
       </Category>
@@ -5528,7 +5528,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="Baby Don t Forget My Number">
+    <Answer Name="Baby Don't Forget My Number">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Milli Vanilli" />
       </Category>
@@ -5544,7 +5544,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="If You Don t Know Me By Now">
+    <Answer Name="If You Don't Know Me By Now">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Simply Red" />
       </Category>
@@ -5592,7 +5592,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="Don t Wanna Lose You">
+    <Answer Name="Don't Wanna Lose You">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Gloria Estefan" />
       </Category>
@@ -5600,7 +5600,7 @@
         <Prompt Name="1980s" />
       </Category>
     </Answer>
-    <Answer Name="Girl I m Gonna Miss You">
+    <Answer Name="Girl I'm Gonna Miss You">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Milli Vanilli" />
       </Category>
@@ -5809,7 +5809,7 @@
         <Prompt Name="1990s" />
       </Category>
     </Answer>
-    <Answer Name="I Don t Have The Heart">
+    <Answer Name="I Don't Have The Heart">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="James Ingram" />
       </Category>
@@ -5841,7 +5841,7 @@
         <Prompt Name="1990s" />
       </Category>
     </Answer>
-    <Answer Name="I m Your Baby Tonight">
+    <Answer Name="I'm Your Baby Tonight">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Whitney Houston" />
       </Category>
@@ -5953,7 +5953,7 @@
         <Prompt Name="1990s" />
       </Category>
     </Answer>
-    <Answer Name="I Don t Wanna Cry">
+    <Answer Name="I Don't Wanna Cry">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Mariah Carey" />
       </Category>
@@ -6057,7 +6057,7 @@
         <Prompt Name="1990s" />
       </Category>
     </Answer>
-    <Answer Name="Don t Let The Sun Go Down On Me">
+    <Answer Name="Don't Let The Sun Go Down On Me">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="George Michael/Elton John" />
       </Category>
@@ -6065,7 +6065,7 @@
         <Prompt Name="1990s" />
       </Category>
     </Answer>
-    <Answer Name="I m Too Sexy">
+    <Answer Name="I'm Too Sexy">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Right Said Fred" />
       </Category>
@@ -6365,7 +6365,8 @@
     </Answer>
     <Answer Name="One Sweet Day">
       <Category Name="Hot 100 Chart Toppers by Artist">
-        <Prompt Name="Mariah Carey &amp; Boyz II Men" />
+        <Prompt Name="Mariah Carey" />
+        <Prompt Name="Boyz II Men" />
       </Category>
       <Category Name="Hot 100 Chart Toppers by Decade">
         <Prompt Name="1990s" />
@@ -6581,7 +6582,7 @@
         <Prompt Name="1990s" />
       </Category>
     </Answer>
-    <Answer Name="I Don t Want To Miss A Thing">
+    <Answer Name="I Don't Want To Miss A Thing">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="Aerosmith" />
       </Category>
@@ -6629,7 +6630,7 @@
         <Prompt Name="1990s" />
       </Category>
     </Answer>
-    <Answer Name="I m Your Angel">
+    <Answer Name="I'm Your Angel">
       <Category Name="Hot 100 Chart Toppers by Artist">
         <Prompt Name="R. Kelly" />
       </Category>
