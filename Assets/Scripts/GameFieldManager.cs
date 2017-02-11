@@ -54,6 +54,13 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Canvas scoreCanvas;
     [SerializeField] private Slider promptChangeTimer;
     [SerializeField] private GameObject quizItemPrefab;
+    [SerializeField] private AudioSource soundEffectSource;
+    [SerializeField] private AudioClip rightAnswerSound;
+    [SerializeField] private float rightAnswerVolume;
+    [SerializeField] private AudioClip wrongAnswerSound;
+    [SerializeField] private float wrongAnswerVolume;
+    [SerializeField] private AudioClip promptChangeSound;
+    [SerializeField] private float promptChangeVolume;
 
     private int _rightAnswerCount = 0;
     private int _wrongAnswerCount = 0;
@@ -220,11 +227,13 @@ public class GameFieldManager : MonoBehaviour
         {
             ++rightAnswerCount;
             --rightAnswersInPlay;
+            PlaySound(rightAnswerSound, rightAnswerVolume);
         }
         else
         {
             ++wrongAnswerCount;
             --wrongAnswersInPlay;
+            PlaySound(wrongAnswerSound, wrongAnswerVolume);
         }
         if (_timedMode)
         {
@@ -340,6 +349,11 @@ public class GameFieldManager : MonoBehaviour
     {
         quizItems = new List<QuizItem>();
         UpdateWorldUnitsPerPixel();
+    }
+
+    private void PlaySound(AudioClip sound, float volume)
+    {
+        soundEffectSource.PlayOneShot(sound, volume);
     }
 
     private void GenerateQuizItem()
@@ -502,6 +516,7 @@ public class GameFieldManager : MonoBehaviour
                     currentPromptDuration = 0f;
                     if(ChooseRandomPrompt())
                     {
+                        PlaySound(promptChangeSound, promptChangeVolume);
                         StartCoroutine(DisplayNewPrompt());
                     }
                 }
