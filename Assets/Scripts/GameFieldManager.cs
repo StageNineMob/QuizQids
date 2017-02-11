@@ -317,6 +317,9 @@ public class GameFieldManager : MonoBehaviour
         screenCenterText.horizontalOverflow = HorizontalWrapMode.Wrap;
         screenCenterText.fontSize = CENTER_FONT_SIZE;
 
+        promptChangeTimer.gameObject.SetActive(false);
+        promptDisplay.gameObject.SetActive(false);
+
         float time = 0f;
         while(time < PREGAME_WAIT_TIME)
         {
@@ -338,6 +341,12 @@ public class GameFieldManager : MonoBehaviour
         screenCenterText.color = new Color(1f, 1f, 1f, 0f);
         _timer = INITIAL_TIME;
         gameState = GameState.PLAY;
+
+        if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+        {
+            promptChangeTimer.gameObject.SetActive(true);
+            promptDisplay.gameObject.SetActive(true);
+        }
     }
 
     private void UpdateWorldUnitsPerPixel()
@@ -488,10 +497,17 @@ public class GameFieldManager : MonoBehaviour
                 screenCenterText.color = new Color (1,1,1,timeRemaining * PROMPT_PULSE_DURATION_INVERSE);
                 timeRemaining -= Time.deltaTime;
             }
+            else
+            {
+                timeRemaining = 0;
+                gracePrompt = null;
+            }
             yield return null;
         }
-        screenCenterText.color = Color.clear;
-
+        if(gameState != GameState.PAUSE)
+        {
+            screenCenterText.color = Color.clear;
+        }
     }
     #endregion
 
