@@ -1,0 +1,397 @@
+<Root>
+  <Categories>
+    <Category Name="Robot Masters by Game of Origin" />
+  </Categories>
+  <AllAnswers>
+    <Answer Name="Cut Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man" />
+      </Category>
+    </Answer>
+    <Answer Name="Guts Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man" />
+      </Category>
+    </Answer>
+    <Answer Name="Ice Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man" />
+      </Category>
+    </Answer>
+    <Answer Name="Bomb Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man" />
+      </Category>
+    </Answer>
+    <Answer Name="Fire Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man" />
+      </Category>
+    </Answer>
+    <Answer Name="Elec Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man" />
+      </Category>
+    </Answer>
+    <Answer Name="Concrete Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Tornado Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Splash Woman">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Plug Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Jewel Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Hornet Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Magma Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Galaxy Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 9" />
+      </Category>
+    </Answer>
+    <Answer Name="Metal Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Air Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Bubble Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Quick Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Crash Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Flash Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Heat Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Wood Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 2" />
+      </Category>
+    </Answer>
+    <Answer Name="Needle Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Magnet Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Gemini Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Hard Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Top Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Snake Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Spark Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Shadow Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 3" />
+      </Category>
+    </Answer>
+    <Answer Name="Gravity Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Wave Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Stone Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Gyro Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Star Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Charge Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Napalm Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Crystal Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 5" />
+      </Category>
+    </Answer>
+    <Answer Name="Blizzard Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Centaur Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Flame Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Knight Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Plant Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Tomahawk Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Wind Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Yamato Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 6" />
+      </Category>
+    </Answer>
+    <Answer Name="Freeze Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Junk Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Burst Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Cloud Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Spring Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Slash Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Shade Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Turbo Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 7" />
+      </Category>
+    </Answer>
+    <Answer Name="Tengu Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Astro Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Sword Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Clown Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Search Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Frost Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Grenade Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Aqua Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 8" />
+      </Category>
+    </Answer>
+    <Answer Name="Blade Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Pump Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Commando Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Chill Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Sheep Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Strike Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Nitro Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Solar Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 10" />
+      </Category>
+    </Answer>
+    <Answer Name="Bright Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+    <Answer Name="Toad Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+    <Answer Name="Drill Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+    <Answer Name="Pharaoh Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+    <Answer Name="Ring Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+    <Answer Name="Dust Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+    <Answer Name="Dive Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+    <Answer Name="Skull Man">
+      <Category Name="Robot Masters by Game of Origin">
+        <Prompt Name="Mega Man 4" />
+      </Category>
+    </Answer>
+  </AllAnswers>
+</Root>

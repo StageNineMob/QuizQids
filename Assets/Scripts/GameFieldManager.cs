@@ -35,6 +35,7 @@ public class GameFieldManager : MonoBehaviour
     private const float CRITICAL_TIME_THRESHOLD = 10;
     private readonly Color TIMER_COLOR_NORMAL = Color.white;
     private readonly Color TIMER_COLOR_CRITICAL = Color.red;
+    private const float PROMPT_CHANGE_GRACE_PERIOD = 2.5f;
     private const int PROMPT_FONT_END_SIZE = 250;
     private const int PROMPT_FONT_START_SIZE = 0;
     private const float PROMPT_PULSE_SIZE_EXPONENT = 2f;
@@ -51,7 +52,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Canvas gameplayCanvas;
     [SerializeField] private Canvas interfaceCanvas;
     [SerializeField] private Canvas scoreCanvas;
-
+    [SerializeField] private Slider promptChangeTimer;
     [SerializeField] private GameObject quizItemPrefab;
 
     private int _rightAnswerCount = 0;
@@ -72,7 +73,7 @@ public class GameFieldManager : MonoBehaviour
 
 
     private float worldUnitsPerPixel;
-    private string currentPrompt = null;
+    private string currentPrompt = null, gracePrompt = null;
     private int rightAnswersInPlay = 0;
     private int wrongAnswersInPlay = 0;
     private int initialQuizItemCount = 30;
@@ -174,6 +175,11 @@ public class GameFieldManager : MonoBehaviour
         {
             if (trivia.prompts.Contains(currentPrompt))
                 return true;
+            if (gracePrompt != null)
+            {
+                if (trivia.prompts.Contains(gracePrompt))
+                    return true;
+            }
         }
         else
         {
@@ -248,6 +254,7 @@ public class GameFieldManager : MonoBehaviour
             }
             screenDimmer.color = Color.black * DIMMER_MAX_ALPHA;
             screenCenterText.fontSize = CENTER_FONT_SIZE;
+            screenCenterText.horizontalOverflow = HorizontalWrapMode.Wrap;
             screenCenterText.color = Color.white;
             string text = TriviaParser.singleton.categoryName;
             if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
@@ -298,6 +305,7 @@ public class GameFieldManager : MonoBehaviour
         screenDimmer.color = new Color(0f, 0f, 0f, DIMMER_MAX_ALPHA);
         screenCenterText.color = Color.white;
         screenCenterText.text = TriviaParser.singleton.categoryName;
+        screenCenterText.horizontalOverflow = HorizontalWrapMode.Wrap;
         screenCenterText.fontSize = CENTER_FONT_SIZE;
 
         float time = 0f;
@@ -436,6 +444,7 @@ public class GameFieldManager : MonoBehaviour
         }
         quizItems.Clear();
         currentPrompt = null;
+        gracePrompt = null;
         rightAnswerCount = 0;
         wrongAnswerCount = 0;
         timerDisplay.color = TIMER_COLOR_NORMAL;
@@ -450,6 +459,7 @@ public class GameFieldManager : MonoBehaviour
     {
         promptDisplay.text = currentPrompt;
         screenCenterText.text = currentPrompt;
+        screenCenterText.horizontalOverflow = HorizontalWrapMode.Overflow;
         float timeRemaining = PROMPT_PULSE_DURATION;
 
         screenCenterText.color = Color.white;
@@ -479,6 +489,11 @@ public class GameFieldManager : MonoBehaviour
             if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
             {
                 currentPromptDuration += Time.deltaTime;
+                promptChangeTimer.value = 1 - currentPromptDuration / MAX_PROMPT_DURATION;
+                if(gracePrompt != null && currentPromptDuration >= PROMPT_CHANGE_GRACE_PERIOD)
+                {
+                    gracePrompt = null;
+                }
                 // also change prompt if nothing matching current prompt is in play
                 if(currentPrompt == null || NothingMatches() || currentPromptDuration >= MAX_PROMPT_DURATION)
                 {
@@ -528,6 +543,7 @@ public class GameFieldManager : MonoBehaviour
             {
                 if (prompt != lastPrompt)
                 {
+                    gracePrompt = currentPrompt;
                     currentPrompt = prompt;
                     return true;
                 }

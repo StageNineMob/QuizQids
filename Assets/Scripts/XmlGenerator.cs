@@ -102,7 +102,7 @@ namespace StageNine
                     {
                         prompts.Add(items[prompt]);
                     }
-                    if(items.Length > 1)
+                    if (items.Length > 1)
                     {
                         prompts.Add("null");
                     }

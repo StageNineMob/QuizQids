@@ -90,7 +90,7 @@ public class TriviaParser : MonoBehaviour {
 
     public void LoadTrivia(string filePath, int categoryNumber, TriviaMode mode)
     {
-        //File.WriteAllText(@"C:\Users\Starbuck\Desktop\Chart Toppers.xml", XmlGenerator.ParseChartToppersToXML("Trivia/chart toppers"));
+        //File.WriteAllText(@"C:\Users\Starbuck\Desktop\Robot Masters.xml", XmlGenerator.ParseLineSeparatedToXML("Trivia/robot masters"));
 
         //confirm that filePath exists?
         string text = "";
@@ -256,7 +256,7 @@ public class TriviaParser : MonoBehaviour {
     #region private methods
     private void InitializeFields()
     {
-        LoadTrivia("Trivia/Chart Toppers", 1, TriviaMode.SPECIFIC);
+        LoadTrivia("Trivia/Robot Masters", 0, TriviaMode.SPECIFIC);
     }
     #endregion
 
