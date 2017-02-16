@@ -13,6 +13,7 @@ public class TriviaParser : MonoBehaviour {
     {
         GENERAL,
         SPECIFIC,
+        MULTIPLE_CHOICE,
     };
     //subclasses
 
@@ -28,7 +29,7 @@ public class TriviaParser : MonoBehaviour {
     //private Dictionary<string, List<TriviaPair>> _rightAnswers;
     private List<TriviaPair> _rightAnswers;
     private List<TriviaPair> _wrongAnswers;
-    //private List<string> _prompts;
+    private List<string> _prompts;
 
     //public properties
     public string categoryName
@@ -52,10 +53,10 @@ public class TriviaParser : MonoBehaviour {
         get { return _triviaMode; }
     }
 
-    //public List<string> prompts
-    //{
-    //    get { return _prompts; }
-    //}
+    public List<string> prompts
+    {
+        get { return _prompts; }
+    }
 
     //methods
     #region public methods
@@ -107,7 +108,10 @@ public class TriviaParser : MonoBehaviour {
         _triviaMode = mode;
         _rightAnswers = new List<TriviaPair>();
         _wrongAnswers = new List<TriviaPair>();
-        //_prompts = new List<string>();
+        if (mode == TriviaMode.MULTIPLE_CHOICE)
+        {
+            _prompts = new List<string>();
+        }
         //if(mode == TriviaMode.GENERAL)
         //{
         //    _prompts.Add("null");
@@ -168,6 +172,16 @@ public class TriviaParser : MonoBehaviour {
                         //    }
                         //    _rightAnswers["null"].Add(tp);
                         //}
+                        if(mode == TriviaMode.MULTIPLE_CHOICE)
+                        {
+                            foreach(var prompt in tp.prompts)
+                            {
+                                if (!_prompts.Contains(prompt))
+                                {
+                                    _prompts.Add(prompt);
+                                }
+                            }
+                        }
                         _rightAnswers.Add(tp);
                     }
                     else
@@ -243,20 +257,19 @@ public class TriviaParser : MonoBehaviour {
     {
         Shuffle(_wrongAnswers);
         Shuffle(_rightAnswers);
-        //Shuffle(_prompts);
-        //foreach(var prompt in _prompts)
-        //{
-        //    Shuffle(_rightAnswers[prompt]);
-        //}
     }
 
+    public void RandomizePrompts()
+    {
+        Shuffle(_prompts);
+    }
 
     #endregion
 
     #region private methods
     private void InitializeFields()
     {
-        LoadTrivia("Trivia/Robot Masters", 0, TriviaMode.SPECIFIC);
+        LoadTrivia("Trivia/Robot Masters", 0, TriviaMode.MULTIPLE_CHOICE);
     }
     #endregion
 

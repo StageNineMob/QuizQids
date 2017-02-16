@@ -14,7 +14,6 @@ public class GameFieldManager : MonoBehaviour
         PAUSE,
         MAIN_MENU,
         POSTSCREEN,
-
     };
     //subclasses
 
@@ -52,6 +51,8 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Canvas gameplayCanvas;
     [SerializeField] private Canvas interfaceCanvas;
     [SerializeField] private Canvas scoreCanvas;
+    [SerializeField] private Canvas multiChoiceCanvas;
+
     [SerializeField] private Slider promptChangeTimer;
     [SerializeField] private GameObject quizItemPrefab;
     [SerializeField] private AudioSource soundEffectSource;
@@ -61,6 +62,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private float wrongAnswerVolume;
     [SerializeField] private AudioClip promptChangeSound;
     [SerializeField] private float promptChangeVolume;
+    [SerializeField] private Text[] choiceButtonText;
 
     private int _rightAnswerCount = 0;
     private int _wrongAnswerCount = 0;
@@ -96,13 +98,14 @@ public class GameFieldManager : MonoBehaviour
     public bool canTapQuizItems
     {
         // implement this
-        get {
+        get
+        {
             if(gameState == GameState.PLAY)
             {
                 return true;
             }
             return false;
-             }
+        }
     }
 
     public int rightAnswerCount
@@ -142,6 +145,21 @@ public class GameFieldManager : MonoBehaviour
                 break;
         }
 
+    }
+
+    public void PressedChoiceButton(int buttonIndex)
+    {
+        if (TriviaParser.singleton.rightAnswers[rightAnswerIndex].prompts.Contains(choiceButtonText[buttonIndex].text))
+        {
+            //like they got it right
+            rightAnswerCount++;
+        }
+        else
+        {
+            //they got it rawng;
+            wrongAnswerCount++;
+        }
+        NextMultiChoiceItem();
     }
 
     public void CameraPan(Vector2 pan)
@@ -342,9 +360,14 @@ public class GameFieldManager : MonoBehaviour
         _timer = INITIAL_TIME;
         gameState = GameState.PLAY;
 
-        if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
         {
             promptChangeTimer.gameObject.SetActive(true);
+            promptDisplay.gameObject.SetActive(true);
+        }
+        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+        {
+            //promptChangeTimer.gameObject.SetActive(true);
             promptDisplay.gameObject.SetActive(true);
         }
     }
@@ -416,14 +439,22 @@ public class GameFieldManager : MonoBehaviour
 
         TriviaParser.singleton.RandomizeAnswerLists();
 
-        rightAnswersInPlay = 0;
-        wrongAnswersInPlay = 0;
         //promptIndex = 0;
         rightAnswerIndex = 0;
         wrongAnswerIndex = 0;
-        for (int ii = 0; ii < initialQuizItemCount; ++ii)
+        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
         {
-            GenerateQuizItem();
+            multiChoiceCanvas.gameObject.SetActive(true);
+        }
+        else
+        {
+            multiChoiceCanvas.gameObject.SetActive(false);
+            rightAnswersInPlay = 0;
+            wrongAnswersInPlay = 0;
+            for (int ii = 0; ii < initialQuizItemCount; ++ii)
+            {
+                GenerateQuizItem();
+            }
         }
 
         gameState = GameState.PREGAME;
@@ -509,6 +540,114 @@ public class GameFieldManager : MonoBehaviour
             screenCenterText.color = Color.clear;
         }
     }
+
+    private IEnumerator DisplayNewMultiChoice()
+    {
+        promptDisplay.text = currentPrompt;
+        yield return null;
+    }
+
+    private void TriviaSearchUpdate()
+    {
+        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+        {
+            currentPromptDuration += Time.deltaTime;
+            promptChangeTimer.value = 1 - currentPromptDuration / MAX_PROMPT_DURATION;
+            if (gracePrompt != null && currentPromptDuration >= PROMPT_CHANGE_GRACE_PERIOD)
+            {
+                gracePrompt = null;
+            }
+            // also change prompt if nothing matching current prompt is in play
+            if (currentPrompt == null || NothingMatches() || currentPromptDuration >= MAX_PROMPT_DURATION)
+            {
+                //this should be a random one, rather than always quiz item 0
+                //Also want to make sure the prompt is never the same as it just was unless there's no other option
+                currentPromptDuration = 0f;
+                if (ChooseRandomPrompt())
+                {
+                    PlaySound(promptChangeSound, promptChangeVolume);
+                    StartCoroutine(DisplayNewPrompt());
+                }
+            }
+        }
+    }
+
+    private void MultiChoiceUpdate()
+    {
+        if(currentPrompt == null)
+        {
+            NextMultiChoiceItem();
+        }
+    }
+
+    private void NextMultiChoiceItem()
+    {
+        ++rightAnswerIndex;
+        if(rightAnswerIndex >= TriviaParser.singleton.rightAnswers.Count)
+        {
+            //TODO: End the game.
+        }
+        else
+        {
+            var pair = TriviaParser.singleton.rightAnswers[rightAnswerIndex];
+            currentPrompt = pair.value;
+            StartCoroutine(DisplayNewMultiChoice());
+            var correctButton = Random.Range(0, choiceButtonText.Length - 1);
+
+            TriviaParser.Shuffle(pair.prompts);
+            TriviaParser.singleton.RandomizePrompts();
+            int promptIndex = 0;
+            for(var buttonIndex = 0; buttonIndex < choiceButtonText.Length; ++buttonIndex)
+            {
+                if(buttonIndex == correctButton)
+                {
+                    choiceButtonText[buttonIndex].text = pair.prompts[0];
+                }
+                else
+                {
+                    while(pair.prompts.Contains(TriviaParser.singleton.prompts[promptIndex]) && promptIndex < TriviaParser.singleton.prompts.Count)
+                    {
+                        ++promptIndex;
+                    }
+                    if(promptIndex < TriviaParser.singleton.prompts.Count)
+                    {
+                        choiceButtonText[buttonIndex].text = TriviaParser.singleton.prompts[promptIndex];
+                        ++promptIndex;
+                    }
+                    else
+                    {
+                        // TODO: How do we handle running out of prompts?
+                        Debug.LogError("[GameFieldManager:NextMultiChoiceItem] Ran out of incorrect prompts!");
+                    }
+                }
+            }
+        }
+    }
+
+    private void TimerUpdate()
+    {
+        _timer -= Time.deltaTime;
+        int seconds = Mathf.CeilToInt(_timer);
+        float pulseAmount = _timer - seconds + 1;
+        int minutes = seconds / 60;
+        seconds -= minutes * 60;
+        timerDisplay.text = minutes.ToString("0") + ":" + seconds.ToString("00");
+        if (seconds > CRITICAL_TIME_THRESHOLD || minutes > 0)
+        {
+            timerDisplay.fontSize = Mathf.FloorToInt(TIMER_FONT_SMALL + (TIMER_FONT_BIGGER * Mathf.Pow(pulseAmount, TIMER_PULSE_SIZE_EXPONENT)));
+        }
+        else
+        {
+            timerDisplay.fontSize = Mathf.FloorToInt(TIMER_FONT_SMALL + (TIMER_FONT_BIGGER_CRITICAL * Mathf.Pow(pulseAmount, TIMER_PULSE_SIZE_EXPONENT_CRITICAL)));
+            pulseAmount = Mathf.Pow(pulseAmount, TIMER_PULSE_COLOR_EXPONENT);
+            timerDisplay.color = TIMER_COLOR_CRITICAL * pulseAmount + TIMER_COLOR_NORMAL * (1 - pulseAmount);
+        }
+
+        if (_timer <= 0f)
+        {
+            ShowScoreScreen();
+        }
+    }
     #endregion
 
     #region monobehaviors
@@ -516,50 +655,17 @@ public class GameFieldManager : MonoBehaviour
     {
         if(gameState == GameState.PLAY)
         {
-            if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+            if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
             {
-                currentPromptDuration += Time.deltaTime;
-                promptChangeTimer.value = 1 - currentPromptDuration / MAX_PROMPT_DURATION;
-                if(gracePrompt != null && currentPromptDuration >= PROMPT_CHANGE_GRACE_PERIOD)
-                {
-                    gracePrompt = null;
-                }
-                // also change prompt if nothing matching current prompt is in play
-                if(currentPrompt == null || NothingMatches() || currentPromptDuration >= MAX_PROMPT_DURATION)
-                {
-                    //this should be a random one, rather than always quiz item 0
-                    //Also want to make sure the prompt is never the same as it just was unless there's no other option
-                    currentPromptDuration = 0f;
-                    if(ChooseRandomPrompt())
-                    {
-                        PlaySound(promptChangeSound, promptChangeVolume);
-                        StartCoroutine(DisplayNewPrompt());
-                    }
-                }
+                MultiChoiceUpdate();
+            }
+            else
+            {
+                TriviaSearchUpdate();
             }
             if (_timedMode == true)
             {
-                _timer -= Time.deltaTime;
-                int seconds = Mathf.CeilToInt(_timer);
-                float pulseAmount = _timer - seconds + 1;
-                int minutes = seconds / 60;
-                seconds -= minutes * 60;
-                timerDisplay.text = minutes.ToString("0") + ":" + seconds.ToString("00");
-                if (seconds > CRITICAL_TIME_THRESHOLD || minutes > 0)
-                {
-                    timerDisplay.fontSize = Mathf.FloorToInt(TIMER_FONT_SMALL + (TIMER_FONT_BIGGER * Mathf.Pow(pulseAmount, TIMER_PULSE_SIZE_EXPONENT)));
-                }
-                else
-                {
-                    timerDisplay.fontSize = Mathf.FloorToInt(TIMER_FONT_SMALL + (TIMER_FONT_BIGGER_CRITICAL * Mathf.Pow(pulseAmount, TIMER_PULSE_SIZE_EXPONENT_CRITICAL)));
-                    pulseAmount = Mathf.Pow(pulseAmount, TIMER_PULSE_COLOR_EXPONENT);
-                    timerDisplay.color = TIMER_COLOR_CRITICAL * pulseAmount + TIMER_COLOR_NORMAL * (1 - pulseAmount);
-                }
-
-                if(_timer <= 0f)
-                {
-                    ShowScoreScreen();
-                }
+                TimerUpdate();
             }
         }
     }
