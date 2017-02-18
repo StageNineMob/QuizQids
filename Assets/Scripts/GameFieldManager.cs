@@ -55,6 +55,9 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Canvas scoreCanvas;
     [SerializeField] private Canvas multiChoiceCanvas;
 
+    [SerializeField] private GameObject mainMenuPanel;
+    [SerializeField] private GameObject playMenuPanel;
+
     [SerializeField] private Slider promptChangeTimer;
     [SerializeField] private GameObject quizItemPrefab;
     [SerializeField] private AudioSource soundEffectSource;
@@ -132,6 +135,23 @@ public class GameFieldManager : MonoBehaviour
     //methods
 #region public methods
     
+
+    public void PressedPlayButton()
+    {
+        mainMenuPanel.SetActive(false);
+        playMenuPanel.SetActive(true);
+    }
+
+    public void PressedPlayMultiChoiceButton()
+    {
+        ChangeState(GameState.PREGAME);
+    }
+
+    public void PressedPlayTriviaSearchButton()
+    {
+        ChangeState(GameState.PREGAME);
+    }
+
     public void PressedPauseButton()
     {
         switch (gameState)
@@ -789,7 +809,7 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
-        ChangeState(GameState.PREGAME);
+        ChangeState(GameState.MAIN_MENU);
     }
 
     #endregion
