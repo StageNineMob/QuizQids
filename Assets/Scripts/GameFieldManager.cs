@@ -9,16 +9,17 @@ public class GameFieldManager : MonoBehaviour
     //enums
      enum GameState
     {
+        NONE,
         PREGAME,
         PLAY,
         PAUSE,
         MAIN_MENU,
         POSTSCREEN,
     };
+
     //subclasses
 
     //consts and static data
-
     public static GameFieldManager singleton;
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
@@ -46,10 +47,11 @@ public class GameFieldManager : MonoBehaviour
     public List<QuizItem> quizItems;
 
     //private data
-    GameState gameState = GameState.PREGAME;
+    GameState gameState = GameState.NONE;
     [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY, cameraHalfHeight, linearMaxSpeed;
     [SerializeField] private Canvas gameplayCanvas;
     [SerializeField] private Canvas interfaceCanvas;
+    [SerializeField] private Canvas mainMenuCanvas;
     [SerializeField] private Canvas scoreCanvas;
     [SerializeField] private Canvas multiChoiceCanvas;
 
@@ -79,7 +81,6 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text scoreUIAccuracyText;
     [SerializeField] private Text scoreUIArbitraryText;
     [SerializeField] private Text pauseButtonText;
-
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null, gracePrompt = null;
@@ -136,10 +137,10 @@ public class GameFieldManager : MonoBehaviour
         switch (gameState)
         {
             case GameState.PLAY:
-                PauseGame();
+                ChangeState(GameState.PAUSE);
                 break;
             case GameState.PAUSE:
-                UnpauseGame();
+                ChangeState(GameState.PLAY);
                 break;
             default:
                 break;
@@ -262,49 +263,40 @@ public class GameFieldManager : MonoBehaviour
 
     public void PlayAgainButton()
     {
-        ClearGameData();
-        GameSetup();
+        ChangeState(GameState.PREGAME);
     }
 
     #endregion
 
-#region private methods
+    #region private methods
     private void PauseGame()
     {
-        if(gameState == GameState.PLAY)
+        pauseButtonText.text = "Resume";
+        foreach (var item in quizItems)
         {
-            gameState = GameState.PAUSE;
-            pauseButtonText.text = "Resume";
-            foreach (var item in quizItems)
-            {
-                item.gameObject.SetActive(false);
-            }
-            screenDimmer.color = Color.black * DIMMER_MAX_ALPHA;
-            screenCenterText.fontSize = CENTER_FONT_SIZE;
-            screenCenterText.horizontalOverflow = HorizontalWrapMode.Wrap;
-            screenCenterText.color = Color.white;
-            string text = TriviaParser.singleton.categoryName;
-            if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
-            {
-                text += System.Environment.NewLine + currentPrompt;
-            }
-            screenCenterText.text = text;
+            item.gameObject.SetActive(false);
         }
+        screenDimmer.color = Color.black * DIMMER_MAX_ALPHA;
+        screenCenterText.fontSize = CENTER_FONT_SIZE;
+        screenCenterText.horizontalOverflow = HorizontalWrapMode.Wrap;
+        screenCenterText.color = Color.white;
+        string text = TriviaParser.singleton.categoryName;
+        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+        {
+            text += System.Environment.NewLine + currentPrompt;
+        }
+        screenCenterText.text = text;
     }
 
     private void UnpauseGame()
     {
-        if (gameState == GameState.PAUSE)
+        pauseButtonText.text = "Pause";
+        foreach (var item in quizItems)
         {
-            gameState = GameState.PLAY;
-            pauseButtonText.text = "Pause";
-            foreach (var item in quizItems)
-            {
-                item.gameObject.SetActive(true);
-            }
-            screenDimmer.color = Color.clear;
-            screenCenterText.color = Color.clear;
+            item.gameObject.SetActive(true);
         }
+        screenDimmer.color = Color.clear;
+        screenCenterText.color = Color.clear;
     }
 
     private void CameraWrap()
@@ -357,19 +349,8 @@ public class GameFieldManager : MonoBehaviour
         
         screenDimmer.color = new Color(0f, 0f, 0f, 0f);
         screenCenterText.color = new Color(1f, 1f, 1f, 0f);
-        _timer = INITIAL_TIME;
-        gameState = GameState.PLAY;
-
-        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
-        {
-            promptChangeTimer.gameObject.SetActive(true);
-            promptDisplay.gameObject.SetActive(true);
-        }
-        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
-        {
-            //promptChangeTimer.gameObject.SetActive(true);
-            promptDisplay.gameObject.SetActive(true);
-        }
+        ChangeState(GameState.PLAY);
+        
     }
 
     private void UpdateWorldUnitsPerPixel()
@@ -395,7 +376,7 @@ public class GameFieldManager : MonoBehaviour
             if (rightAnswersInPlay == 0 || wrongAnswerIndex >= TriviaParser.singleton.wrongAnswers.Count)
             {
                 //  and we need a right answer
-                ShowScoreScreen();
+                ChangeState(GameState.POSTSCREEN);
             }
             else
             {
@@ -434,21 +415,13 @@ public class GameFieldManager : MonoBehaviour
 
     private void GameSetup()
     {
-        scoreCanvas.gameObject.SetActive(false);
-        interfaceCanvas.gameObject.SetActive(true);
-
+        
         TriviaParser.singleton.RandomizeAnswerLists();
 
-        //promptIndex = 0;
         rightAnswerIndex = 0;
         wrongAnswerIndex = 0;
-        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+        if (TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.MULTIPLE_CHOICE)
         {
-            multiChoiceCanvas.gameObject.SetActive(true);
-        }
-        else
-        {
-            multiChoiceCanvas.gameObject.SetActive(false);
             rightAnswersInPlay = 0;
             wrongAnswersInPlay = 0;
             for (int ii = 0; ii < initialQuizItemCount; ++ii)
@@ -456,8 +429,6 @@ public class GameFieldManager : MonoBehaviour
                 GenerateQuizItem();
             }
         }
-
-        gameState = GameState.PREGAME;
         StartCoroutine(DisplayTopic());
     }
 
@@ -485,7 +456,6 @@ public class GameFieldManager : MonoBehaviour
         scoreUIArbitraryText.text = (Mathf.FloorToInt(rightAnswerCount * accuracy / elapsedTime * 1000)).ToString();
 
         interfaceCanvas.gameObject.SetActive(false);
-        gameState = GameState.POSTSCREEN;
         scoreCanvas.gameObject.SetActive(true);
     }
 
@@ -645,7 +615,107 @@ public class GameFieldManager : MonoBehaviour
 
         if (_timer <= 0f)
         {
-            ShowScoreScreen();
+            ChangeState(GameState.POSTSCREEN);
+        }
+    }
+
+    private void ChangeState(GameState newState)
+    {
+        GameState previousState = gameState;
+        StateExit(gameState);
+        gameState = newState;
+        StateEnter(newState, previousState);
+    }
+
+    private void StateExit(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.MAIN_MENU:
+                mainMenuCanvas.gameObject.SetActive(false);
+                break;
+            case GameState.PAUSE:
+                break;
+            case GameState.PLAY:
+                if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+                {
+                    multiChoiceCanvas.gameObject.SetActive(false);
+                }
+                gameplayCanvas.gameObject.SetActive(false);
+                interfaceCanvas.gameObject.SetActive(false);
+                break;
+            case GameState.POSTSCREEN:
+                scoreCanvas.gameObject.SetActive(false);
+                gameplayCanvas.gameObject.SetActive(false);
+                break;
+            case GameState.PREGAME:
+                gameplayCanvas.gameObject.SetActive(false);
+                interfaceCanvas.gameObject.SetActive(false);
+                _timer = INITIAL_TIME;
+
+                if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
+                {
+                    promptChangeTimer.gameObject.SetActive(true);
+                    promptDisplay.gameObject.SetActive(true);
+                }
+                if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+                {
+                    //promptChangeTimer.gameObject.SetActive(true);
+                    promptDisplay.gameObject.SetActive(true);
+                }
+                break;
+            case GameState.NONE:
+                gameplayCanvas.gameObject.SetActive(false);
+                interfaceCanvas.gameObject.SetActive(false);
+                mainMenuCanvas.gameObject.SetActive(false);
+                multiChoiceCanvas.gameObject.SetActive(false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void StateEnter(GameState state, GameState prevState)
+    {
+        switch (state)
+        {
+            case GameState.MAIN_MENU:
+                mainMenuCanvas.gameObject.SetActive(true);
+                break;
+            case GameState.PAUSE:
+                if (prevState == GameState.PLAY)
+                {
+                    PauseGame();
+                }
+                gameplayCanvas.gameObject.SetActive(true);
+                interfaceCanvas.gameObject.SetActive(true);
+                break;
+            case GameState.PLAY:
+                if (prevState == GameState.PAUSE)
+                {
+                    UnpauseGame();
+                }
+                if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+                {
+                    multiChoiceCanvas.gameObject.SetActive(true);
+                }
+                gameplayCanvas.gameObject.SetActive(true);
+                interfaceCanvas.gameObject.SetActive(true);
+                break;
+            case GameState.POSTSCREEN:
+                scoreCanvas.gameObject.SetActive(true);
+                gameplayCanvas.gameObject.SetActive(true);
+                ShowScoreScreen();
+                break;
+            case GameState.PREGAME:
+                gameplayCanvas.gameObject.SetActive(true);
+                interfaceCanvas.gameObject.SetActive(true);
+                ClearGameData();
+                GameSetup();
+                break;
+            case GameState.NONE:
+            default:
+                break;
         }
     }
     #endregion
@@ -719,8 +789,7 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
-        ClearGameData();
-        GameSetup();
+        ChangeState(GameState.PREGAME);
     }
 
     #endregion
