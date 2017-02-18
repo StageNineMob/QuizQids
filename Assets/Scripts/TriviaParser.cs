@@ -11,9 +11,10 @@ public class TriviaParser : MonoBehaviour {
     //enums
     public enum TriviaMode
     {
-        GENERAL,
-        SPECIFIC,
-        MULTIPLE_CHOICE,
+        NONE = 0,
+        GENERAL = 1,
+        SPECIFIC = 2,
+        MULTIPLE_CHOICE = 4,
     };
     //subclasses
 
@@ -30,6 +31,8 @@ public class TriviaParser : MonoBehaviour {
     private List<TriviaPair> _rightAnswers;
     private List<TriviaPair> _wrongAnswers;
     private List<string> _prompts;
+    private XmlDocument triviaDocument;
+    private List<KeyValuePair<string, TriviaMode>> categoryList;
 
     //public properties
     public string categoryName
@@ -89,22 +92,12 @@ public class TriviaParser : MonoBehaviour {
     //    return null;
     //}
 
-    public void LoadTrivia(string filePath, int categoryNumber, TriviaMode mode)
+    public void LoadTrivia(int categoryNumber, TriviaMode mode)
     {
         //File.WriteAllText(@"C:\Users\Starbuck\Desktop\Robot Masters.xml", XmlGenerator.ParseLineSeparatedToXML("Trivia/robot masters"));
 
         //confirm that filePath exists?
-        string text = "";
-        try
-        {
-            TextAsset tAsset = Resources.Load(filePath) as TextAsset;
-            text = tAsset.text;
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError("[TriviaParser:LoadTrivia] FileReadError");
-            return;
-        }
+        
         _triviaMode = mode;
         _rightAnswers = new List<TriviaPair>();
         _wrongAnswers = new List<TriviaPair>();
@@ -112,32 +105,17 @@ public class TriviaParser : MonoBehaviour {
         {
             _prompts = new List<string>();
         }
-        //if(mode == TriviaMode.GENERAL)
-        //{
-        //    _prompts.Add("null");
-        //}
+             
+        _categoryName = categoryList[categoryNumber].Key;
 
-        XmlDocument triviaDocument = new XmlDocument();
-        triviaDocument.LoadXml(text);
-
-        var nodeList = triviaDocument.SelectNodes("/Root/Categories/Category");
-        var categoryList = new List<string>();
-        foreach (XmlElement node in nodeList)
-        {
-            // TODO: Add support for gameplay types by category here
-            categoryList.Add(node.Attributes["Name"].Value);
-        }
-        string category = categoryList[categoryNumber];
-        _categoryName = category;
-
-        nodeList = triviaDocument.SelectNodes("/Root/AllAnswers/Answer");
+        var nodeList = triviaDocument.SelectNodes("/Root/AllAnswers/Answer");
         foreach(XmlElement node in nodeList)
         {
             var categoryNodes = node.SelectNodes("Category");
             foreach(XmlElement categoryNode in categoryNodes)
             {
                 //if this answer is supposed to appear for this category...
-                if (categoryNode.Attributes["Name"].Value == category)
+                if (categoryNode.Attributes["Name"].Value == _categoryName)
                 {
                     TriviaPair tp = new TriviaPair();
                     tp.value = node.Attributes["Name"].Value;
@@ -253,6 +231,55 @@ public class TriviaParser : MonoBehaviour {
     //    }
     //}
 
+        public void LoadTriviaMetadata(string filePath, bool resources = true)
+    {
+        string text = "";
+
+        try
+        {
+            if (resources)
+            {
+                TextAsset tAsset = Resources.Load(filePath) as TextAsset;
+                text = tAsset.text;
+            }
+            else
+            {
+                //TODO: load from not in resources
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("[TriviaParser:LoadTrivia] FileReadError");
+            return;
+        }
+        
+
+        triviaDocument = new XmlDocument();
+        triviaDocument.LoadXml(text);
+
+        var nodeList = triviaDocument.SelectNodes("/Root/Categories/Category");
+        categoryList = new List<KeyValuePair<string, TriviaMode>>();
+        foreach (XmlElement node in nodeList)
+        {
+            // TODO: Add support for gameplay types by category here
+            TriviaMode mode = TriviaMode.NONE;
+            if(true)
+            {
+                mode |= TriviaMode.GENERAL;
+            }
+            if(true)
+            {
+                mode |= TriviaMode.SPECIFIC;
+            }
+            if(true)
+            {
+                mode |= TriviaMode.MULTIPLE_CHOICE;
+            }
+
+            categoryList.Add(new KeyValuePair<string, TriviaMode>(node.Attributes["Name"].Value, mode));
+        }
+    }
+
     public void RandomizeAnswerLists()
     {
         Shuffle(_wrongAnswers);
@@ -269,7 +296,8 @@ public class TriviaParser : MonoBehaviour {
     #region private methods
     private void InitializeFields()
     {
-        LoadTrivia("Trivia/Robot Masters", 0, TriviaMode.MULTIPLE_CHOICE);
+        LoadTriviaMetadata("Trivia/Robot Masters");
+        LoadTrivia(0, TriviaMode.MULTIPLE_CHOICE);
     }
     #endregion
 
