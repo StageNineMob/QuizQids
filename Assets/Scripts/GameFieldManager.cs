@@ -57,6 +57,7 @@ public class GameFieldManager : MonoBehaviour
 
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject playMenuPanel;
+    [SerializeField] private GameObject logoText;
 
     [SerializeField] private Slider promptChangeTimer;
     [SerializeField] private GameObject quizItemPrefab;
@@ -84,6 +85,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text scoreUIAccuracyText;
     [SerializeField] private Text scoreUIArbitraryText;
     [SerializeField] private Text pauseButtonText;
+    [SerializeField] private FileViewer fileViewer;
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null, gracePrompt = null;
@@ -94,7 +96,6 @@ public class GameFieldManager : MonoBehaviour
     private int rightAnswerIndex = 0;
     private int wrongAnswerIndex = 0;
     private float chanceOfRightAnswer = .5f;
-
     private float currentPromptDuration = 0f;
 
     //public properties
@@ -139,16 +140,25 @@ public class GameFieldManager : MonoBehaviour
     public void PressedPlayButton()
     {
         mainMenuPanel.SetActive(false);
+        logoText.SetActive(false);
+
+        fileViewer.PopulateList(TriviaParser.TRIVIA_DIRECTORY, TriviaParser.TRIVIA_FILE_EXT);
+
         playMenuPanel.SetActive(true);
     }
 
     public void PressedPlayMultiChoiceButton()
     {
+        // TODO: Confirm which category to play rather than forcing 0
+        TriviaParser.singleton.LoadTrivia(0, TriviaParser.TriviaMode.MULTIPLE_CHOICE);
         ChangeState(GameState.PREGAME);
     }
 
     public void PressedPlayTriviaSearchButton()
     {
+        // TODO: Confirm which category to play rather than forcing 0
+        // TODO: Confirm general vs. specific
+        TriviaParser.singleton.LoadTrivia(0, TriviaParser.TriviaMode.SPECIFIC);
         ChangeState(GameState.PREGAME);
     }
 
@@ -809,6 +819,8 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
+        playMenuPanel.SetActive(false);
+
         ChangeState(GameState.MAIN_MENU);
     }
 

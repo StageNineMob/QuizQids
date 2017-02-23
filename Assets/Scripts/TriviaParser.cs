@@ -4,7 +4,7 @@ using System.IO;
 using StageNine;
 using Random = UnityEngine.Random;
 using System.Xml;
-using System.Xml.Linq;
+
 
 public class TriviaParser : MonoBehaviour {
 
@@ -19,6 +19,8 @@ public class TriviaParser : MonoBehaviour {
     //subclasses
 
     //consts and static data
+    public const string TRIVIA_DIRECTORY = "/Trivia/";
+    public const string TRIVIA_FILE_EXT = ".xml";
 
     public static TriviaParser singleton;
 
@@ -231,9 +233,11 @@ public class TriviaParser : MonoBehaviour {
     //    }
     //}
 
-        public void LoadTriviaMetadata(string filePath, bool resources = true)
+    public void LoadTriviaMetadata(string filePath, bool resources = true)
     {
         string text = "";
+
+        Debug.Log("[TriviaParser:LoadTriviaMetadata] Application.PersistentDataPath " + Application.persistentDataPath);
 
         try
         {
@@ -244,15 +248,14 @@ public class TriviaParser : MonoBehaviour {
             }
             else
             {
-                //TODO: load from not in resources
+                text = File.ReadAllText(Application.persistentDataPath + filePath);
             }
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("[TriviaParser:LoadTrivia] FileReadError");
+            Debug.LogError("[TriviaParser:LoadTrivia] FileReadError: " + ex.Message);
             return;
         }
-        
 
         triviaDocument = new XmlDocument();
         triviaDocument.LoadXml(text);
@@ -296,8 +299,8 @@ public class TriviaParser : MonoBehaviour {
     #region private methods
     private void InitializeFields()
     {
-        LoadTriviaMetadata("Trivia/Robot Masters");
-        LoadTrivia(0, TriviaMode.MULTIPLE_CHOICE);
+        //LoadTriviaMetadata("/Trivia/Robot Masters.xml", false);
+        //LoadTrivia(0, TriviaMode.MULTIPLE_CHOICE);
     }
     #endregion
 

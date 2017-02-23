@@ -140,7 +140,10 @@ public class FileViewer : MonoBehaviour
     {
         if (_fileNameField.text == fileName)
         {
-            _doubleClickCallback();
+            if(_doubleClickCallback != null)
+            {
+                _doubleClickCallback();
+            }
         }
         else
         {
@@ -150,7 +153,7 @@ public class FileViewer : MonoBehaviour
 
     public void HighlightFileName(string fileName)
     {
-        ClearMetadata();
+        //ClearMetadata();
 #if  FILESYSTEM_CASE_INSENSITIVE
         fileName = fileName.ToLower();
 #endif
@@ -187,13 +190,13 @@ public class FileViewer : MonoBehaviour
         }
     }
 
-    public void ClearMetadata()
-    {
-        metadataText.text = "";
-        metadataThumbnail.color = Color.clear;
-        //TODO: replace the sprite with our "IMAGE NOT FOUND" texture;
-        metadataThumbnail.sprite = null;
-    }
+    //public void ClearMetadata()
+    //{
+    //    metadataText.text = "";
+    //    metadataThumbnail.color = Color.clear;
+    //    //TODO: replace the sprite with our "IMAGE NOT FOUND" texture;
+    //    metadataThumbnail.sprite = null;
+    //}
 
     #endregion
 

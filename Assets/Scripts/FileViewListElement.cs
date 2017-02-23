@@ -21,6 +21,7 @@ public class FileViewListElement : MonoBehaviour {
     {
         set
         {
+            Debug.Log("highlight got called");
             if (value)
             {
                 GetComponent<Image>().color = Color.blue;
