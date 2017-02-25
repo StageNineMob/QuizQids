@@ -613,7 +613,7 @@ public class GameFieldManager : MonoBehaviour
             var pair = TriviaParser.singleton.rightAnswers[rightAnswerIndex];
             currentPrompt = pair.value;
             StartCoroutine(DisplayNewMultiChoice());
-            var correctButton = Random.Range(0, choiceButtonText.Length - 1);
+            var correctButton = Random.Range(0, choiceButtonText.Length);
 
             TriviaParser.Shuffle(pair.prompts);
             TriviaParser.singleton.RandomizePrompts();
