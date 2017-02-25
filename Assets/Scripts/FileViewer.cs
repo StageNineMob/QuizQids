@@ -158,7 +158,10 @@ public class FileViewer : MonoBehaviour
         fileName = fileName.ToLower();
 #endif
         if (_currentlySelectedFile != NO_FILE)
+        {
             elements[_currentlySelectedFile].highlight = false;
+            GameFieldManager.singleton.DisableGameModeButtons();
+        }
         _currentlySelectedFile = NO_FILE;
 
         if (!FileManager.FileExtensionIs(fileName, _extension))
@@ -170,7 +173,7 @@ public class FileViewer : MonoBehaviour
                 _currentlySelectedFile = ii;
                 elements[ii].highlight = true;
                 JumpToFileIndex(ii);
-                //DecodeMetadata(fileName);
+                ParseMetadata(fileName);
                 return;
             }
         }
@@ -239,6 +242,12 @@ public class FileViewer : MonoBehaviour
         int minutes = Mathf.FloorToInt(floatTime / 60);
         string minutesSeconds = minutes.ToString() + ":" + seconds.ToString("00");
         return minutesSeconds;
+    }
+
+    private void ParseMetadata(string fileName)
+    {
+        TriviaParser.singleton.LoadTriviaMetadata(_directory + fileName, false);
+        GameFieldManager.singleton.EnableGameModeButtons();
     }
 
     #endregion

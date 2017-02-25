@@ -59,6 +59,9 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private GameObject playMenuPanel;
     [SerializeField] private GameObject logoText;
 
+    [SerializeField] private Button playMultiChoiceButton;
+    [SerializeField] private Button playTriviaSearchButton;
+
     [SerializeField] private Slider promptChangeTimer;
     [SerializeField] private GameObject quizItemPrefab;
     [SerializeField] private AudioSource soundEffectSource;
@@ -135,7 +138,24 @@ public class GameFieldManager : MonoBehaviour
 
     //methods
 #region public methods
-    
+
+    public void DisableGameModeButtons()
+    {
+        playMultiChoiceButton.interactable = false;
+        playTriviaSearchButton.interactable = false;
+    }
+
+    public void EnableGameModeButtons()
+    {
+        if((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.MULTIPLE_CHOICE) == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+        {
+            playMultiChoiceButton.interactable = true;
+        }
+        if ((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.SPECIFIC) == TriviaParser.TriviaMode.SPECIFIC)
+        {
+            playTriviaSearchButton.interactable = true;
+        }
+    }
 
     public void PressedPlayButton()
     {
@@ -143,7 +163,7 @@ public class GameFieldManager : MonoBehaviour
         logoText.SetActive(false);
 
         fileViewer.PopulateList(TriviaParser.TRIVIA_DIRECTORY, TriviaParser.TRIVIA_FILE_EXT);
-
+        DisableGameModeButtons();
         playMenuPanel.SetActive(true);
     }
 
@@ -448,10 +468,11 @@ public class GameFieldManager : MonoBehaviour
         
         TriviaParser.singleton.RandomizeAnswerLists();
 
-        rightAnswerIndex = 0;
+        rightAnswerIndex = -1; // in multi choice, index is immediately incremented
         wrongAnswerIndex = 0;
         if (TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.MULTIPLE_CHOICE)
         {
+            rightAnswerIndex = 0;
             rightAnswersInPlay = 0;
             wrongAnswersInPlay = 0;
             for (int ii = 0; ii < initialQuizItemCount; ++ii)
@@ -585,7 +606,7 @@ public class GameFieldManager : MonoBehaviour
         ++rightAnswerIndex;
         if(rightAnswerIndex >= TriviaParser.singleton.rightAnswers.Count)
         {
-            //TODO: End the game.
+            ChangeState(GameState.POSTSCREEN);
         }
         else
         {

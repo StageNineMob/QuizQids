@@ -264,7 +264,7 @@ public class TriviaParser : MonoBehaviour {
         categoryList = new List<KeyValuePair<string, TriviaMode>>();
         foreach (XmlElement node in nodeList)
         {
-            // TODO: Add support for gameplay types by category here
+            // TODO: Add support for loading gameplay types by category here
             TriviaMode mode = TriviaMode.NONE;
             if(true)
             {
@@ -278,7 +278,8 @@ public class TriviaParser : MonoBehaviour {
             {
                 mode |= TriviaMode.MULTIPLE_CHOICE;
             }
-
+            // TODO: Add support for selecting categories separately
+            _triviaMode = mode;
             categoryList.Add(new KeyValuePair<string, TriviaMode>(node.Attributes["Name"].Value, mode));
         }
     }

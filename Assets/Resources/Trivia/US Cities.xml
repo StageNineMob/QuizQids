@@ -1,1 +1,587 @@
-<Root><Categories><Category Name="State Capitals" /></Categories><AllAnswers><Answer Name="Albany"><Category Name="State Capitals"><Prompt Name="New York" /><Prompt Name="null" /></Category></Answer><Answer Name="Annapolis"><Category Name="State Capitals"><Prompt Name="Maryland" /><Prompt Name="null" /></Category></Answer><Answer Name="Atlanta"><Category Name="State Capitals"><Prompt Name="Georgia" /><Prompt Name="null" /></Category></Answer><Answer Name="Augusta"><Category Name="State Capitals"><Prompt Name="Maine" /><Prompt Name="null" /></Category></Answer><Answer Name="Austin"><Category Name="State Capitals"><Prompt Name="Texas" /><Prompt Name="null" /></Category></Answer><Answer Name="Baton Rouge"><Category Name="State Capitals"><Prompt Name="Louisiana" /><Prompt Name="null" /></Category></Answer><Answer Name="Bismarck"><Category Name="State Capitals"><Prompt Name="North Dakota" /><Prompt Name="null" /></Category></Answer><Answer Name="Boise"><Category Name="State Capitals"><Prompt Name="Idaho" /><Prompt Name="null" /></Category></Answer><Answer Name="Boston"><Category Name="State Capitals"><Prompt Name="Massachusetts" /><Prompt Name="null" /></Category></Answer><Answer Name="Carson City"><Category Name="State Capitals"><Prompt Name="Nevada" /><Prompt Name="null" /></Category></Answer><Answer Name="Charleston"><Category Name="State Capitals"><Prompt Name="West Virginia" /><Prompt Name="null" /></Category></Answer><Answer Name="Cheyenne"><Category Name="State Capitals"><Prompt Name="Wyoming" /><Prompt Name="null" /></Category></Answer><Answer Name="Columbia"><Category Name="State Capitals"><Prompt Name="South Carolina" /><Prompt Name="null" /></Category></Answer><Answer Name="Columbus"><Category Name="State Capitals"><Prompt Name="Ohio" /><Prompt Name="null" /></Category></Answer><Answer Name="Concord"><Category Name="State Capitals"><Prompt Name="New Hampshire" /><Prompt Name="null" /></Category></Answer><Answer Name="Denver"><Category Name="State Capitals"><Prompt Name="Colorado" /><Prompt Name="null" /></Category></Answer><Answer Name="Des Moines"><Category Name="State Capitals"><Prompt Name="Iowa" /><Prompt Name="null" /></Category></Answer><Answer Name="Dover"><Category Name="State Capitals"><Prompt Name="Delaware" /><Prompt Name="null" /></Category></Answer><Answer Name="Frankfort"><Category Name="State Capitals"><Prompt Name="Kentucky" /><Prompt Name="null" /></Category></Answer><Answer Name="Harrisburg"><Category Name="State Capitals"><Prompt Name="Pennsylvania" /><Prompt Name="null" /></Category></Answer><Answer Name="Hartford"><Category Name="State Capitals"><Prompt Name="Connecticut" /><Prompt Name="null" /></Category></Answer><Answer Name="Helena"><Category Name="State Capitals"><Prompt Name="Montana" /><Prompt Name="null" /></Category></Answer><Answer Name="Honolulu"><Category Name="State Capitals"><Prompt Name="Hawaii" /><Prompt Name="null" /></Category></Answer><Answer Name="Indianapolis"><Category Name="State Capitals"><Prompt Name="Indiana" /><Prompt Name="null" /></Category></Answer><Answer Name="Jackson"><Category Name="State Capitals"><Prompt Name="Mississippi" /><Prompt Name="null" /></Category></Answer><Answer Name="Jefferson City"><Category Name="State Capitals"><Prompt Name="Missouri" /><Prompt Name="null" /></Category></Answer><Answer Name="Juneau"><Category Name="State Capitals"><Prompt Name="Alaska" /><Prompt Name="null" /></Category></Answer><Answer Name="Lansing"><Category Name="State Capitals"><Prompt Name="Michigan" /><Prompt Name="null" /></Category></Answer><Answer Name="Little Rock"><Category Name="State Capitals"><Prompt Name="Arkansas" /><Prompt Name="null" /></Category></Answer><Answer Name="Lincoln"><Category Name="State Capitals"><Prompt Name="Nebraska" /><Prompt Name="null" /></Category></Answer><Answer Name="Madison"><Category Name="State Capitals"><Prompt Name="Wisconsin" /><Prompt Name="null" /></Category></Answer><Answer Name="Montgomery"><Category Name="State Capitals"><Prompt Name="Alabama" /><Prompt Name="null" /></Category></Answer><Answer Name="Montpelier"><Category Name="State Capitals"><Prompt Name="Vermont" /><Prompt Name="null" /></Category></Answer><Answer Name="Nashville"><Category Name="State Capitals"><Prompt Name="Tennessee" /><Prompt Name="null" /></Category></Answer><Answer Name="Oklahoma City"><Category Name="State Capitals"><Prompt Name="Oklahoma" /><Prompt Name="null" /></Category></Answer><Answer Name="Olympia"><Category Name="State Capitals"><Prompt Name="Washington" /><Prompt Name="null" /></Category></Answer><Answer Name="Phoenix"><Category Name="State Capitals"><Prompt Name="Arizona" /><Prompt Name="null" /></Category></Answer><Answer Name="Pierre"><Category Name="State Capitals"><Prompt Name="South Dakota" /><Prompt Name="null" /></Category></Answer><Answer Name="Providence"><Category Name="State Capitals"><Prompt Name="Rhode Island" /><Prompt Name="null" /></Category></Answer><Answer Name="Raleigh"><Category Name="State Capitals"><Prompt Name="North Carolina" /><Prompt Name="null" /></Category></Answer><Answer Name="Richmond"><Category Name="State Capitals"><Prompt Name="Virginia" /><Prompt Name="null" /></Category></Answer><Answer Name="Sacramento"><Category Name="State Capitals"><Prompt Name="California" /><Prompt Name="null" /></Category></Answer><Answer Name="Saint Paul"><Category Name="State Capitals"><Prompt Name="Minnesota" /><Prompt Name="null" /></Category></Answer><Answer Name="Salem"><Category Name="State Capitals"><Prompt Name="Oregon" /><Prompt Name="null" /></Category></Answer><Answer Name="Salt Lake City"><Category Name="State Capitals"><Prompt Name="Utah" /><Prompt Name="null" /></Category></Answer><Answer Name="Santa Fe"><Category Name="State Capitals"><Prompt Name="New Mexico" /><Prompt Name="null" /></Category></Answer><Answer Name="Springfield"><Category Name="State Capitals"><Prompt Name="Illinois" /><Prompt Name="null" /></Category></Answer><Answer Name="Tallahassee"><Category Name="State Capitals"><Prompt Name="Florida" /><Prompt Name="null" /></Category></Answer><Answer Name="Topeka"><Category Name="State Capitals"><Prompt Name="Kansas" /><Prompt Name="null" /></Category></Answer><Answer Name="Trenton"><Category Name="State Capitals"><Prompt Name="New Jersey" /><Prompt Name="null" /></Category></Answer><Answer Name="Aberdeen"><Category Name="State Capitals" /></Answer><Answer Name="Albuquerque"><Category Name="State Capitals" /></Answer><Answer Name="Allentown"><Category Name="State Capitals" /></Answer><Answer Name="Anchorage"><Category Name="State Capitals" /></Answer><Answer Name="Aurora"><Category Name="State Capitals" /></Answer><Answer Name="Baltimore"><Category Name="State Capitals" /></Answer><Answer Name="Bangor"><Category Name="State Capitals" /></Answer><Answer Name="Bellevue"><Category Name="State Capitals" /></Answer><Answer Name="Biloxi"><Category Name="State Capitals" /></Answer><Answer Name="Billings"><Category Name="State Capitals" /></Answer><Answer Name="Birmingham"><Category Name="State Capitals" /></Answer><Answer Name="Bridgeport"><Category Name="State Capitals" /></Answer><Answer Name="Buffalo"><Category Name="State Capitals" /></Answer><Answer Name="Burlington"><Category Name="State Capitals" /></Answer><Answer Name="Casper"><Category Name="State Capitals" /></Answer><Answer Name="Cedar Rapids"><Category Name="State Capitals" /></Answer><Answer Name="Charlotte"><Category Name="State Capitals" /></Answer><Answer Name="Chesapeake"><Category Name="State Capitals" /></Answer><Answer Name="Chicago"><Category Name="State Capitals" /></Answer><Answer Name="Cincinnati"><Category Name="State Capitals" /></Answer><Answer Name="Cleveland"><Category Name="State Capitals" /></Answer><Answer Name="Colorado Springs"><Category Name="State Capitals" /></Answer><Answer Name="Cranston"><Category Name="State Capitals" /></Answer><Answer Name="Dallas"><Category Name="State Capitals" /></Answer><Answer Name="Davenport"><Category Name="State Capitals" /></Answer><Answer Name="Detroit"><Category Name="State Capitals" /></Answer><Answer Name="Eugene"><Category Name="State Capitals" /></Answer><Answer Name="Evansville"><Category Name="State Capitals" /></Answer><Answer Name="Fairbanks"><Category Name="State Capitals" /></Answer><Answer Name="Fargo"><Category Name="State Capitals" /></Answer><Answer Name="Fayetteville"><Category Name="State Capitals" /></Answer><Answer Name="Fort Smith"><Category Name="State Capitals" /></Answer><Answer Name="Fort Wayne"><Category Name="State Capitals" /></Answer><Answer Name="Frederick"><Category Name="State Capitals" /></Answer><Answer Name="Gaithersburg"><Category Name="State Capitals" /></Answer><Answer Name="Grand Forks"><Category Name="State Capitals" /></Answer><Answer Name="Grand Rapids"><Category Name="State Capitals" /></Answer><Answer Name="Great Falls"><Category Name="State Capitals" /></Answer><Answer Name="Green Bay"><Category Name="State Capitals" /></Answer><Answer Name="Greensboro"><Category Name="State Capitals" /></Answer><Answer Name="Gulfport"><Category Name="State Capitals" /></Answer><Answer Name="Henderson"><Category Name="State Capitals" /></Answer><Answer Name="Hilo"><Category Name="State Capitals" /></Answer><Answer Name="Houston"><Category Name="State Capitals" /></Answer><Answer Name="Huntington"><Category Name="State Capitals" /></Answer><Answer Name="Idaho Falls"><Category Name="State Capitals" /></Answer><Answer Name="Jacksonville"><Category Name="State Capitals" /></Answer><Answer Name="Jersey City"><Category Name="State Capitals" /></Answer><Answer Name="Kailua"><Category Name="State Capitals" /></Answer><Answer Name="Kansas City"><Category Name="State Capitals" /></Answer><Answer Name="Knoxville"><Category Name="State Capitals" /></Answer><Answer Name="Laramie"><Category Name="State Capitals" /></Answer><Answer Name="Las Cruces"><Category Name="State Capitals" /></Answer><Answer Name="Las Vegas"><Category Name="State Capitals" /></Answer><Answer Name="Lewiston"><Category Name="State Capitals" /></Answer><Answer Name="Lexington"><Category Name="State Capitals" /></Answer><Answer Name="Los Angeles"><Category Name="State Capitals" /></Answer><Answer Name="Louisville"><Category Name="State Capitals" /></Answer><Answer Name="Manchester"><Category Name="State Capitals" /></Answer><Answer Name="Memphis"><Category Name="State Capitals" /></Answer><Answer Name="Mesa"><Category Name="State Capitals" /></Answer><Answer Name="Miami"><Category Name="State Capitals" /></Answer><Answer Name="Milwaukee"><Category Name="State Capitals" /></Answer><Answer Name="Minneapolis"><Category Name="State Capitals" /></Answer><Answer Name="Missoula"><Category Name="State Capitals" /></Answer><Answer Name="Mobile"><Category Name="State Capitals" /></Answer><Answer Name="Nampa"><Category Name="State Capitals" /></Answer><Answer Name="Nashua"><Category Name="State Capitals" /></Answer><Answer Name="Newark"><Category Name="State Capitals" /></Answer><Answer Name="New Haven"><Category Name="State Capitals" /></Answer><Answer Name="New Orleans"><Category Name="State Capitals" /></Answer><Answer Name="New York City"><Category Name="State Capitals" /></Answer><Answer Name="Norfolk"><Category Name="State Capitals" /></Answer><Answer Name="Norman"><Category Name="State Capitals" /></Answer><Answer Name="North Charleston"><Category Name="State Capitals" /></Answer><Answer Name="Omaha"><Category Name="State Capitals" /></Answer><Answer Name="Overland Park"><Category Name="State Capitals" /></Answer><Answer Name="Owensboro"><Category Name="State Capitals" /></Answer><Answer Name="Parkersburg"><Category Name="State Capitals" /></Answer><Answer Name="Paterson"><Category Name="State Capitals" /></Answer><Answer Name="Philadelphia"><Category Name="State Capitals" /></Answer><Answer Name="Pittsburgh"><Category Name="State Capitals" /></Answer><Answer Name="Provo"><Category Name="State Capitals" /></Answer><Answer Name="Portland"><Category Name="State Capitals" /></Answer><Answer Name="Rapid City"><Category Name="State Capitals" /></Answer><Answer Name="Reno"><Category Name="State Capitals" /></Answer><Answer Name="Rochester"><Category Name="State Capitals" /></Answer><Answer Name="Rio Rancho"><Category Name="State Capitals" /></Answer><Answer Name="Rockford"><Category Name="State Capitals" /></Answer><Answer Name="Rutland"><Category Name="State Capitals" /></Answer><Answer Name="Saint Louis"><Category Name="State Capitals" /></Answer><Answer Name="San Antonio"><Category Name="State Capitals" /></Answer><Answer Name="San Diego"><Category Name="State Capitals" /></Answer><Answer Name="San Jose"><Category Name="State Capitals" /></Answer><Answer Name="Seattle"><Category Name="State Capitals" /></Answer><Answer Name="Shreveport"><Category Name="State Capitals" /></Answer><Answer Name="Sioux Falls"><Category Name="State Capitals" /></Answer><Answer Name="South Burlington"><Category Name="State Capitals" /></Answer><Answer Name="Spokane"><Category Name="State Capitals" /></Answer><Answer Name="Tacoma"><Category Name="State Capitals" /></Answer><Answer Name="Tampa"><Category Name="State Capitals" /></Answer><Answer Name="Tucson"><Category Name="State Capitals" /></Answer><Answer Name="Tulsa"><Category Name="State Capitals" /></Answer><Answer Name="Virginia Beach"><Category Name="State Capitals" /></Answer><Answer Name="Warren"><Category Name="State Capitals" /></Answer><Answer Name="Warwick"><Category Name="State Capitals" /></Answer><Answer Name="West Valley City"><Category Name="State Capitals" /></Answer><Answer Name="Wichita"><Category Name="State Capitals" /></Answer><Answer Name="Wilmington"><Category Name="State Capitals" /></Answer><Answer Name="Worcester"><Category Name="State Capitals" /></Answer></AllAnswers></Root>
+<Root>
+  <Categories>
+    <Category Name="State Capitals" />
+  </Categories>
+  <AllAnswers>
+    <Answer Name="Albany">
+      <Category Name="State Capitals">
+        <Prompt Name="New York" />
+      </Category>
+    </Answer>
+    <Answer Name="Annapolis">
+      <Category Name="State Capitals">
+        <Prompt Name="Maryland" />
+      </Category>
+    </Answer>
+    <Answer Name="Atlanta">
+      <Category Name="State Capitals">
+        <Prompt Name="Georgia" />
+      </Category>
+    </Answer>
+    <Answer Name="Augusta">
+      <Category Name="State Capitals">
+        <Prompt Name="Maine" />
+      </Category>
+    </Answer>
+    <Answer Name="Austin">
+      <Category Name="State Capitals">
+        <Prompt Name="Texas" />
+      </Category>
+    </Answer>
+    <Answer Name="Baton Rouge">
+      <Category Name="State Capitals">
+        <Prompt Name="Louisiana" />
+      </Category>
+    </Answer>
+    <Answer Name="Bismarck">
+      <Category Name="State Capitals">
+        <Prompt Name="North Dakota" />
+      </Category>
+    </Answer>
+    <Answer Name="Boise">
+      <Category Name="State Capitals">
+        <Prompt Name="Idaho" />
+      </Category>
+    </Answer>
+    <Answer Name="Boston">
+      <Category Name="State Capitals">
+        <Prompt Name="Massachusetts" />
+      </Category>
+    </Answer>
+    <Answer Name="Carson City">
+      <Category Name="State Capitals">
+        <Prompt Name="Nevada" />
+      </Category>
+    </Answer>
+    <Answer Name="Charleston">
+      <Category Name="State Capitals">
+        <Prompt Name="West Virginia" />
+      </Category>
+    </Answer>
+    <Answer Name="Cheyenne">
+      <Category Name="State Capitals">
+        <Prompt Name="Wyoming" />
+      </Category>
+    </Answer>
+    <Answer Name="Columbia">
+      <Category Name="State Capitals">
+        <Prompt Name="South Carolina" />
+      </Category>
+    </Answer>
+    <Answer Name="Columbus">
+      <Category Name="State Capitals">
+        <Prompt Name="Ohio" />
+      </Category>
+    </Answer>
+    <Answer Name="Concord">
+      <Category Name="State Capitals">
+        <Prompt Name="New Hampshire" />
+      </Category>
+    </Answer>
+    <Answer Name="Denver">
+      <Category Name="State Capitals">
+        <Prompt Name="Colorado" />
+      </Category>
+    </Answer>
+    <Answer Name="Des Moines">
+      <Category Name="State Capitals">
+        <Prompt Name="Iowa" />
+      </Category>
+    </Answer>
+    <Answer Name="Dover">
+      <Category Name="State Capitals">
+        <Prompt Name="Delaware" />
+      </Category>
+    </Answer>
+    <Answer Name="Frankfort">
+      <Category Name="State Capitals">
+        <Prompt Name="Kentucky" />
+      </Category>
+    </Answer>
+    <Answer Name="Harrisburg">
+      <Category Name="State Capitals">
+        <Prompt Name="Pennsylvania" />
+      </Category>
+    </Answer>
+    <Answer Name="Hartford">
+      <Category Name="State Capitals">
+        <Prompt Name="Connecticut" />
+      </Category>
+    </Answer>
+    <Answer Name="Helena">
+      <Category Name="State Capitals">
+        <Prompt Name="Montana" />
+      </Category>
+    </Answer>
+    <Answer Name="Honolulu">
+      <Category Name="State Capitals">
+        <Prompt Name="Hawaii" />
+      </Category>
+    </Answer>
+    <Answer Name="Indianapolis">
+      <Category Name="State Capitals">
+        <Prompt Name="Indiana" />
+      </Category>
+    </Answer>
+    <Answer Name="Jackson">
+      <Category Name="State Capitals">
+        <Prompt Name="Mississippi" />
+      </Category>
+    </Answer>
+    <Answer Name="Jefferson City">
+      <Category Name="State Capitals">
+        <Prompt Name="Missouri" />
+      </Category>
+    </Answer>
+    <Answer Name="Juneau">
+      <Category Name="State Capitals">
+        <Prompt Name="Alaska" />
+      </Category>
+    </Answer>
+    <Answer Name="Lansing">
+      <Category Name="State Capitals">
+        <Prompt Name="Michigan" />
+      </Category>
+    </Answer>
+    <Answer Name="Little Rock">
+      <Category Name="State Capitals">
+        <Prompt Name="Arkansas" />
+      </Category>
+    </Answer>
+    <Answer Name="Lincoln">
+      <Category Name="State Capitals">
+        <Prompt Name="Nebraska" />
+      </Category>
+    </Answer>
+    <Answer Name="Madison">
+      <Category Name="State Capitals">
+        <Prompt Name="Wisconsin" />
+      </Category>
+    </Answer>
+    <Answer Name="Montgomery">
+      <Category Name="State Capitals">
+        <Prompt Name="Alabama" />
+      </Category>
+    </Answer>
+    <Answer Name="Montpelier">
+      <Category Name="State Capitals">
+        <Prompt Name="Vermont" />
+      </Category>
+    </Answer>
+    <Answer Name="Nashville">
+      <Category Name="State Capitals">
+        <Prompt Name="Tennessee" />
+      </Category>
+    </Answer>
+    <Answer Name="Oklahoma City">
+      <Category Name="State Capitals">
+        <Prompt Name="Oklahoma" />
+      </Category>
+    </Answer>
+    <Answer Name="Olympia">
+      <Category Name="State Capitals">
+        <Prompt Name="Washington" />
+      </Category>
+    </Answer>
+    <Answer Name="Phoenix">
+      <Category Name="State Capitals">
+        <Prompt Name="Arizona" />
+      </Category>
+    </Answer>
+    <Answer Name="Pierre">
+      <Category Name="State Capitals">
+        <Prompt Name="South Dakota" />
+      </Category>
+    </Answer>
+    <Answer Name="Providence">
+      <Category Name="State Capitals">
+        <Prompt Name="Rhode Island" />
+      </Category>
+    </Answer>
+    <Answer Name="Raleigh">
+      <Category Name="State Capitals">
+        <Prompt Name="North Carolina" />
+      </Category>
+    </Answer>
+    <Answer Name="Richmond">
+      <Category Name="State Capitals">
+        <Prompt Name="Virginia" />
+      </Category>
+    </Answer>
+    <Answer Name="Sacramento">
+      <Category Name="State Capitals">
+        <Prompt Name="California" />
+      </Category>
+    </Answer>
+    <Answer Name="Saint Paul">
+      <Category Name="State Capitals">
+        <Prompt Name="Minnesota" />
+      </Category>
+    </Answer>
+    <Answer Name="Salem">
+      <Category Name="State Capitals">
+        <Prompt Name="Oregon" />
+      </Category>
+    </Answer>
+    <Answer Name="Salt Lake City">
+      <Category Name="State Capitals">
+        <Prompt Name="Utah" />
+      </Category>
+    </Answer>
+    <Answer Name="Santa Fe">
+      <Category Name="State Capitals">
+        <Prompt Name="New Mexico" />
+      </Category>
+    </Answer>
+    <Answer Name="Springfield">
+      <Category Name="State Capitals">
+        <Prompt Name="Illinois" />
+      </Category>
+    </Answer>
+    <Answer Name="Tallahassee">
+      <Category Name="State Capitals">
+        <Prompt Name="Florida" />
+      </Category>
+    </Answer>
+    <Answer Name="Topeka">
+      <Category Name="State Capitals">
+        <Prompt Name="Kansas" />
+      </Category>
+    </Answer>
+    <Answer Name="Trenton">
+      <Category Name="State Capitals">
+        <Prompt Name="New Jersey" />
+      </Category>
+    </Answer>
+    <Answer Name="Aberdeen">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Albuquerque">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Allentown">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Anchorage">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Aurora">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Baltimore">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Bangor">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Bellevue">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Biloxi">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Billings">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Birmingham">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Bridgeport">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Buffalo">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Burlington">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Casper">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Cedar Rapids">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Charlotte">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Chesapeake">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Chicago">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Cincinnati">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Cleveland">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Colorado Springs">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Cranston">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Dallas">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Davenport">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Detroit">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Eugene">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Evansville">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Fairbanks">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Fargo">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Fayetteville">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Fort Smith">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Fort Wayne">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Frederick">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Gaithersburg">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Grand Forks">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Grand Rapids">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Great Falls">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Green Bay">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Greensboro">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Gulfport">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Henderson">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Hilo">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Houston">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Huntington">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Idaho Falls">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Jacksonville">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Jersey City">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Kailua">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Kansas City">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Knoxville">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Laramie">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Las Cruces">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Las Vegas">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Lewiston">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Lexington">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Los Angeles">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Louisville">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Manchester">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Memphis">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Mesa">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Miami">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Milwaukee">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Minneapolis">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Missoula">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Mobile">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Nampa">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Nashua">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Newark">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="New Haven">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="New Orleans">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="New York City">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Norfolk">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Norman">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="North Charleston">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Omaha">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Overland Park">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Owensboro">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Parkersburg">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Paterson">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Philadelphia">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Pittsburgh">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Provo">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Portland">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Rapid City">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Reno">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Rochester">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Rio Rancho">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Rockford">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Rutland">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Saint Louis">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="San Antonio">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="San Diego">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="San Jose">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Seattle">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Shreveport">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Sioux Falls">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="South Burlington">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Spokane">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Tacoma">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Tampa">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Tucson">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Tulsa">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Virginia Beach">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Warren">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Warwick">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="West Valley City">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Wichita">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Wilmington">
+      <Category Name="State Capitals" />
+    </Answer>
+    <Answer Name="Worcester">
+      <Category Name="State Capitals" />
+    </Answer>
+  </AllAnswers>
+</Root>
