@@ -88,6 +88,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text scoreUIAccuracyText;
     [SerializeField] private Text scoreUIArbitraryText;
     [SerializeField] private Text pauseButtonText;
+    [SerializeField] private Button endGameButton;
     [SerializeField] private FileViewer fileViewer;
 
     private float worldUnitsPerPixel;
@@ -162,6 +163,7 @@ public class GameFieldManager : MonoBehaviour
         mainMenuPanel.SetActive(false);
         logoText.SetActive(false);
 
+        fileViewer.ClearList();
         fileViewer.PopulateList(TriviaParser.TRIVIA_DIRECTORY, TriviaParser.TRIVIA_FILE_EXT);
         DisableGameModeButtons();
         playMenuPanel.SetActive(true);
@@ -201,6 +203,10 @@ public class GameFieldManager : MonoBehaviour
                 break;
         }
 
+    }
+    public void PressedEndGameButton()
+    {
+        ChangeState(GameState.MAIN_MENU);
     }
 
     public void PressedChoiceButton(int buttonIndex)
@@ -691,8 +697,12 @@ public class GameFieldManager : MonoBehaviour
                 mainMenuCanvas.gameObject.SetActive(false);
                 break;
             case GameState.PAUSE:
+                endGameButton.gameObject.SetActive(false);
+                gameplayCanvas.gameObject.SetActive(false);
+                interfaceCanvas.gameObject.SetActive(false);
                 break;
             case GameState.PLAY:
+                pauseButtonText.text = "Pause";
                 if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
                 {
                     multiChoiceCanvas.gameObject.SetActive(false);
@@ -736,6 +746,9 @@ public class GameFieldManager : MonoBehaviour
         switch (state)
         {
             case GameState.MAIN_MENU:
+                logoText.SetActive(true);
+                mainMenuPanel.SetActive(true);
+                playMenuPanel.SetActive(false);
                 mainMenuCanvas.gameObject.SetActive(true);
                 break;
             case GameState.PAUSE:
@@ -745,6 +758,7 @@ public class GameFieldManager : MonoBehaviour
                 }
                 gameplayCanvas.gameObject.SetActive(true);
                 interfaceCanvas.gameObject.SetActive(true);
+                endGameButton.gameObject.SetActive(true);
                 break;
             case GameState.PLAY:
                 if (prevState == GameState.PAUSE)
@@ -848,6 +862,7 @@ public class GameFieldManager : MonoBehaviour
         playMenuPanel.SetActive(false);
 
         ChangeState(GameState.MAIN_MENU);
+        endGameButton.gameObject.SetActive(false);
     }
 
     #endregion
