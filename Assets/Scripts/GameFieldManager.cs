@@ -151,7 +151,7 @@ public class GameFieldManager : MonoBehaviour
         {
             playMultiChoiceButton.interactable = true;
         }
-        if ((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.SPECIFIC) == TriviaParser.TriviaMode.SPECIFIC)
+        if ((TriviaParser.singleton.triviaMode & (TriviaParser.TriviaMode.SPECIFIC | TriviaParser.TriviaMode.GENERAL)) != TriviaParser.TriviaMode.NONE)
         {
             playTriviaSearchButton.interactable = true;
         }
@@ -178,7 +178,12 @@ public class GameFieldManager : MonoBehaviour
     {
         // TODO: Confirm which category to play rather than forcing 0
         // TODO: Confirm general vs. specific
-        TriviaParser.singleton.LoadTrivia(0, TriviaParser.TriviaMode.SPECIFIC);
+        var mode = TriviaParser.TriviaMode.GENERAL;
+        if((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.SPECIFIC) == TriviaParser.TriviaMode.SPECIFIC)
+        {
+            mode = TriviaParser.TriviaMode.SPECIFIC;
+        }
+        TriviaParser.singleton.LoadTrivia(0, mode);
         ChangeState(GameState.PREGAME);
     }
 
@@ -259,7 +264,7 @@ public class GameFieldManager : MonoBehaviour
         }
         else
         {
-            if (trivia.prompts.Contains("null"))
+            if (trivia.prompts.Count > 0)
                 return true;
         }
         return false;

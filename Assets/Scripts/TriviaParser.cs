@@ -19,6 +19,10 @@ public class TriviaParser : MonoBehaviour {
     //subclasses
 
     //consts and static data
+    public const string GENERAL_MODE_NAME = "General";
+    public const string SPECIFIC_MODE_NAME = "Specific";
+    public const string MULTIPLE_CHOICE_MODE_NAME = "Multiple Choice";
+
     public const string TRIVIA_DIRECTORY = "/Trivia/";
     public const string TRIVIA_FILE_EXT = ".xml";
 
@@ -264,21 +268,24 @@ public class TriviaParser : MonoBehaviour {
         categoryList = new List<KeyValuePair<string, TriviaMode>>();
         foreach (XmlElement node in nodeList)
         {
-            // TODO: Add support for loading gameplay types by category here
             TriviaMode mode = TriviaMode.NONE;
-            if(true)
+            var modeNodes = node.SelectNodes("TriviaMode");
+            foreach (XmlElement modeNode in modeNodes)
             {
-                mode |= TriviaMode.GENERAL;
+                if (modeNode.Attributes["Name"].Value == GENERAL_MODE_NAME)
+                {
+                    mode |= TriviaMode.GENERAL;
+                }
+                if (modeNode.Attributes["Name"].Value == SPECIFIC_MODE_NAME)
+                {
+                    mode |= TriviaMode.SPECIFIC;
+                }
+                if (modeNode.Attributes["Name"].Value == MULTIPLE_CHOICE_MODE_NAME)
+                {
+                    mode |= TriviaMode.MULTIPLE_CHOICE;
+                }
             }
-            if(true)
-            {
-                mode |= TriviaMode.SPECIFIC;
-            }
-            if(true)
-            {
-                mode |= TriviaMode.MULTIPLE_CHOICE;
-            }
-            // TODO: Add support for selecting categories separately
+            // TODO: Add support for selecting triviamodes and categories separately
             _triviaMode = mode;
             categoryList.Add(new KeyValuePair<string, TriviaMode>(node.Attributes["Name"].Value, mode));
         }
