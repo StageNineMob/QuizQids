@@ -266,6 +266,12 @@ public class GameFieldManager : MonoBehaviour
         quizItems.Remove(toRemove);
     }
 
+    public void ChangeVolume(float v)
+    {
+        AudioListener.volume = Mathf.Clamp(v, 0, 1);
+        PlaySound(wrongAnswerSound, wrongAnswerVolume);
+    }
+
     public void PlayAgainButton()
     {
         ChangeState(GameState.PREGAME);

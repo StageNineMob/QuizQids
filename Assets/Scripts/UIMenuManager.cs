@@ -10,6 +10,8 @@ public class UIMenuManager : MonoBehaviour {
     [SerializeField]
     private GameObject playMenuPanel;
     [SerializeField]
+    private GameObject optionsPanel;
+    [SerializeField]
     private GameObject logoText;
 
     [SerializeField]
@@ -18,6 +20,9 @@ public class UIMenuManager : MonoBehaviour {
     private Button playTriviaSearchButton;
     [SerializeField]
     private FileViewer fileViewer;
+
+    [SerializeField]
+    private Slider volumeSlider;
 
     public static UIMenuManager singleton;
 
@@ -70,6 +75,21 @@ public class UIMenuManager : MonoBehaviour {
         GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
     }
 
+    public void PressedOptionsButton()
+    {
+        optionsPanel.SetActive(true);
+    }
+
+    public void PressedCloseOptionsButton()
+    {
+        optionsPanel.SetActive(false);
+    }
+
+    public void ChangeVolume()
+    {
+        GameFieldManager.singleton.ChangeVolume(volumeSlider.value);
+    }
+
     public void ResetMainMenu()
     {
         logoText.SetActive(true);
@@ -84,7 +104,7 @@ public class UIMenuManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-	
+        optionsPanel.SetActive(false);
 	}
 
     void Awake()
