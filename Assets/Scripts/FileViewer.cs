@@ -160,7 +160,7 @@ public class FileViewer : MonoBehaviour
         if (_currentlySelectedFile != NO_FILE)
         {
             elements[_currentlySelectedFile].highlight = false;
-            GameFieldManager.singleton.DisableGameModeButtons();
+            UIMenuManager.singleton.DisableGameModeButtons();
         }
         _currentlySelectedFile = NO_FILE;
 
@@ -247,7 +247,7 @@ public class FileViewer : MonoBehaviour
     private void ParseMetadata(string fileName)
     {
         TriviaParser.singleton.LoadTriviaMetadata(_directory + fileName, false);
-        GameFieldManager.singleton.EnableGameModeButtons();
+        UIMenuManager.singleton.EnableGameModeButtons();
     }
 
     #endregion

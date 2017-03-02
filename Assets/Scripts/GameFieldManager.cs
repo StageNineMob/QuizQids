@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class GameFieldManager : MonoBehaviour
 {
     //enums
-     enum GameState
+     public enum GameState
     {
         NONE,
         PREGAME,
@@ -55,13 +55,6 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Canvas scoreCanvas;
     [SerializeField] private Canvas multiChoiceCanvas;
 
-    [SerializeField] private GameObject mainMenuPanel;
-    [SerializeField] private GameObject playMenuPanel;
-    [SerializeField] private GameObject logoText;
-
-    [SerializeField] private Button playMultiChoiceButton;
-    [SerializeField] private Button playTriviaSearchButton;
-
     [SerializeField] private Slider promptChangeTimer;
     [SerializeField] private GameObject quizItemPrefab;
     [SerializeField] private AudioSource soundEffectSource;
@@ -89,7 +82,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text scoreUIArbitraryText;
     [SerializeField] private Text pauseButtonText;
     [SerializeField] private Button endGameButton;
-    [SerializeField] private FileViewer fileViewer;
+    
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null, gracePrompt = null;
@@ -139,55 +132,6 @@ public class GameFieldManager : MonoBehaviour
 
     //methods
 #region public methods
-
-    public void DisableGameModeButtons()
-    {
-        playMultiChoiceButton.interactable = false;
-        playTriviaSearchButton.interactable = false;
-    }
-
-    public void EnableGameModeButtons()
-    {
-        if((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.MULTIPLE_CHOICE) == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
-        {
-            playMultiChoiceButton.interactable = true;
-        }
-        if ((TriviaParser.singleton.triviaMode & (TriviaParser.TriviaMode.SPECIFIC | TriviaParser.TriviaMode.GENERAL)) != TriviaParser.TriviaMode.NONE)
-        {
-            playTriviaSearchButton.interactable = true;
-        }
-    }
-
-    public void PressedPlayButton()
-    {
-        mainMenuPanel.SetActive(false);
-        logoText.SetActive(false);
-
-        fileViewer.ClearList();
-        fileViewer.PopulateList(TriviaParser.TRIVIA_DIRECTORY, TriviaParser.TRIVIA_FILE_EXT);
-        DisableGameModeButtons();
-        playMenuPanel.SetActive(true);
-    }
-
-    public void PressedPlayMultiChoiceButton()
-    {
-        // TODO: Confirm which category to play rather than forcing 0
-        TriviaParser.singleton.LoadTrivia(0, TriviaParser.TriviaMode.MULTIPLE_CHOICE);
-        ChangeState(GameState.PREGAME);
-    }
-
-    public void PressedPlayTriviaSearchButton()
-    {
-        // TODO: Confirm which category to play rather than forcing 0
-        // TODO: Confirm general vs. specific
-        var mode = TriviaParser.TriviaMode.GENERAL;
-        if((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.SPECIFIC) == TriviaParser.TriviaMode.SPECIFIC)
-        {
-            mode = TriviaParser.TriviaMode.SPECIFIC;
-        }
-        TriviaParser.singleton.LoadTrivia(0, mode);
-        ChangeState(GameState.PREGAME);
-    }
 
     public void PressedPauseButton()
     {
@@ -325,6 +269,14 @@ public class GameFieldManager : MonoBehaviour
     public void PlayAgainButton()
     {
         ChangeState(GameState.PREGAME);
+    }
+
+    public void ChangeState(GameState newState)
+    {
+        GameState previousState = gameState;
+        StateExit(gameState);
+        gameState = newState;
+        StateEnter(newState, previousState);
     }
 
     #endregion
@@ -681,14 +633,6 @@ public class GameFieldManager : MonoBehaviour
         }
     }
 
-    private void ChangeState(GameState newState)
-    {
-        GameState previousState = gameState;
-        StateExit(gameState);
-        gameState = newState;
-        StateEnter(newState, previousState);
-    }
-
     private void StateExit(GameState state)
     {
         switch (state)
@@ -746,9 +690,7 @@ public class GameFieldManager : MonoBehaviour
         switch (state)
         {
             case GameState.MAIN_MENU:
-                logoText.SetActive(true);
-                mainMenuPanel.SetActive(true);
-                playMenuPanel.SetActive(false);
+                UIMenuManager.singleton.ResetMainMenu();
                 mainMenuCanvas.gameObject.SetActive(true);
                 break;
             case GameState.PAUSE:
@@ -859,7 +801,7 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
-        playMenuPanel.SetActive(false);
+        UIMenuManager.singleton.HidePlayMenuPanel();
 
         ChangeState(GameState.MAIN_MENU);
         endGameButton.gameObject.SetActive(false);
