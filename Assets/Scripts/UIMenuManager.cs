@@ -54,6 +54,7 @@ public class UIMenuManager : MonoBehaviour {
     {
         // TODO: Confirm which category to play rather than forcing 0
         TriviaParser.singleton.LoadTrivia(0, TriviaParser.TriviaMode.MULTIPLE_CHOICE);
+        GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
     }
 
     public void PressedPlayTriviaSearchButton()
@@ -66,6 +67,7 @@ public class UIMenuManager : MonoBehaviour {
             mode = TriviaParser.TriviaMode.SPECIFIC;
         }
         TriviaParser.singleton.LoadTrivia(0, mode);
+        GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
     }
 
     public void ResetMainMenu()
