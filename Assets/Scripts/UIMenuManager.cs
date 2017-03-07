@@ -52,6 +52,8 @@ public class UIMenuManager : MonoBehaviour {
         fileViewer.ClearList();
         fileViewer.PopulateList(TriviaParser.TRIVIA_DIRECTORY, TriviaParser.TRIVIA_FILE_EXT);
         DisableGameModeButtons();
+        //foricbly call function for text has changed
+        fileViewer.ResetFileViewer();
         playMenuPanel.SetActive(true);
     }
 

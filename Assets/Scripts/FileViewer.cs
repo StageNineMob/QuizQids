@@ -32,6 +32,7 @@ public class FileViewer : MonoBehaviour
     [SerializeField] private Text metadataText;
 
     private UnityAction _doubleClickCallback;
+    private bool shouldReset;
 
     //public properties
     public UnityAction doubleClickCallback
@@ -193,6 +194,11 @@ public class FileViewer : MonoBehaviour
         }
     }
 
+    public void ResetFileViewer()
+    {
+        shouldReset = true;
+    }
+
     //public void ClearMetadata()
     //{
     //    metadataText.text = "";
@@ -260,6 +266,16 @@ public class FileViewer : MonoBehaviour
         elements = new List<FileViewListElement>();
         _scrollAreaMinHeight = GetComponent<RectTransform>().rect.height;
         _listElementHeight = listElementPrefab.GetComponent<LayoutElement>().minHeight;
+        shouldReset = false;
+    }
+
+    void Update()
+    {
+        if (shouldReset)
+        {
+            HighlightFileName(_fileNameField.text);
+            shouldReset = false;
+        }
     }
     #endregion
 }
