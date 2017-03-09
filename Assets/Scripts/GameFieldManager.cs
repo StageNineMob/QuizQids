@@ -159,11 +159,13 @@ public class GameFieldManager : MonoBehaviour
         {
             //like they got it right
             rightAnswerCount++;
+            PlaySound(rightAnswerSound, rightAnswerVolume);
         }
         else
         {
             //they got it rawng;
             wrongAnswerCount++;
+            PlaySound(wrongAnswerSound, wrongAnswerVolume);
         }
         NextMultiChoiceItem();
     }
