@@ -42,7 +42,10 @@ public class GameFieldManager : MonoBehaviour
     private const float PROMPT_PULSE_DURATION = 1.5f;
     private const float PROMPT_PULSE_DURATION_INVERSE = 1.0f/PROMPT_PULSE_DURATION;
     private const float MAX_PROMPT_DURATION = 10f;
-
+    private const float DUMMY_BUMP_VELOCITY = 500f;
+    private const float DUMMY_ROTATION_SPEED = 18f;
+    private const float DUMMY_DARKEN_RATE = 1f;
+    private const float DUMMY_GRAVITY = 3000f;
     //public data
     public List<QuizItem> quizItems;
 
@@ -65,6 +68,10 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private AudioClip promptChangeSound;
     [SerializeField] private float promptChangeVolume;
     [SerializeField] private Text[] choiceButtonText;
+    [SerializeField] private GameObject correctButtonDummy;
+    [SerializeField] private GameObject incorrectButtonDummy;
+    [SerializeField] private Text correctButtonDummyText;
+    [SerializeField] private Text incorrectButtonDummyText;
 
     private int _rightAnswerCount = 0;
     private int _wrongAnswerCount = 0;
@@ -160,14 +167,71 @@ public class GameFieldManager : MonoBehaviour
             //like they got it right
             rightAnswerCount++;
             PlaySound(rightAnswerSound, rightAnswerVolume);
+            StartCoroutine(RightAnswerDummyAnimation(buttonIndex));
         }
         else
         {
             //they got it rawng;
             wrongAnswerCount++;
             PlaySound(wrongAnswerSound, wrongAnswerVolume);
+            StartCoroutine(WrongAnswerDummyAnimation(buttonIndex));
+            //TODO: find right answer's index and have it play the "this was the right answer" animation
+            //StartCoroutine(RightAnswerDummyAnimation(buttonIndex));
         }
         NextMultiChoiceItem();
+    }
+
+    private IEnumerator RightAnswerDummyAnimation(int buttonIndex)
+    {
+        var buttonText = choiceButtonText[buttonIndex];
+        correctButtonDummy.SetActive(true);
+        correctButtonDummy.transform.position = buttonText.transform.parent.position;
+        correctButtonDummyText.text = buttonText.text;
+        float time = 0f;
+
+        while (time < QuizItem.CORRECT_FADE_TIME)
+        {
+            time += Time.deltaTime;
+            float alpha = (QuizItem.CORRECT_FADE_TIME - time) / QuizItem.CORRECT_FADE_TIME;
+            float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / QuizItem.CORRECT_FADE_TIME);
+            //MAYBEDO: Lighten colors as they fade out? 
+            correctButtonDummyText.color = new Color(0f, 0f, 0f, alpha);
+            correctButtonDummy.GetComponent<Image>().color = new Color(0f, 1f, 0f, alpha);
+            correctButtonDummy.transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+        correctButtonDummy.gameObject.SetActive(false);
+    }
+
+    private IEnumerator WrongAnswerDummyAnimation(int buttonIndex)
+    {
+        var buttonText = choiceButtonText[buttonIndex];
+        incorrectButtonDummy.SetActive(true);
+        incorrectButtonDummy.transform.localPosition = buttonText.transform.parent.localPosition;
+        incorrectButtonDummyText.text = buttonText.text;
+        Vector2 linearVelocity = Vector2.zero;
+        float time = 0f;
+
+        float randomAngle = Random.Range(-1f, 1f);
+        float twistRate = DUMMY_ROTATION_SPEED;
+        if (Random.Range(0, 2) == 0)
+        {
+            twistRate = -DUMMY_ROTATION_SPEED;
+        }
+        linearVelocity += (Vector2.left * Mathf.Sin(randomAngle) + Vector2.up * Mathf.Cos(randomAngle)) * DUMMY_BUMP_VELOCITY;
+        while (incorrectButtonDummy.transform.localPosition.y > -QuizItem.DISTANCE_OFFSCREEN)
+        {
+            //Debug.Log("[GameFieldManager:WrongAnswerDummyAnimation]");
+            time += Time.deltaTime;
+            linearVelocity += Vector2.down * DUMMY_GRAVITY * Time.deltaTime;
+            incorrectButtonDummy.transform.localRotation = Quaternion.Euler(0, 0, twistRate * time);
+            incorrectButtonDummy.GetComponent<Image>().color = new Color(1f - time * DUMMY_DARKEN_RATE, 0f, 0f);
+
+            incorrectButtonDummy.transform.localPosition += (Vector3)(linearVelocity * Time.deltaTime);
+
+            yield return null;
+        }
+        incorrectButtonDummy.gameObject.SetActive(false);
     }
 
     public void CameraPan(Vector2 pan)

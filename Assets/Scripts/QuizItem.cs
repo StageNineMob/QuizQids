@@ -11,13 +11,13 @@ public class QuizItem : CameraDragger
 
     //consts and static data
     const float WIDTH_FACTOR = 0.6f, HEIGHT_FACTOR = 1.1f;
-    const float CORRECT_FADE_TIME = .4f;
-    const float CORRECT_SCALE_AMOUNT = 1.3f;
-    const float INCORRECT_GRAVITY = 6500f;
-    const float DISTANCE_OFFSCREEN = 480;
-    const float INCORRECT_BUMP_VELOCITY = 1000f;
-    const float INCORRECT_ROTATION_SPEED = 18f;
-    const float INCORRECT_DARKEN_RATE = 1f;
+    public const float CORRECT_FADE_TIME = .4f;
+    public const float CORRECT_SCALE_AMOUNT = 1.3f;
+    public const float INCORRECT_GRAVITY = 6500f;
+    public const float DISTANCE_OFFSCREEN = 480;
+    public const float INCORRECT_BUMP_VELOCITY = 1000f;
+    public const float INCORRECT_ROTATION_SPEED = 18f;
+    public const float INCORRECT_DARKEN_RATE = 1f;
     const float NUDGING_ACCEL = 1000f;
     const float NUDGING_CURVE_POWER = 0.3f;
     const float SPEED_DAMPENING_THRESHOLD = 350f;
