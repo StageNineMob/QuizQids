@@ -291,14 +291,12 @@ public class GameFieldManager : MonoBehaviour
     private void PauseGame()
     {
         pauseButtonText.text = "Resume";
-        foreach (var item in quizItems)
-        {
-            item.gameObject.SetActive(false);
-        }
         screenDimmer.color = Color.black * DIMMER_MAX_ALPHA;
         screenCenterText.fontSize = CENTER_FONT_SIZE;
         screenCenterText.horizontalOverflow = HorizontalWrapMode.Wrap;
         screenCenterText.color = Color.white;
+
+        promptDisplay.gameObject.SetActive(false);
         string text = TriviaParser.singleton.categoryName;
         if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
         {
@@ -310,12 +308,9 @@ public class GameFieldManager : MonoBehaviour
     private void UnpauseGame()
     {
         pauseButtonText.text = "Pause";
-        foreach (var item in quizItems)
-        {
-            item.gameObject.SetActive(true);
-        }
         screenDimmer.color = Color.clear;
         screenCenterText.color = Color.clear;
+        promptDisplay.gameObject.SetActive(true);
     }
 
     private void CameraWrap()
@@ -648,7 +643,7 @@ public class GameFieldManager : MonoBehaviour
                 break;
             case GameState.PAUSE:
                 endGameButton.gameObject.SetActive(false);
-                gameplayCanvas.gameObject.SetActive(false);
+                //gameplayCanvas.gameObject.SetActive(false);
                 interfaceCanvas.gameObject.SetActive(false);
                 break;
             case GameState.PLAY:
@@ -704,7 +699,7 @@ public class GameFieldManager : MonoBehaviour
                 {
                     PauseGame();
                 }
-                gameplayCanvas.gameObject.SetActive(true);
+                //gameplayCanvas.gameObject.SetActive(true);
                 interfaceCanvas.gameObject.SetActive(true);
                 endGameButton.gameObject.SetActive(true);
                 break;
