@@ -48,6 +48,7 @@ public class GameFieldManager : MonoBehaviour
     private const float DUMMY_GRAVITY = 3000f;
     private const float REVEAL_GLOW_TIME = 0.4f;
     private const float REVEAL_FADE_TIME = 0.25f;
+    private const float MULTICHOICE_BUTTON_ZOOM_TIME = 0.1f;
 
     //public data
     public List<QuizItem> quizItems;
@@ -638,7 +639,17 @@ public class GameFieldManager : MonoBehaviour
     private IEnumerator DisplayNewMultiChoice()
     {
         promptDisplay.text = currentPrompt;
-        yield return null;
+        float time = 0f;
+        while(time < MULTICHOICE_BUTTON_ZOOM_TIME)
+        {
+            float zoom = time / MULTICHOICE_BUTTON_ZOOM_TIME;
+            foreach(var button in choiceButtonText)
+            {
+                button.transform.parent.localScale = Vector3.one * zoom;
+            }
+            time += Time.deltaTime;
+            yield return null;
+        }
     }
 
     private void TriviaSearchUpdate()
