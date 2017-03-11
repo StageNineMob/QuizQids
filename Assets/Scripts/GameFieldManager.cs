@@ -46,6 +46,9 @@ public class GameFieldManager : MonoBehaviour
     private const float DUMMY_ROTATION_SPEED = 18f;
     private const float DUMMY_DARKEN_RATE = 1f;
     private const float DUMMY_GRAVITY = 3000f;
+    private const float REVEAL_GLOW_TIME = 0.4f;
+    private const float REVEAL_FADE_TIME = 0.25f;
+
     //public data
     public List<QuizItem> quizItems;
 
@@ -175,6 +178,15 @@ public class GameFieldManager : MonoBehaviour
             wrongAnswerCount++;
             PlaySound(wrongAnswerSound, wrongAnswerVolume);
             StartCoroutine(WrongAnswerDummyAnimation(buttonIndex));
+            for(int ii = 0; ii < choiceButtonText.Length; ii++)
+            {
+                if (TriviaParser.singleton.rightAnswers[rightAnswerIndex].prompts.Contains(choiceButtonText[ii].text))
+                {
+                    StartCoroutine(RevealAnswerDummyAnimation(ii));
+                    break;
+                }
+
+            }
             //TODO: find right answer's index and have it play the "this was the right answer" animation
             //StartCoroutine(RightAnswerDummyAnimation(buttonIndex));
         }
@@ -197,6 +209,37 @@ public class GameFieldManager : MonoBehaviour
             //MAYBEDO: Lighten colors as they fade out? 
             correctButtonDummyText.color = new Color(0f, 0f, 0f, alpha);
             correctButtonDummy.GetComponent<Image>().color = new Color(0f, 1f, 0f, alpha);
+            correctButtonDummy.transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+        correctButtonDummy.gameObject.SetActive(false);
+    }
+
+    private IEnumerator RevealAnswerDummyAnimation(int buttonIndex)
+    {
+        var buttonText = choiceButtonText[buttonIndex];
+        correctButtonDummy.SetActive(true);
+        correctButtonDummy.transform.position = buttonText.transform.parent.position;
+        correctButtonDummyText.text = buttonText.text;
+        float time = 0f;
+
+        while (time < REVEAL_FADE_TIME + REVEAL_GLOW_TIME)
+        {
+            time += Time.deltaTime;
+            float alpha = 1;
+            float white = 0;
+            if(time < REVEAL_GLOW_TIME)
+            {
+                white = 1 - time / REVEAL_GLOW_TIME;
+            }
+            if(time > REVEAL_GLOW_TIME)
+            {
+                alpha = 1 - (time - REVEAL_GLOW_TIME)/REVEAL_FADE_TIME;
+            }
+            float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / (REVEAL_FADE_TIME + REVEAL_GLOW_TIME));
+            //MAYBEDO: Lighten colors as they fade out? 
+            correctButtonDummyText.color = new Color(0f, 0f, 0f, alpha);
+            correctButtonDummy.GetComponent<Image>().color = new Color(white, 1f, white, alpha);
             correctButtonDummy.transform.localScale = Vector3.one * scale;
             yield return null;
         }
