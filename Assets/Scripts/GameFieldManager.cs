@@ -380,7 +380,7 @@ public class GameFieldManager : MonoBehaviour
     public void ChangeVolume(float v)
     {
         AudioListener.volume = Mathf.Clamp(v, 0, 1);
-        PlaySound(wrongAnswerSound, wrongAnswerVolume);
+        //PlaySound(wrongAnswerSound, wrongAnswerVolume);
     }
 
     public void PlayAgainButton()
@@ -394,6 +394,11 @@ public class GameFieldManager : MonoBehaviour
         StateExit(gameState);
         gameState = newState;
         StateEnter(newState, previousState);
+    }
+
+    public void PlaySound(AudioClip sound, float volume)
+    {
+        soundEffectSource.PlayOneShot(sound, volume);
     }
 
     #endregion
@@ -487,11 +492,6 @@ public class GameFieldManager : MonoBehaviour
     {
         quizItems = new List<QuizItem>();
         UpdateWorldUnitsPerPixel();
-    }
-
-    private void PlaySound(AudioClip sound, float volume)
-    {
-        soundEffectSource.PlayOneShot(sound, volume);
     }
 
     private void GenerateQuizItem()
@@ -903,6 +903,8 @@ public class GameFieldManager : MonoBehaviour
         }
         return true;
     }
+
+
 
     void Awake()
     {
