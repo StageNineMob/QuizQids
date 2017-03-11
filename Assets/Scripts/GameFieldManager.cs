@@ -197,13 +197,14 @@ public class GameFieldManager : MonoBehaviour
 
     private IEnumerator RightAnswerDummyAnimation(int buttonIndex)
     {
+        int animationIndex = rightAnswerCount;
         var buttonText = choiceButtonText[buttonIndex];
         correctButtonDummy.SetActive(true);
         correctButtonDummy.transform.position = buttonText.transform.parent.position;
         correctButtonDummyText.text = buttonText.text;
         float time = 0f;
 
-        while (time < QuizItem.CORRECT_FADE_TIME)
+        while (time < QuizItem.CORRECT_FADE_TIME && animationIndex == rightAnswerCount)
         {
             time += Time.deltaTime;
             float alpha = (QuizItem.CORRECT_FADE_TIME - time) / QuizItem.CORRECT_FADE_TIME;
@@ -214,18 +215,22 @@ public class GameFieldManager : MonoBehaviour
             correctButtonDummy.transform.localScale = Vector3.one * scale;
             yield return null;
         }
-        correctButtonDummy.gameObject.SetActive(false);
+        if (animationIndex == rightAnswerCount)
+        {
+            correctButtonDummy.gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator RevealAnswerDummyAnimation(int buttonIndex)
     {
+        int animationIndex = rightAnswerCount + wrongAnswerCount;
         var buttonText = choiceButtonText[buttonIndex];
         correctButtonDummy.SetActive(true);
         correctButtonDummy.transform.position = buttonText.transform.parent.position;
         correctButtonDummyText.text = buttonText.text;
         float time = 0f;
 
-        while (time < REVEAL_FADE_TIME + REVEAL_GLOW_TIME)
+        while (time < REVEAL_FADE_TIME + REVEAL_GLOW_TIME && animationIndex == rightAnswerCount + wrongAnswerCount)
         {
             time += Time.deltaTime;
             float alpha = 1;
@@ -245,11 +250,15 @@ public class GameFieldManager : MonoBehaviour
             correctButtonDummy.transform.localScale = Vector3.one * scale;
             yield return null;
         }
-        correctButtonDummy.gameObject.SetActive(false);
+        if (animationIndex == rightAnswerCount + wrongAnswerCount)
+        {
+            correctButtonDummy.gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator WrongAnswerDummyAnimation(int buttonIndex)
     {
+        int animationIndex = wrongAnswerCount;
         var buttonText = choiceButtonText[buttonIndex];
         incorrectButtonDummy.SetActive(true);
         incorrectButtonDummy.transform.localPosition = buttonText.transform.parent.localPosition;
@@ -264,7 +273,7 @@ public class GameFieldManager : MonoBehaviour
             twistRate = -DUMMY_ROTATION_SPEED;
         }
         linearVelocity += (Vector2.left * Mathf.Sin(randomAngle) + Vector2.up * Mathf.Cos(randomAngle)) * DUMMY_BUMP_VELOCITY;
-        while (incorrectButtonDummy.transform.localPosition.y > -QuizItem.DISTANCE_OFFSCREEN)
+        while (incorrectButtonDummy.transform.localPosition.y > -QuizItem.DISTANCE_OFFSCREEN && animationIndex == wrongAnswerCount)
         {
             //Debug.Log("[GameFieldManager:WrongAnswerDummyAnimation]");
             time += Time.deltaTime;
@@ -276,7 +285,10 @@ public class GameFieldManager : MonoBehaviour
 
             yield return null;
         }
-        incorrectButtonDummy.gameObject.SetActive(false);
+        if (animationIndex == wrongAnswerCount)
+        {
+            incorrectButtonDummy.gameObject.SetActive(false);
+        }
     }
 
     public void CameraPan(Vector2 pan)
