@@ -161,6 +161,7 @@ public class GameFieldManager : MonoBehaviour
     }
     public void PressedEndGameButton()
     {
+        pauseButtonText.text = "Pause";
         ChangeState(GameState.MAIN_MENU);
     }
 
