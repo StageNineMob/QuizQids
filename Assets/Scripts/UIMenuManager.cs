@@ -34,11 +34,11 @@ public class UIMenuManager : MonoBehaviour {
 
     public void EnableGameModeButtons()
     {
-        if ((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.MULTIPLE_CHOICE) == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+        if ((TriviaParser.singleton.categoryList[fileViewer.currentCategoryNumber].Value & TriviaParser.TriviaMode.MULTIPLE_CHOICE) == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
         {
             playMultiChoiceButton.interactable = true;
         }
-        if ((TriviaParser.singleton.triviaMode & (TriviaParser.TriviaMode.SPECIFIC | TriviaParser.TriviaMode.GENERAL)) != TriviaParser.TriviaMode.NONE)
+        if ((TriviaParser.singleton.categoryList[fileViewer.currentCategoryNumber].Value & (TriviaParser.TriviaMode.SPECIFIC | TriviaParser.TriviaMode.GENERAL)) != TriviaParser.TriviaMode.NONE)
         {
             playTriviaSearchButton.interactable = true;
         }
@@ -59,21 +59,19 @@ public class UIMenuManager : MonoBehaviour {
 
     public void PressedPlayMultiChoiceButton()
     {
-        // TODO: Confirm which category to play rather than forcing 0
-        TriviaParser.singleton.LoadTrivia(0, TriviaParser.TriviaMode.MULTIPLE_CHOICE);
+        TriviaParser.singleton.LoadTrivia(fileViewer.currentCategoryNumber, TriviaParser.TriviaMode.MULTIPLE_CHOICE);
         GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
     }
 
     public void PressedPlayTriviaSearchButton()
     {
-        // TODO: Confirm which category to play rather than forcing 0
         // TODO: Confirm general vs. specific
         var mode = TriviaParser.TriviaMode.GENERAL;
-        if ((TriviaParser.singleton.triviaMode & TriviaParser.TriviaMode.SPECIFIC) == TriviaParser.TriviaMode.SPECIFIC)
+        if ((TriviaParser.singleton.categoryList[fileViewer.currentCategoryNumber].Value & TriviaParser.TriviaMode.SPECIFIC) == TriviaParser.TriviaMode.SPECIFIC)
         {
             mode = TriviaParser.TriviaMode.SPECIFIC;
         }
-        TriviaParser.singleton.LoadTrivia(0, mode);
+        TriviaParser.singleton.LoadTrivia(fileViewer.currentCategoryNumber, mode);
         GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
     }
 

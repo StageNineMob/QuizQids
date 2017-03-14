@@ -29,6 +29,7 @@ public class TriviaParser : MonoBehaviour {
     public static TriviaParser singleton;
 
     //public data
+    public List<KeyValuePair<string, TriviaMode>> categoryList;
 
     //private data
     string _categoryName;
@@ -38,7 +39,6 @@ public class TriviaParser : MonoBehaviour {
     private List<TriviaPair> _wrongAnswers;
     private List<string> _prompts;
     private XmlDocument triviaDocument;
-    private List<KeyValuePair<string, TriviaMode>> categoryList;
 
     //public properties
     public string categoryName

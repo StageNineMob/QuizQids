@@ -13,21 +13,21 @@ public class FileViewer : MonoBehaviour
 
     //consts and static data
     const float SCROLLBAR_TOP = 1f;
-    const int NO_FILE = -1;
+    const int NO_ELEMENT = -1;
     const float SCROLL_FACTOR = 1000f;
 
     //public data
-
+    public int currentCategoryNumber;
     //private data
     private List<FileViewListElement> elements;
     private string _directory, _extension;
     [SerializeField]
     private GameObject listElementPrefab;
     [SerializeField] private Scrollbar scrollbar;
-    [SerializeField] private InputField _fileNameField;
+    [SerializeField] private InputField _inputField;
     private float _scrollAreaMinHeight;
     private float _listElementHeight;
-    private int _currentlySelectedFile = NO_FILE;
+    private int _currentlySelectedElement = NO_ELEMENT;
     [SerializeField] private Image metadataThumbnail;
     [SerializeField] private Text metadataText;
 
@@ -51,27 +51,52 @@ public class FileViewer : MonoBehaviour
     /// </summary>
     /// <param name="directory"></param>
     /// <param name="extension"></param>
-    public void PopulateList(string directory, string extension)
+    public void PopulateList(string directory, string extension, bool displayCategories = true)
     {
         _directory = directory;
         _extension = extension;
 
         FileManager.singleton.EnsureDirectoryExists(directory);
         List<string> fileNames = FileManager.singleton.FilenamesInDirectory(directory);
-        foreach (string name in fileNames)
+        foreach (string fileName in fileNames)
         {
-            if (FileManager.FileExtensionIs(name, extension))
+            if (FileManager.FileExtensionIs(fileName, extension))
             {
-                FileViewListElement element = Instantiate(listElementPrefab).GetComponent<FileViewListElement>();
-                if(element == null)
+                if (displayCategories)
                 {
-                    Debug.LogError("wut");
-                }
-                element.SetFileName(name);
-                element.transform.SetParent(transform);
-                element.transform.localScale = Vector3.one;
+                    TriviaParser.singleton.LoadTriviaMetadata(directory + fileName, false);
+                    for(int ii = 0; ii < TriviaParser.singleton.categoryList.Count; ++ii)
+                    {
+                        FileViewListElement element = Instantiate(listElementPrefab).GetComponent<FileViewListElement>();
+                        if (element == null)
+                        {
+                            Debug.LogError("wut");
+                        }
+                        element.fileName = fileName;
+                        element.categoryName = TriviaParser.singleton.categoryList[ii].Key;
+                        element.categoryNumber = ii;
+                        element.SetDisplayName(element.categoryName);
+                        element.transform.SetParent(transform);
+                        element.transform.localScale = Vector3.one;
 
-                elements.Add(element);
+                        elements.Add(element);
+                    }
+                }
+                else
+                {
+                    FileViewListElement element = Instantiate(listElementPrefab).GetComponent<FileViewListElement>();
+                    if (element == null)
+                    {
+                        Debug.LogError("wut");
+                    }
+                    element.fileName = fileName;
+                    // MAYBEDO: set dummy values for element categoryname/number?
+                    element.SetDisplayName(fileName);
+                    element.transform.SetParent(transform);
+                    element.transform.localScale = Vector3.one;
+
+                    elements.Add(element);
+                }
             }
         }
         // Resize scroll area to fit text and move to top of list
@@ -85,17 +110,17 @@ public class FileViewer : MonoBehaviour
 
     public void NextInList()
     {
-        if (_currentlySelectedFile != NO_FILE)
+        if (_currentlySelectedElement != NO_ELEMENT)
         {
-            elements[(_currentlySelectedFile + 1) % elements.Count].ActivateSelf();
+            elements[(_currentlySelectedElement + 1) % elements.Count].ActivateSelf();
         }
     }
 
     public void PreviousInList()
     {
-        if (_currentlySelectedFile != NO_FILE)
+        if (_currentlySelectedElement != NO_ELEMENT)
         {
-            elements[(_currentlySelectedFile + elements.Count - 1) % elements.Count].ActivateSelf();
+            elements[(_currentlySelectedElement + elements.Count - 1) % elements.Count].ActivateSelf();
         }
     }
 
@@ -127,19 +152,19 @@ public class FileViewer : MonoBehaviour
         transform.localPosition = Vector3.zero;
     }
 
-    public void SetFileName(string fileName)
+    public void SetInputField(string inputText)
     {
-        _fileNameField.text = fileName;
+        _inputField.text = inputText;
         // TODO: 
         //      :| Figure out a way to highlight the name in the text field without...
         //      B| ...brakinstuff
-        _fileNameField.MoveTextStart(false);
-        _fileNameField.MoveTextEnd(true);
+        _inputField.MoveTextStart(false);
+        _inputField.MoveTextEnd(true);
     }
 
     public void RespondToDoubleClick(string fileName)
     {
-        if (_fileNameField.text == fileName)
+        if (_inputField.text == fileName)
         {
             if(_doubleClickCallback != null)
             {
@@ -148,39 +173,41 @@ public class FileViewer : MonoBehaviour
         }
         else
         {
-            SetFileName(fileName);
+            SetInputField(fileName);
         }
     }
 
-    public void HighlightFileName(string fileName)
+    public void HighlightDisplayName(string displayName)
     {
         //ClearMetadata();
 #if  FILESYSTEM_CASE_INSENSITIVE
         fileName = fileName.ToLower();
 #endif
-        if (_currentlySelectedFile != NO_FILE)
+        if (_currentlySelectedElement != NO_ELEMENT)
         {
-            elements[_currentlySelectedFile].highlight = false;
+            elements[_currentlySelectedElement].highlight = false;
             UIMenuManager.singleton.DisableGameModeButtons();
         }
-        _currentlySelectedFile = NO_FILE;
+        _currentlySelectedElement = NO_ELEMENT;
+        currentCategoryNumber = NO_ELEMENT;
 
-        if (!FileManager.FileExtensionIs(fileName, _extension))
-            fileName += _extension;
+        //if (!FileManager.FileExtensionIs(displayName, _extension))
+        //    displayName += _extension;
         for (int ii = 0; ii < elements.Count; ii++)
         {
-            if (elements[ii].filename == fileName)
+            if (elements[ii].categoryName == displayName)
             {
-                _currentlySelectedFile = ii;
+                _currentlySelectedElement = ii;
                 elements[ii].highlight = true;
-                JumpToFileIndex(ii);
-                ParseMetadata(fileName);
+                JumpToElementIndex(ii);
+                currentCategoryNumber = elements[ii].categoryNumber;
+                ParseMetadata(elements[ii].fileName);
                 return;
             }
         }
     }
 
-    public void JumpToFileIndex(int index)
+    public void JumpToElementIndex(int index)
     {
         var elementYPos = transform.localPosition.y + elements[index].transform.localPosition.y;
         var limit = (_scrollAreaMinHeight - _listElementHeight) * .5f;
@@ -273,7 +300,7 @@ public class FileViewer : MonoBehaviour
     {
         if (shouldReset)
         {
-            HighlightFileName(_fileNameField.text);
+            HighlightDisplayName(_inputField.text);
             shouldReset = false;
         }
     }

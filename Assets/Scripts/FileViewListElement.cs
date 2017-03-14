@@ -10,12 +10,14 @@ public class FileViewListElement : MonoBehaviour {
     //consts and static data
     public const float MAXIMUM_TIME_DOUBLE_CLICK_DELAY = 0.35f;
     //public data
-
+    public string fileName;
+    public string categoryName;
+    public int categoryNumber;
     //private data
     private float lastClick = 0f;
 
     [SerializeField]
-    private Text filenameText;
+    private Text displayText;
     //public properties
     public bool highlight
     {
@@ -24,12 +26,12 @@ public class FileViewListElement : MonoBehaviour {
             if (value)
             {
                 GetComponent<Image>().color = Color.blue;
-                filenameText.color = Color.white;
+                displayText.color = Color.white;
             }
             else
             {
                 GetComponent<Image>().color = Color.white;
-                filenameText.color = Color.black;
+                displayText.color = Color.black;
             }
         }
     }
@@ -41,7 +43,7 @@ public class FileViewListElement : MonoBehaviour {
 #if FILESYSTEM_CASE_INSENSITIVE
             return filenameText.text.ToLower();
 #else
-            return filenameText.text;
+            return displayText.text;
 #endif
         }
     }
@@ -53,9 +55,9 @@ public class FileViewListElement : MonoBehaviour {
     /// Set the text to display.
     /// </summary>
     /// <param name="newName">filename provided with file type extension.</param>
-    public void SetFileName(string newName)
+    public void SetDisplayName(string newName)
     {
-        filenameText.text = newName;
+        displayText.text = newName;
     }
 
     public void RespondToClick()
@@ -63,7 +65,7 @@ public class FileViewListElement : MonoBehaviour {
         //Case: Double-click
         if (Time.time < (lastClick + MAXIMUM_TIME_DOUBLE_CLICK_DELAY))
         {
-            transform.parent.GetComponent<FileViewer>().RespondToDoubleClick(filenameText.text);
+            transform.parent.GetComponent<FileViewer>().RespondToDoubleClick(displayText.text);
         }
         else
         {
@@ -74,7 +76,7 @@ public class FileViewListElement : MonoBehaviour {
 
     public void ActivateSelf()
     {
-        transform.parent.GetComponent<FileViewer>().SetFileName(filenameText.text);
+        transform.parent.GetComponent<FileViewer>().SetInputField(displayText.text);
     }
 
 #endregion
