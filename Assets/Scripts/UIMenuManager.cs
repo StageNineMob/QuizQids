@@ -75,6 +75,39 @@ public class UIMenuManager : MonoBehaviour {
         GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
     }
 
+    public void PressedQuickPlayButton()
+    {
+        fileViewer.SelectRandomElement();
+        if(playMultiChoiceButton.interactable && playTriviaSearchButton.interactable)
+        {
+            int randomMode = Random.Range(0, 2);
+            Debug.Log("[UIMenuManager:PressedQuickPlayButton] randomMode = " + randomMode);
+            if (randomMode == 1)
+            {
+                PressedPlayTriviaSearchButton();
+            }
+            else
+            {
+                PressedPlayMultiChoiceButton();
+            }
+        }
+        else
+        {
+            if(playMultiChoiceButton.interactable)
+            {
+                PressedPlayMultiChoiceButton();
+            }
+            else if(playTriviaSearchButton.interactable)
+            {
+                PressedPlayTriviaSearchButton();
+            }
+            else
+            {
+                Debug.Log("[UIMenuManager:PressedQuickPlayButton] trying to quickplay with no available game modes");
+            }
+        }
+    }
+
     public void PressedOptionsButton()
     {
         optionsPanel.SetActive(true);

@@ -241,7 +241,7 @@ public class TriviaParser : MonoBehaviour {
     {
         string text = "";
 
-        Debug.Log("[TriviaParser:LoadTriviaMetadata] Application.PersistentDataPath " + Application.persistentDataPath);
+        //Debug.Log("[TriviaParser:LoadTriviaMetadata] Application.PersistentDataPath " + Application.persistentDataPath);
 
         try
         {

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Random = UnityEngine.Random;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -205,6 +206,12 @@ public class FileViewer : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void SelectRandomElement()
+    {
+        int randomIndex = Random.Range(0, elements.Count);
+        SetInputField(elements[randomIndex].categoryName);
     }
 
     public void JumpToElementIndex(int index)
