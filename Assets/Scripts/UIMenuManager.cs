@@ -61,6 +61,7 @@ public class UIMenuManager : MonoBehaviour {
     {
         TriviaParser.singleton.LoadTrivia(fileViewer.currentCategoryNumber, TriviaParser.TriviaMode.MULTIPLE_CHOICE);
         GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
+        GameFieldManager.singleton.quickplayEnabled = false;
     }
 
     public void PressedPlayTriviaSearchButton()
@@ -73,6 +74,7 @@ public class UIMenuManager : MonoBehaviour {
         }
         TriviaParser.singleton.LoadTrivia(fileViewer.currentCategoryNumber, mode);
         GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
+        GameFieldManager.singleton.quickplayEnabled = false;
     }
 
     public void PressedQuickPlayButton()
@@ -80,6 +82,9 @@ public class UIMenuManager : MonoBehaviour {
         fileViewer.SelectRandomElement();
         if(playMultiChoiceButton.interactable && playTriviaSearchButton.interactable)
         {
+            //If we ever add another game mode, we're gonna wanna remember this 2. 
+            //                               |
+            //                               V
             int randomMode = Random.Range(0, 2);
             Debug.Log("[UIMenuManager:PressedQuickPlayButton] randomMode = " + randomMode);
             if (randomMode == 1)
@@ -106,6 +111,7 @@ public class UIMenuManager : MonoBehaviour {
                 Debug.Log("[UIMenuManager:PressedQuickPlayButton] trying to quickplay with no available game modes");
             }
         }
+        GameFieldManager.singleton.quickplayEnabled = true;
     }
 
     public void PressedOptionsButton()

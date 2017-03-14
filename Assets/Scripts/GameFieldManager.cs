@@ -49,9 +49,10 @@ public class GameFieldManager : MonoBehaviour
     private const float REVEAL_GLOW_TIME = 0.4f;
     private const float REVEAL_FADE_TIME = 0.25f;
     private const float MULTICHOICE_BUTTON_ZOOM_TIME = 0.1f;
-
+    
     //public data
     public List<QuizItem> quizItems;
+    public bool quickplayEnabled;
 
     //private data
     GameState gameState = GameState.NONE;
@@ -92,6 +93,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text scoreUIAccuracyText;
     [SerializeField] private Text scoreUIArbitraryText;
     [SerializeField] private Text pauseButtonText;
+    [SerializeField] private Button replayButton;
     [SerializeField] private Button endGameButton;
     
 
@@ -397,6 +399,18 @@ public class GameFieldManager : MonoBehaviour
 
     public void PlayAgainButton()
     {
+        if (quickplayEnabled)
+        {
+            UIMenuManager.singleton.PressedQuickPlayButton();
+        }
+        else
+        {
+            ChangeState(GameState.PREGAME);
+        }
+    }
+
+    public void ReplayButton()
+    {
         ChangeState(GameState.PREGAME);
     }
 
@@ -595,6 +609,7 @@ public class GameFieldManager : MonoBehaviour
 
         interfaceCanvas.gameObject.SetActive(false);
         scoreCanvas.gameObject.SetActive(true);
+        replayButton.gameObject.SetActive(quickplayEnabled);
     }
 
 
