@@ -651,9 +651,10 @@ public class GameFieldManager : MonoBehaviour
 
     private IEnumerator DisplayNewMultiChoice()
     {
+        int animationIndex = rightAnswerCount + wrongAnswerCount;
         promptDisplay.text = currentPrompt;
         float time = 0f;
-        while(time < MULTICHOICE_BUTTON_ZOOM_TIME)
+        while(time < MULTICHOICE_BUTTON_ZOOM_TIME && animationIndex == rightAnswerCount + wrongAnswerCount)
         {
             float zoom = time / MULTICHOICE_BUTTON_ZOOM_TIME;
             foreach(var button in choiceButtonText)
@@ -662,6 +663,13 @@ public class GameFieldManager : MonoBehaviour
             }
             time += Time.deltaTime;
             yield return null;
+        }
+        if(animationIndex == rightAnswerCount + wrongAnswerCount)
+        {
+            foreach (var button in choiceButtonText)
+            {
+                button.transform.parent.localScale = Vector3.one;
+            }
         }
     }
 
