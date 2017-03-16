@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class GameFieldManager : MonoBehaviour
 {
     //enums
-     public enum GameState
+    public enum GameState
     {
         NONE,
         PREGAME,
@@ -18,7 +18,17 @@ public class GameFieldManager : MonoBehaviour
     };
 
     //subclasses
+    [System.Serializable]
+    public class UserSettings
+    {
+        public float sfxVolume;
 
+        public UserSettings()
+        {
+            sfxVolume = 1f;
+        }
+    }
+    
     //consts and static data
     public static GameFieldManager singleton;
     private const float PREGAME_WAIT_TIME = 1.5f;
@@ -49,10 +59,12 @@ public class GameFieldManager : MonoBehaviour
     private const float REVEAL_GLOW_TIME = 0.4f;
     private const float REVEAL_FADE_TIME = 0.25f;
     private const float MULTICHOICE_BUTTON_ZOOM_TIME = 0.1f;
+    private const string SETTINGS_FILE_PATH = "UserSettings.qqs";
     
     //public data
     public List<QuizItem> quizItems;
     public bool quickplayEnabled;
+    public UserSettings currentSettings;
 
     //private data
     GameState gameState = GameState.NONE;
@@ -197,102 +209,6 @@ public class GameFieldManager : MonoBehaviour
         NextMultiChoiceItem();
     }
 
-    private IEnumerator RightAnswerDummyAnimation(int buttonIndex)
-    {
-        int animationIndex = rightAnswerCount;
-        var buttonText = choiceButtonText[buttonIndex];
-        correctButtonDummy.SetActive(true);
-        correctButtonDummy.transform.position = buttonText.transform.parent.position;
-        correctButtonDummyText.text = buttonText.text;
-        float time = 0f;
-
-        while (time < QuizItem.CORRECT_FADE_TIME && animationIndex == rightAnswerCount)
-        {
-            time += Time.deltaTime;
-            float alpha = (QuizItem.CORRECT_FADE_TIME - time) / QuizItem.CORRECT_FADE_TIME;
-            float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / QuizItem.CORRECT_FADE_TIME);
-            //MAYBEDO: Lighten colors as they fade out? 
-            correctButtonDummyText.color = new Color(0f, 0f, 0f, alpha);
-            correctButtonDummy.GetComponent<Image>().color = new Color(0f, 1f, 0f, alpha);
-            correctButtonDummy.transform.localScale = Vector3.one * scale;
-            yield return null;
-        }
-        if (animationIndex == rightAnswerCount)
-        {
-            correctButtonDummy.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator RevealAnswerDummyAnimation(int buttonIndex)
-    {
-        int animationIndex = rightAnswerCount + wrongAnswerCount;
-        var buttonText = choiceButtonText[buttonIndex];
-        correctButtonDummy.SetActive(true);
-        correctButtonDummy.transform.position = buttonText.transform.parent.position;
-        correctButtonDummyText.text = buttonText.text;
-        float time = 0f;
-
-        while (time < REVEAL_FADE_TIME + REVEAL_GLOW_TIME && animationIndex == rightAnswerCount + wrongAnswerCount)
-        {
-            time += Time.deltaTime;
-            float alpha = 1;
-            float white = 0;
-            if(time < REVEAL_GLOW_TIME)
-            {
-                white = 1 - time / REVEAL_GLOW_TIME;
-            }
-            if(time > REVEAL_GLOW_TIME)
-            {
-                alpha = 1 - (time - REVEAL_GLOW_TIME)/REVEAL_FADE_TIME;
-            }
-            float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / (REVEAL_FADE_TIME + REVEAL_GLOW_TIME));
-            //MAYBEDO: Lighten colors as they fade out? 
-            correctButtonDummyText.color = new Color(0f, 0f, 0f, alpha);
-            correctButtonDummy.GetComponent<Image>().color = new Color(white, 1f, white, alpha);
-            correctButtonDummy.transform.localScale = Vector3.one * scale;
-            yield return null;
-        }
-        if (animationIndex == rightAnswerCount + wrongAnswerCount)
-        {
-            correctButtonDummy.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator WrongAnswerDummyAnimation(int buttonIndex)
-    {
-        int animationIndex = wrongAnswerCount;
-        var buttonText = choiceButtonText[buttonIndex];
-        incorrectButtonDummy.SetActive(true);
-        incorrectButtonDummy.transform.localPosition = buttonText.transform.parent.localPosition;
-        incorrectButtonDummyText.text = buttonText.text;
-        Vector2 linearVelocity = Vector2.zero;
-        float time = 0f;
-
-        float randomAngle = Random.Range(-1f, 1f);
-        float twistRate = DUMMY_ROTATION_SPEED;
-        if (Random.Range(0, 2) == 0)
-        {
-            twistRate = -DUMMY_ROTATION_SPEED;
-        }
-        linearVelocity += (Vector2.left * Mathf.Sin(randomAngle) + Vector2.up * Mathf.Cos(randomAngle)) * DUMMY_BUMP_VELOCITY;
-        while (incorrectButtonDummy.transform.localPosition.y > -QuizItem.DISTANCE_OFFSCREEN && animationIndex == wrongAnswerCount)
-        {
-            //Debug.Log("[GameFieldManager:WrongAnswerDummyAnimation]");
-            time += Time.deltaTime;
-            linearVelocity += Vector2.down * DUMMY_GRAVITY * Time.deltaTime;
-            incorrectButtonDummy.transform.localRotation = Quaternion.Euler(0, 0, twistRate * time);
-            incorrectButtonDummy.GetComponent<Image>().color = new Color(1f - time * DUMMY_DARKEN_RATE, 0f, 0f);
-
-            incorrectButtonDummy.transform.localPosition += (Vector3)(linearVelocity * Time.deltaTime);
-
-            yield return null;
-        }
-        if (animationIndex == wrongAnswerCount)
-        {
-            incorrectButtonDummy.gameObject.SetActive(false);
-        }
-    }
-
     public void CameraPan(Vector2 pan)
     {
         Camera.main.transform.position += (Vector3)(pan * worldUnitsPerPixel);
@@ -427,6 +343,20 @@ public class GameFieldManager : MonoBehaviour
         soundEffectSource.PlayOneShot(sound, volume);
     }
 
+    public void ResetApplicationSettings()
+    {
+        ChangeVolume(currentSettings.sfxVolume);
+    }
+
+    public void UpdateCurrentSettings()
+    {
+        currentSettings.sfxVolume = AudioListener.volume;
+    }
+
+    public void SaveCurrentSettings()
+    {
+        FileManager.singleton.Save(currentSettings, SETTINGS_FILE_PATH);
+    }
     #endregion
 
     #region private methods
@@ -472,6 +402,102 @@ public class GameFieldManager : MonoBehaviour
         if (Camera.main.transform.position.y < cameraMinY)
         {
             Camera.main.transform.position += Vector3.up * (cameraMaxY - cameraMinY);
+        }
+    }
+
+    private IEnumerator RightAnswerDummyAnimation(int buttonIndex)
+    {
+        int animationIndex = rightAnswerCount;
+        var buttonText = choiceButtonText[buttonIndex];
+        correctButtonDummy.SetActive(true);
+        correctButtonDummy.transform.position = buttonText.transform.parent.position;
+        correctButtonDummyText.text = buttonText.text;
+        float time = 0f;
+
+        while (time < QuizItem.CORRECT_FADE_TIME && animationIndex == rightAnswerCount)
+        {
+            time += Time.deltaTime;
+            float alpha = (QuizItem.CORRECT_FADE_TIME - time) / QuizItem.CORRECT_FADE_TIME;
+            float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / QuizItem.CORRECT_FADE_TIME);
+            //MAYBEDO: Lighten colors as they fade out? 
+            correctButtonDummyText.color = new Color(0f, 0f, 0f, alpha);
+            correctButtonDummy.GetComponent<Image>().color = new Color(0f, 1f, 0f, alpha);
+            correctButtonDummy.transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+        if (animationIndex == rightAnswerCount)
+        {
+            correctButtonDummy.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator RevealAnswerDummyAnimation(int buttonIndex)
+    {
+        int animationIndex = rightAnswerCount + wrongAnswerCount;
+        var buttonText = choiceButtonText[buttonIndex];
+        correctButtonDummy.SetActive(true);
+        correctButtonDummy.transform.position = buttonText.transform.parent.position;
+        correctButtonDummyText.text = buttonText.text;
+        float time = 0f;
+
+        while (time < REVEAL_FADE_TIME + REVEAL_GLOW_TIME && animationIndex == rightAnswerCount + wrongAnswerCount)
+        {
+            time += Time.deltaTime;
+            float alpha = 1;
+            float white = 0;
+            if (time < REVEAL_GLOW_TIME)
+            {
+                white = 1 - time / REVEAL_GLOW_TIME;
+            }
+            if (time > REVEAL_GLOW_TIME)
+            {
+                alpha = 1 - (time - REVEAL_GLOW_TIME) / REVEAL_FADE_TIME;
+            }
+            float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / (REVEAL_FADE_TIME + REVEAL_GLOW_TIME));
+            //MAYBEDO: Lighten colors as they fade out? 
+            correctButtonDummyText.color = new Color(0f, 0f, 0f, alpha);
+            correctButtonDummy.GetComponent<Image>().color = new Color(white, 1f, white, alpha);
+            correctButtonDummy.transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+        if (animationIndex == rightAnswerCount + wrongAnswerCount)
+        {
+            correctButtonDummy.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator WrongAnswerDummyAnimation(int buttonIndex)
+    {
+        int animationIndex = wrongAnswerCount;
+        var buttonText = choiceButtonText[buttonIndex];
+        incorrectButtonDummy.SetActive(true);
+        incorrectButtonDummy.transform.localPosition = buttonText.transform.parent.localPosition;
+        incorrectButtonDummyText.text = buttonText.text;
+        Vector2 linearVelocity = Vector2.zero;
+        float time = 0f;
+
+        float randomAngle = Random.Range(-1f, 1f);
+        float twistRate = DUMMY_ROTATION_SPEED;
+        if (Random.Range(0, 2) == 0)
+        {
+            twistRate = -DUMMY_ROTATION_SPEED;
+        }
+        linearVelocity += (Vector2.left * Mathf.Sin(randomAngle) + Vector2.up * Mathf.Cos(randomAngle)) * DUMMY_BUMP_VELOCITY;
+        while (incorrectButtonDummy.transform.localPosition.y > -QuizItem.DISTANCE_OFFSCREEN && animationIndex == wrongAnswerCount)
+        {
+            //Debug.Log("[GameFieldManager:WrongAnswerDummyAnimation]");
+            time += Time.deltaTime;
+            linearVelocity += Vector2.down * DUMMY_GRAVITY * Time.deltaTime;
+            incorrectButtonDummy.transform.localRotation = Quaternion.Euler(0, 0, twistRate * time);
+            incorrectButtonDummy.GetComponent<Image>().color = new Color(1f - time * DUMMY_DARKEN_RATE, 0f, 0f);
+
+            incorrectButtonDummy.transform.localPosition += (Vector3)(linearVelocity * Time.deltaTime);
+
+            yield return null;
+        }
+        if (animationIndex == wrongAnswerCount)
+        {
+            incorrectButtonDummy.gameObject.SetActive(false);
         }
     }
 
@@ -939,8 +965,6 @@ public class GameFieldManager : MonoBehaviour
         return true;
     }
 
-
-
     void Awake()
     {
         Debug.Log("[GameFieldManager:Awake]");
@@ -960,6 +984,19 @@ public class GameFieldManager : MonoBehaviour
 
     void Start()
     {
+        if (FileManager.singleton.FileExists(SETTINGS_FILE_PATH))
+        {
+            currentSettings = FileManager.singleton.Load<UserSettings>(SETTINGS_FILE_PATH);
+            if (null == currentSettings)
+                currentSettings = new UserSettings();
+        }
+        else
+        {
+            currentSettings = new UserSettings();
+            FileManager.singleton.Save(currentSettings, SETTINGS_FILE_PATH);
+        }
+        ResetApplicationSettings();
+
         UIMenuManager.singleton.HidePlayMenuPanel();
 
         ChangeState(GameState.MAIN_MENU);

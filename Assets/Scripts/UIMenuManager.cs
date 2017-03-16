@@ -116,11 +116,20 @@ public class UIMenuManager : MonoBehaviour {
 
     public void PressedOptionsButton()
     {
+        volumeSlider.value = GameFieldManager.singleton.currentSettings.sfxVolume;
         optionsPanel.SetActive(true);
     }
 
-    public void PressedCloseOptionsButton()
+    public void PressedCancelOptionsButton()
     {
+        GameFieldManager.singleton.ResetApplicationSettings();
+        optionsPanel.SetActive(false);
+    }
+
+    public void PressedConfirmOptionsButton()
+    {
+        GameFieldManager.singleton.UpdateCurrentSettings();
+        GameFieldManager.singleton.SaveCurrentSettings();
         optionsPanel.SetActive(false);
     }
 
