@@ -22,6 +22,8 @@ public class QuizItem : CameraDragger
     const float NUDGING_CURVE_POWER = 0.3f;
     const float SPEED_DAMPENING_THRESHOLD = 350f;
     const float SPEED_DAMPENING_RATE = 0.5f;
+    const float SPEED_BOOSTING_THRESHOLD = 100f;
+    const float SPEED_BOOSTING_RATE = 0.8f;
 
     //public data
     public TriviaPair data;
@@ -31,7 +33,7 @@ public class QuizItem : CameraDragger
     private Vector2 linearVelocity;
     private bool overlapNudging;
     private bool speedDampening;
-
+    private bool speedBoosting;
     //public properties
 
     //methods
@@ -44,6 +46,7 @@ public class QuizItem : CameraDragger
         {
             overlapNudging = false;
             speedDampening = false;
+            speedBoosting = false;
             GameFieldManager.singleton.RemoveQuizItem(this);
             if(GameFieldManager.singleton.QuizCorrectAnswer(data))
             {
@@ -68,6 +71,7 @@ public class QuizItem : CameraDragger
 
         overlapNudging = true;
         speedDampening = true;
+        speedBoosting = true;
 
         answerText.text = newData.value;
         data = newData;
@@ -185,6 +189,14 @@ public class QuizItem : CameraDragger
             {
                 float overflow = linearVelocity.magnitude - SPEED_DAMPENING_THRESHOLD;
                 linearVelocity *= (linearVelocity.magnitude - overflow * SPEED_DAMPENING_RATE * Time.deltaTime ) / linearVelocity.magnitude;
+            }
+        }
+        if (speedBoosting)
+        {
+            if (linearVelocity.magnitude < SPEED_BOOSTING_THRESHOLD)
+            {
+                float overflow = linearVelocity.magnitude - SPEED_BOOSTING_THRESHOLD;
+                linearVelocity *= (linearVelocity.magnitude - overflow * SPEED_BOOSTING_RATE * Time.deltaTime) / linearVelocity.magnitude;
             }
         }
     }
