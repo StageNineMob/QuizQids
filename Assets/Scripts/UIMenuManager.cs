@@ -15,6 +15,7 @@ public class UIMenuManager : MonoBehaviour {
     [SerializeField] private FileViewer fileViewer;
 
     [SerializeField] private Slider volumeSlider;
+        [SerializeField] private Text volumeText;
 
     [SerializeField] private Slider animationTimeSlider;
     [SerializeField] private Text animationTimeText;
@@ -120,6 +121,8 @@ public class UIMenuManager : MonoBehaviour {
     public void PressedOptionsButton()
     {
         volumeSlider.value = GameFieldManager.singleton.currentSettings.sfxVolume;
+        volumeText.text = Mathf.FloorToInt(volumeSlider.value * 100) + "%";
+
         optionsPanel.SetActive(true);
     }
 
@@ -139,6 +142,7 @@ public class UIMenuManager : MonoBehaviour {
     public void ChangeVolume()
     {
         GameFieldManager.singleton.ChangeVolume(volumeSlider.value);
+        volumeText.text = Mathf.FloorToInt(volumeSlider.value * 100) + "%" ;
     }
 
     public void ChangeAnimationTime()
