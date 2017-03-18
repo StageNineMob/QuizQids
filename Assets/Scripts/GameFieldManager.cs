@@ -22,10 +22,11 @@ public class GameFieldManager : MonoBehaviour
     public class UserSettings
     {
         public float sfxVolume;
-
+        public int animationTimeSetting;
         public UserSettings()
         {
             sfxVolume = 1f;
+            animationTimeSetting = 3;
         }
     }
     
@@ -60,11 +61,21 @@ public class GameFieldManager : MonoBehaviour
     private const float REVEAL_FADE_TIME = 0.25f;
     private const float MULTICHOICE_BUTTON_ZOOM_TIME = 0.1f;
     private const string SETTINGS_FILE_PATH = "UserSettings.qqs";
-    
+    private const float ANIMATION_MULTIPLIER_OFF = 100f;
+    private const float ANIMATION_MULTIPLIER_FAST = 2f;
+    private const float ANIMATION_MULTIPLIER_NORMAL = 1f;
+    private const float ANIMATION_MULTIPLIER_SLOW = .66f;
+    private const float ANIMATION_MULTIPLIER_SLOWEST = .5f;
+
+
+
+
+
     //public data
     public List<QuizItem> quizItems;
     public bool quickplayEnabled;
     public UserSettings currentSettings;
+    public float animationTimeMultiplier = 1;
 
     //private data
     GameState gameState = GameState.NONE;
@@ -190,7 +201,7 @@ public class GameFieldManager : MonoBehaviour
         }
         else
         {
-            //they got it rawng;
+            //they got it wrong;
             wrongAnswerCount++;
             PlaySound(wrongAnswerSound, wrongAnswerVolume);
             StartCoroutine(WrongAnswerDummyAnimation(buttonIndex));
@@ -307,10 +318,37 @@ public class GameFieldManager : MonoBehaviour
         quizItems.Remove(toRemove);
     }
 
-    public void ChangeVolume(float v)
+    public void ChangeVolume(float vv)
     {
-        AudioListener.volume = Mathf.Clamp(v, 0, 1);
+        AudioListener.volume = Mathf.Clamp(vv, 0, 1);
         //PlaySound(wrongAnswerSound, wrongAnswerVolume);
+    }
+
+    public void SetAnimationSpeed(int newSetting)
+    {
+        switch (newSetting)
+        {
+            case 1:
+                UIMenuManager.singleton.AnimationTimeDisplayName("Off");
+                animationTimeMultiplier = ANIMATION_MULTIPLIER_OFF;
+                break;
+            case 2:
+                UIMenuManager.singleton.AnimationTimeDisplayName("Fast");
+                animationTimeMultiplier = ANIMATION_MULTIPLIER_FAST;
+                break;
+            case 3:
+                UIMenuManager.singleton.AnimationTimeDisplayName("Normal");
+                animationTimeMultiplier = ANIMATION_MULTIPLIER_NORMAL;
+                break;
+            case 4:
+                UIMenuManager.singleton.AnimationTimeDisplayName("Slow");
+                animationTimeMultiplier = ANIMATION_MULTIPLIER_SLOW;
+                break;
+            case 5:
+                UIMenuManager.singleton.AnimationTimeDisplayName("Slowest");
+                animationTimeMultiplier = ANIMATION_MULTIPLIER_SLOWEST;
+                break;
+        }
     }
 
     public void PlayAgainButton()
@@ -345,11 +383,13 @@ public class GameFieldManager : MonoBehaviour
 
     public void ResetApplicationSettings()
     {
+        UIMenuManager.singleton.animationTimeSliderSetting = currentSettings.animationTimeSetting; 
         ChangeVolume(currentSettings.sfxVolume);
     }
 
     public void UpdateCurrentSettings()
     {
+        currentSettings.animationTimeSetting = UIMenuManager.singleton.animationTimeSliderSetting;
         currentSettings.sfxVolume = AudioListener.volume;
     }
 
@@ -416,7 +456,7 @@ public class GameFieldManager : MonoBehaviour
 
         while (time < QuizItem.CORRECT_FADE_TIME && animationIndex == rightAnswerCount)
         {
-            time += Time.deltaTime;
+            time += Time.deltaTime * animationTimeMultiplier;
             float alpha = (QuizItem.CORRECT_FADE_TIME - time) / QuizItem.CORRECT_FADE_TIME;
             float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / QuizItem.CORRECT_FADE_TIME);
             //MAYBEDO: Lighten colors as they fade out? 
@@ -442,7 +482,7 @@ public class GameFieldManager : MonoBehaviour
 
         while (time < REVEAL_FADE_TIME + REVEAL_GLOW_TIME && animationIndex == rightAnswerCount + wrongAnswerCount)
         {
-            time += Time.deltaTime;
+            time += Time.deltaTime * animationTimeMultiplier;
             float alpha = 1;
             float white = 0;
             if (time < REVEAL_GLOW_TIME)
@@ -486,12 +526,12 @@ public class GameFieldManager : MonoBehaviour
         while (incorrectButtonDummy.transform.localPosition.y > -QuizItem.DISTANCE_OFFSCREEN && animationIndex == wrongAnswerCount)
         {
             //Debug.Log("[GameFieldManager:WrongAnswerDummyAnimation]");
-            time += Time.deltaTime;
-            linearVelocity += Vector2.down * DUMMY_GRAVITY * Time.deltaTime;
+            time += Time.deltaTime * animationTimeMultiplier;
+            linearVelocity += Vector2.down * DUMMY_GRAVITY * Time.deltaTime * animationTimeMultiplier;
             incorrectButtonDummy.transform.localRotation = Quaternion.Euler(0, 0, twistRate * time);
             incorrectButtonDummy.GetComponent<Image>().color = new Color(1f - time * DUMMY_DARKEN_RATE, 0f, 0f);
 
-            incorrectButtonDummy.transform.localPosition += (Vector3)(linearVelocity * Time.deltaTime);
+            incorrectButtonDummy.transform.localPosition += (Vector3)(linearVelocity * Time.deltaTime * animationTimeMultiplier);
 
             yield return null;
         }
@@ -522,7 +562,7 @@ public class GameFieldManager : MonoBehaviour
         time = 0f;
         while(time < PREGAME_FADE_TIME)
         {
-            time += Time.deltaTime;
+            time += Time.deltaTime * animationTimeMultiplier;
             float alpha = (PREGAME_FADE_TIME - time) / PREGAME_FADE_TIME;
             screenDimmer.color = new Color(0f, 0f, 0f, DIMMER_MAX_ALPHA * alpha);
             screenCenterText.color = new Color(1f, 1f, 1f, alpha);
@@ -675,7 +715,7 @@ public class GameFieldManager : MonoBehaviour
 
                 screenCenterText.fontSize = (int)fontSize;
                 screenCenterText.color = new Color (1,1,1,timeRemaining * PROMPT_PULSE_DURATION_INVERSE);
-                timeRemaining -= Time.deltaTime;
+                timeRemaining -= Time.deltaTime * animationTimeMultiplier;
             }
             else
             {
@@ -695,6 +735,10 @@ public class GameFieldManager : MonoBehaviour
         int animationIndex = rightAnswerCount + wrongAnswerCount;
         promptDisplay.text = currentPrompt;
         float time = 0f;
+        if(animationTimeMultiplier == ANIMATION_MULTIPLIER_OFF)
+        {
+            time = MULTICHOICE_BUTTON_ZOOM_TIME;
+        }
         while(time < MULTICHOICE_BUTTON_ZOOM_TIME && animationIndex == rightAnswerCount + wrongAnswerCount)
         {
             float zoom = time / MULTICHOICE_BUTTON_ZOOM_TIME;
@@ -702,7 +746,7 @@ public class GameFieldManager : MonoBehaviour
             {
                 button.transform.parent.localScale = Vector3.one * zoom;
             }
-            time += Time.deltaTime;
+            time += Time.deltaTime * animationTimeMultiplier;
             yield return null;
         }
         if(animationIndex == rightAnswerCount + wrongAnswerCount)

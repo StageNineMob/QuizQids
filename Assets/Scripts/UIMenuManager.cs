@@ -5,24 +5,27 @@ using System.Collections;
 
 public class UIMenuManager : MonoBehaviour {
 
-    [SerializeField]
-    private GameObject mainMenuPanel;
-    [SerializeField]
-    private GameObject playMenuPanel;
-    [SerializeField]
-    private GameObject optionsPanel;
-    [SerializeField]
-    private GameObject logoText;
+    [SerializeField] private GameObject mainMenuPanel;
+    [SerializeField] private GameObject playMenuPanel;
+    [SerializeField] private GameObject optionsPanel;
+    [SerializeField] private GameObject logoText;
 
-    [SerializeField]
-    private Button playMultiChoiceButton;
-    [SerializeField]
-    private Button playTriviaSearchButton;
-    [SerializeField]
-    private FileViewer fileViewer;
+    [SerializeField] private Button playMultiChoiceButton;
+    [SerializeField] private Button playTriviaSearchButton;
+    [SerializeField] private FileViewer fileViewer;
 
-    [SerializeField]
-    private Slider volumeSlider;
+    [SerializeField] private Slider volumeSlider;
+
+    [SerializeField] private Slider animationTimeSlider;
+    [SerializeField] private Text animationTimeText;
+
+    //properties
+
+    public int animationTimeSliderSetting
+    {
+        get { return (int)animationTimeSlider.value; }
+        set { animationTimeSlider.value = value; }
+    }
 
     public static UIMenuManager singleton;
 
@@ -136,6 +139,16 @@ public class UIMenuManager : MonoBehaviour {
     public void ChangeVolume()
     {
         GameFieldManager.singleton.ChangeVolume(volumeSlider.value);
+    }
+
+    public void ChangeAnimationTime()
+    {
+        GameFieldManager.singleton.SetAnimationSpeed(Mathf.FloorToInt(animationTimeSlider.value));
+    }
+
+    public void AnimationTimeDisplayName(string newText)
+    {
+        animationTimeText.text = newText;
     }
 
     public void ResetMainMenu()
