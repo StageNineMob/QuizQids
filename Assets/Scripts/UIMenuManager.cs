@@ -121,7 +121,6 @@ public class UIMenuManager : MonoBehaviour {
     public void PressedOptionsButton()
     {
         volumeSlider.value = GameFieldManager.singleton.currentSettings.sfxVolume;
-        volumeText.text = Mathf.FloorToInt(volumeSlider.value * 100) + "%";
 
         optionsPanel.SetActive(true);
     }
