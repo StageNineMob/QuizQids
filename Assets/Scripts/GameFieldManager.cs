@@ -72,12 +72,13 @@ public class GameFieldManager : MonoBehaviour
 
 
     //public data
-    public List<QuizItem> quizItems;
+    public List<QuizItem> activeQuizItems;
     public bool quickplayEnabled;
     public UserSettings currentSettings;
     public float animationTimeMultiplier = 1;
 
     //private data
+    private Stack<QuizItem> inactiveQuizItems;
     GameState gameState = GameState.NONE;
     [SerializeField] private float cameraMinX, cameraMinY, cameraMaxX, cameraMaxY, cameraHalfHeight, linearMaxSpeed;
     [SerializeField] private Canvas gameplayCanvas;
@@ -274,7 +275,15 @@ public class GameFieldManager : MonoBehaviour
 
     public void CreateQuizItem(TriviaPair triviaPair)
     {
-        QuizItem quizItem = Instantiate(quizItemPrefab).GetComponent<QuizItem>();
+        QuizItem quizItem;
+        if (inactiveQuizItems.Count > 0)
+        {
+            quizItem = inactiveQuizItems.Pop();
+        }
+        else
+        {
+            quizItem = Instantiate(quizItemPrefab).GetComponent<QuizItem>();
+        }
         quizItem.transform.SetParent(gameplayCanvas.transform);
         float xx;
         float yy;
@@ -294,7 +303,7 @@ public class GameFieldManager : MonoBehaviour
         float vy = Random.Range(-linearMaxSpeed, linearMaxSpeed);
         quizItem.Initialize(triviaPair, new Vector2(xx, yy), new Vector2(vx, vy));
 
-        quizItems.Add(quizItem);
+        activeQuizItems.Add(quizItem);
     }
 
     public void RemoveQuizItem(QuizItem toRemove)
@@ -315,7 +324,12 @@ public class GameFieldManager : MonoBehaviour
         {
             GenerateQuizItem();
         }
-        quizItems.Remove(toRemove);
+        activeQuizItems.Remove(toRemove);
+    }
+
+    public void ReturnQuizItemToPool(QuizItem item)
+    {
+        inactiveQuizItems.Push(item);
     }
 
     public void ChangeVolume(float vv)
@@ -582,7 +596,8 @@ public class GameFieldManager : MonoBehaviour
 
     private void InitializeFields()
     {
-        quizItems = new List<QuizItem>();
+        activeQuizItems = new List<QuizItem>();
+        inactiveQuizItems = new Stack<QuizItem>();
         UpdateWorldUnitsPerPixel();
     }
 
@@ -681,11 +696,11 @@ public class GameFieldManager : MonoBehaviour
 
     private void ClearGameData()
     {
-        foreach (var item in quizItems)
+        foreach (var item in activeQuizItems)
         {
             Destroy(item.gameObject);
         }
-        quizItems.Clear();
+        activeQuizItems.Clear();
         currentPrompt = null;
         gracePrompt = null;
         rightAnswerCount = 0;
@@ -982,8 +997,8 @@ public class GameFieldManager : MonoBehaviour
     private bool ChooseRandomPrompt()
     {
         string lastPrompt = currentPrompt;
-        TriviaParser.Shuffle(quizItems);
-        foreach (var item in quizItems)
+        TriviaParser.Shuffle(activeQuizItems);
+        foreach (var item in activeQuizItems)
         {
             foreach (var prompt in item.data.prompts)
             {
@@ -1001,7 +1016,7 @@ public class GameFieldManager : MonoBehaviour
 
     private bool NothingMatches()
     {
-        foreach(var item in quizItems)
+        foreach(var item in activeQuizItems)
         {
             if (QuizCorrectAnswer(item.data))
                 return false;

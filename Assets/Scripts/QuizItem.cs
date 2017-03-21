@@ -74,10 +74,15 @@ public class QuizItem : CameraDragger
         speedBoosting = true;
 
         answerText.text = newData.value;
+        answerText.color = Color.black;
         data = newData;
         linearVelocity = velocity;
         transform.localPosition = position;
+        transform.localRotation = Quaternion.identity;
+        transform.localScale = Vector3.one;
         GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * WIDTH_FACTOR, answerText.fontSize * HEIGHT_FACTOR);
+
+        gameObject.SetActive(true);
     }
 
     #endregion
@@ -98,7 +103,8 @@ public class QuizItem : CameraDragger
             transform.localScale = Vector3.one * scale;
             yield return null;
         }
-        gameObject.SetActive(false);  // TODO return to object pool
+        gameObject.SetActive(false);
+        GameFieldManager.singleton.ReturnQuizItemToPool(this);
     }
 
     private IEnumerator AnswerIncorrectVanish()
@@ -121,7 +127,8 @@ public class QuizItem : CameraDragger
             GetComponent<Image>().color = new Color(1f - time * INCORRECT_DARKEN_RATE, 0f, 0f);
             yield return null;
         }
-        gameObject.SetActive(false);  // TODO return to object pool
+        gameObject.SetActive(false);
+        GameFieldManager.singleton.ReturnQuizItemToPool(this);
     }
 
     private bool IsColliding(RectTransform otherRect)
@@ -165,7 +172,7 @@ public class QuizItem : CameraDragger
             // collision testing
             GetComponent<Image>().color = Color.white;
 #endif
-            foreach(var item in GameFieldManager.singleton.quizItems)
+            foreach(var item in GameFieldManager.singleton.activeQuizItems)
             {
                 if(item != this)
                 {
