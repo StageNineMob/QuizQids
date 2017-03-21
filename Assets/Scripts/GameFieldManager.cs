@@ -66,16 +66,14 @@ public class GameFieldManager : MonoBehaviour
     private const float ANIMATION_MULTIPLIER_NORMAL = 1f;
     private const float ANIMATION_MULTIPLIER_SLOW = .66f;
     private const float ANIMATION_MULTIPLIER_SLOWEST = .5f;
-
-
-
-
+    private const float PROFILER_FRAME_RATE_THRESHOLD_HARD = 50f;
 
     //public data
     public List<QuizItem> activeQuizItems;
     public bool quickplayEnabled;
     public UserSettings currentSettings;
     public float animationTimeMultiplier = 1;
+    public bool simulateCollisions = true;
 
     //private data
     private Stack<QuizItem> inactiveQuizItems;
@@ -110,6 +108,8 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text wrongAnswersCounter;
     [SerializeField] private Text timerDisplay;
     [SerializeField] private Text promptDisplay;
+    [SerializeField] private Text fpsDisplay;
+    [SerializeField] private Text poolSizeDisplay;
     [SerializeField] private Image screenDimmer;
     [SerializeField] private Text screenCenterText;
     [SerializeField] private Text scoreUIRightText;
@@ -411,6 +411,12 @@ public class GameFieldManager : MonoBehaviour
     {
         FileManager.singleton.Save(currentSettings, SETTINGS_FILE_PATH);
     }
+
+    public void SetCollisionsEnabled(bool newState)
+    {
+        simulateCollisions = newState;
+    }
+
     #endregion
 
     #region private methods
@@ -644,25 +650,57 @@ public class GameFieldManager : MonoBehaviour
         ++wrongAnswersInPlay;
     }
 
+    private void GenerateProfileObject()
+    {
+        CreateQuizItem(new TriviaPair(rightAnswersInPlay));
+        ++rightAnswersInPlay;
+    }
+
 
     private void GameSetup()
     {
-        
-        TriviaParser.singleton.RandomizeAnswerLists();
-
-        rightAnswerIndex = -1; // in multi choice, index is immediately incremented
-        wrongAnswerIndex = 0;
-        if (TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+        if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.PROFILER)
         {
-            rightAnswerIndex = 0;
             rightAnswersInPlay = 0;
-            wrongAnswersInPlay = 0;
-            for (int ii = 0; ii < initialQuizItemCount; ++ii)
-            {
-                GenerateQuizItem();
-            }
+            _timedMode = false;
+            timerDisplay.gameObject.SetActive(false);
+            rightAnswersCounter.gameObject.SetActive(false);
+            wrongAnswersCounter.gameObject.SetActive(false);
+            promptDisplay.gameObject.SetActive(false);
+            promptChangeTimer.gameObject.SetActive(false);
+            fpsDisplay.gameObject.SetActive(true);
+            poolSizeDisplay.gameObject.SetActive(true);
+
+            ChangeState(GameState.PLAY);
         }
-        StartCoroutine(DisplayTopic());
+        else
+        {
+            timerDisplay.gameObject.SetActive(true);
+            rightAnswersCounter.gameObject.SetActive(true);
+            wrongAnswersCounter.gameObject.SetActive(true);
+            promptDisplay.gameObject.SetActive(true);
+            promptChangeTimer.gameObject.SetActive(true);
+            fpsDisplay.gameObject.SetActive(false);
+            poolSizeDisplay.gameObject.SetActive(false);
+
+            TriviaParser.singleton.RandomizeAnswerLists();
+
+            rightAnswerIndex = -1; // in multi choice, index is immediately incremented
+            wrongAnswerIndex = 0;
+            if (TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+            {
+                rightAnswerIndex = 0;
+                rightAnswersInPlay = 0;
+                wrongAnswersInPlay = 0;
+                for (int ii = 0; ii < initialQuizItemCount; ++ii)
+                {
+                    GenerateQuizItem();
+                }
+            }
+
+            _timedMode = true;
+            StartCoroutine(DisplayTopic());
+        }
     }
 
     private void ShowScoreScreen()
@@ -803,6 +841,17 @@ public class GameFieldManager : MonoBehaviour
         if(currentPrompt == null)
         {
             NextMultiChoiceItem();
+        }
+    }
+
+    private void ProfilerUpdate()
+    {
+        float fps = 1.0f / Time.deltaTime;
+        fpsDisplay.text = "FPS: " + fps.ToString("N1");
+        poolSizeDisplay.text = "Pool Size: " + rightAnswersInPlay;
+        if (fps > PROFILER_FRAME_RATE_THRESHOLD_HARD)
+        {
+            GenerateProfileObject();
         }
     }
 
@@ -979,7 +1028,11 @@ public class GameFieldManager : MonoBehaviour
     {
         if(gameState == GameState.PLAY)
         {
-            if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
+            if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.PROFILER)
+            {
+                ProfilerUpdate();
+            }
+            else if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
             {
                 MultiChoiceUpdate();
             }

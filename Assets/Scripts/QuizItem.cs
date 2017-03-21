@@ -166,10 +166,10 @@ public class QuizItem : CameraDragger
     void Update()
     {
         transform.localPosition = GameFieldManager.singleton.ScreenWrapInBounds((Vector2)transform.localPosition + (linearVelocity * Time.deltaTime));
-        if (overlapNudging)
+        if (overlapNudging && GameFieldManager.singleton.simulateCollisions)
         {
-#if DEBUG_DRAW
             // collision testing
+#if DEBUG_DRAW
             GetComponent<Image>().color = Color.white;
 #endif
             foreach(var item in GameFieldManager.singleton.activeQuizItems)

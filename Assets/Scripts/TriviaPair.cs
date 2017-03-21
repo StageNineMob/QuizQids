@@ -12,5 +12,12 @@ namespace StageNine
         {
             prompts = new List<string>();
         }
+
+        //for profiler objects;
+        public TriviaPair(int id)
+        {
+            value = id.ToString();
+            prompts = new List<string>();
+        }
     }
 }

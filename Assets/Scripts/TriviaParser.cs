@@ -15,6 +15,7 @@ public class TriviaParser : MonoBehaviour {
         GENERAL = 1,
         SPECIFIC = 2,
         MULTIPLE_CHOICE = 4,
+        PROFILER = 8,
     };
     //subclasses
 
@@ -300,6 +301,11 @@ public class TriviaParser : MonoBehaviour {
     public void RandomizePrompts()
     {
         Shuffle(_prompts);
+    }
+
+    public void InitProfilerMode()
+    {
+        _triviaMode = TriviaParser.TriviaMode.PROFILER;
     }
 
     #endregion

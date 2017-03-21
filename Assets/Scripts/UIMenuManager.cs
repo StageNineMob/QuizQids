@@ -84,7 +84,7 @@ public class UIMenuManager : MonoBehaviour {
     public void PressedQuickPlayButton()
     {
         fileViewer.SelectRandomElement();
-        if(playMultiChoiceButton.interactable && playTriviaSearchButton.interactable)
+        if (playMultiChoiceButton.interactable && playTriviaSearchButton.interactable)
         {
             //If we ever add another game mode, we're gonna wanna remember this 2. 
             //                               |
@@ -102,11 +102,11 @@ public class UIMenuManager : MonoBehaviour {
         }
         else
         {
-            if(playMultiChoiceButton.interactable)
+            if (playMultiChoiceButton.interactable)
             {
                 PressedPlayMultiChoiceButton();
             }
-            else if(playTriviaSearchButton.interactable)
+            else if (playTriviaSearchButton.interactable)
             {
                 PressedPlayTriviaSearchButton();
             }
@@ -116,6 +116,12 @@ public class UIMenuManager : MonoBehaviour {
             }
         }
         GameFieldManager.singleton.quickplayEnabled = true;
+    }
+
+    public void PressedProfileButton()
+    {
+        TriviaParser.singleton.InitProfilerMode();
+        GameFieldManager.singleton.ChangeState(GameFieldManager.GameState.PREGAME);
     }
 
     public void PressedOptionsButton()
