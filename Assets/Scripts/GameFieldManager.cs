@@ -736,7 +736,8 @@ public class GameFieldManager : MonoBehaviour
     {
         foreach (var item in activeQuizItems)
         {
-            Destroy(item.gameObject);
+            item.gameObject.SetActive(false);
+            inactiveQuizItems.Push(item);
         }
         activeQuizItems.Clear();
         currentPrompt = null;
