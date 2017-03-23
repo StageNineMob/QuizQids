@@ -68,7 +68,7 @@ public class GameFieldManager : MonoBehaviour
     private const float ANIMATION_MULTIPLIER_SLOWEST = .5f;
     private const float PROFILER_FRAME_RATE_THRESHOLD_HARD = 50f;
     private const float PROFILER_FRAME_RATE_LOOKBACK = 0.3f;
-
+    private readonly Vector3 STREAK_COUNTER_OFFSET = Vector3.up * 40f;
     //public data
     public List<QuizItem> activeQuizItems;
     public bool quickplayEnabled;
@@ -100,9 +100,11 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private GameObject incorrectButtonDummy;
     [SerializeField] private Text correctButtonDummyText;
     [SerializeField] private Text incorrectButtonDummyText;
+    [SerializeField] private Text streakText;
 
     private int _rightAnswerCount = 0;
     private int _wrongAnswerCount = 0;
+    private int rightAnswerStreak = 0;
     private float _timer = 0;
     private bool _timedMode = true;
     [SerializeField] private Text rightAnswersCounter;
@@ -201,14 +203,17 @@ public class GameFieldManager : MonoBehaviour
         if (TriviaParser.singleton.rightAnswers[rightAnswerIndex].prompts.Contains(choiceButtonText[buttonIndex].text))
         {
             //like they got it right
-            rightAnswerCount++;
+            ++rightAnswerCount;
+            ++rightAnswerStreak;
             PlaySound(rightAnswerSound, rightAnswerVolume);
             StartCoroutine(RightAnswerDummyAnimation(buttonIndex));
+            StartCoroutine(StreakCounterAnimation(choiceButtonText[buttonIndex].transform.position));
         }
         else
         {
             //they got it wrong;
-            wrongAnswerCount++;
+            ++wrongAnswerCount;
+            rightAnswerStreak = 0;
             PlaySound(wrongAnswerSound, wrongAnswerVolume);
             StartCoroutine(WrongAnswerDummyAnimation(buttonIndex));
             for(int ii = 0; ii < choiceButtonText.Length; ii++)
@@ -316,12 +321,14 @@ public class GameFieldManager : MonoBehaviour
         if (QuizCorrectAnswer(toRemove.data))
         {
             ++rightAnswerCount;
+            ++rightAnswerStreak;
             --rightAnswersInPlay;
             PlaySound(rightAnswerSound, rightAnswerVolume);
         }
         else
         {
             ++wrongAnswerCount;
+            rightAnswerStreak = 0;
             --wrongAnswersInPlay;
             PlaySound(wrongAnswerSound, wrongAnswerVolume);
         }
@@ -422,6 +429,10 @@ public class GameFieldManager : MonoBehaviour
         simulateCollisions = newState;
     }
 
+    public void DisplayStreakCounter(Vector3 screenPos)
+    {
+        StartCoroutine(StreakCounterAnimation(screenPos));
+    }
     #endregion
 
     #region private methods
@@ -570,6 +581,32 @@ public class GameFieldManager : MonoBehaviour
         if (animationIndex == wrongAnswerCount)
         {
             incorrectButtonDummy.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator StreakCounterAnimation(Vector3 screenPos)
+    {
+        Debug.Log("[GameFieldManager:StreakCounterAnimation] " + screenPos);
+        int animationIndex = rightAnswerCount;
+        streakText.gameObject.SetActive(true);
+        streakText.color = Color.white;
+        streakText.transform.position = screenPos + STREAK_COUNTER_OFFSET;
+        streakText.text = rightAnswerStreak + " streak";
+        float time = 0f;
+
+        while (time < QuizItem.CORRECT_FADE_TIME && animationIndex == rightAnswerCount)
+        {
+            time += Time.deltaTime * animationTimeMultiplier;
+            float alpha = (QuizItem.CORRECT_FADE_TIME - time) / QuizItem.CORRECT_FADE_TIME;
+            //float scale = Mathf.Lerp(1f, QuizItem.CORRECT_SCALE_AMOUNT, time / QuizItem.CORRECT_FADE_TIME);
+            //MAYBEDO: Lighten colors as they fade out? 
+            streakText.color = new Color(1f, 1f, 1f, alpha);
+            //correctButtonDummy.transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+        if (animationIndex == rightAnswerCount)
+        {
+            streakText.gameObject.SetActive(false);
         }
     }
 
@@ -764,6 +801,7 @@ public class GameFieldManager : MonoBehaviour
         gracePrompt = null;
         rightAnswerCount = 0;
         wrongAnswerCount = 0;
+        rightAnswerStreak = 0;
         timerDisplay.color = TIMER_COLOR_NORMAL;
         timerDisplay.fontSize = TIMER_FONT_SMALL;
         int seconds = Mathf.CeilToInt(INITIAL_TIME);

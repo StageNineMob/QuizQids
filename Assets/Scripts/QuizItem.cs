@@ -53,6 +53,7 @@ public class QuizItem : CameraDragger
                 image.color = Color.green;
                 image.raycastTarget = false;
                 StartCoroutine(AnswerCorrectVanish());
+                GameFieldManager.singleton.DisplayStreakCounter(Camera.main.WorldToScreenPoint(transform.position));
             }
             else
             {
