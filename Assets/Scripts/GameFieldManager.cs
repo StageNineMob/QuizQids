@@ -67,6 +67,7 @@ public class GameFieldManager : MonoBehaviour
     private const float ANIMATION_MULTIPLIER_SLOW = .66f;
     private const float ANIMATION_MULTIPLIER_SLOWEST = .5f;
     private const float PROFILER_FRAME_RATE_THRESHOLD_HARD = 50f;
+    private const float PROFILER_FRAME_RATE_LOOKBACK = 0.3f;
 
     //public data
     public List<QuizItem> activeQuizItems;
@@ -110,6 +111,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text promptDisplay;
     [SerializeField] private Text fpsDisplay;
     [SerializeField] private Text poolSizeDisplay;
+    [SerializeField] private Toggle collisionToggle;
     [SerializeField] private Image screenDimmer;
     [SerializeField] private Text screenCenterText;
     [SerializeField] private Text scoreUIRightText;
@@ -131,6 +133,9 @@ public class GameFieldManager : MonoBehaviour
     private int wrongAnswerIndex = 0;
     private float chanceOfRightAnswer = .5f;
     private float currentPromptDuration = 0f;
+
+    private Queue<float> updateTimes;
+    private float lastFPS;
 
     //public properties
 
@@ -429,7 +434,11 @@ public class GameFieldManager : MonoBehaviour
         screenCenterText.color = Color.white;
 
         promptDisplay.gameObject.SetActive(false);
-        string text = TriviaParser.singleton.categoryName;
+        string text = "";
+        if (TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.PROFILER)
+        {
+            text = TriviaParser.singleton.categoryName;
+        }
         if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.SPECIFIC)
         {
             text += System.Environment.NewLine + currentPrompt;
@@ -442,7 +451,10 @@ public class GameFieldManager : MonoBehaviour
         pauseButtonText.text = "Pause";
         screenDimmer.color = Color.clear;
         screenCenterText.color = Color.clear;
-        promptDisplay.gameObject.SetActive(true);
+        if(TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.PROFILER)
+        {
+            promptDisplay.gameObject.SetActive(true);
+        }
     }
 
     private void CameraWrap()
@@ -604,6 +616,7 @@ public class GameFieldManager : MonoBehaviour
     {
         activeQuizItems = new List<QuizItem>();
         inactiveQuizItems = new Stack<QuizItem>();
+        updateTimes = new Queue<float>();
         UpdateWorldUnitsPerPixel();
     }
 
@@ -662,6 +675,8 @@ public class GameFieldManager : MonoBehaviour
         if (TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.PROFILER)
         {
             rightAnswersInPlay = 0;
+            updateTimes.Clear();
+            lastFPS = 0;
             _timedMode = false;
             timerDisplay.gameObject.SetActive(false);
             rightAnswersCounter.gameObject.SetActive(false);
@@ -670,6 +685,9 @@ public class GameFieldManager : MonoBehaviour
             promptChangeTimer.gameObject.SetActive(false);
             fpsDisplay.gameObject.SetActive(true);
             poolSizeDisplay.gameObject.SetActive(true);
+            collisionToggle.gameObject.SetActive(true);
+            screenCenterText.color = Color.clear;
+            screenDimmer.color = Color.clear;
 
             ChangeState(GameState.PLAY);
         }
@@ -682,6 +700,8 @@ public class GameFieldManager : MonoBehaviour
             promptChangeTimer.gameObject.SetActive(true);
             fpsDisplay.gameObject.SetActive(false);
             poolSizeDisplay.gameObject.SetActive(false);
+            collisionToggle.gameObject.SetActive(false);
+            collisionToggle.isOn = true;
 
             TriviaParser.singleton.RandomizeAnswerLists();
 
@@ -847,8 +867,20 @@ public class GameFieldManager : MonoBehaviour
 
     private void ProfilerUpdate()
     {
-        float fps = 1.0f / Time.deltaTime;
-        fpsDisplay.text = "FPS: " + fps.ToString("N1");
+        updateTimes.Enqueue(Time.time);
+        float oldestTime = updateTimes.Peek();
+        while (oldestTime < Time.time - PROFILER_FRAME_RATE_LOOKBACK && updateTimes.Count > 2)
+        {
+            updateTimes.Dequeue();
+            oldestTime = updateTimes.Peek();
+        }
+        float fps = 0;
+        if (updateTimes.Count > 1)
+        {
+            fps = (updateTimes.Count - 1) / (Time.time - oldestTime);
+        }
+        fpsDisplay.text = "FPS: " + ((lastFPS + fps) * 0.5f).ToString("N1");
+        lastFPS = fps;
         poolSizeDisplay.text = "Pool Size: " + rightAnswersInPlay;
         if (fps > PROFILER_FRAME_RATE_THRESHOLD_HARD)
         {
