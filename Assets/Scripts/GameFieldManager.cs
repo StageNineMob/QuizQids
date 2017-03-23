@@ -880,12 +880,12 @@ public class GameFieldManager : MonoBehaviour
             fps = (updateTimes.Count - 1) / (Time.time - oldestTime);
         }
         fpsDisplay.text = "FPS: " + ((lastFPS + fps) * 0.5f).ToString("N1");
-        lastFPS = fps;
         poolSizeDisplay.text = "Pool Size: " + rightAnswersInPlay;
-        if (fps > PROFILER_FRAME_RATE_THRESHOLD_HARD)
+        if (fps > PROFILER_FRAME_RATE_THRESHOLD_HARD && fps >= lastFPS)
         {
             GenerateProfileObject();
         }
+        lastFPS = fps;
     }
 
     private void NextMultiChoiceItem()
