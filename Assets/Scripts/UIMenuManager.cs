@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-
+using System.Collections.Generic;
 
 public class UIMenuManager : MonoBehaviour {
+
+    [SerializeField] private List<GameObject> toInitList;
 
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject playMenuPanel;
@@ -174,8 +176,13 @@ public class UIMenuManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        foreach (var item in toInitList)
+        {
+            item.SetActive(false);
+        }
+
         optionsPanel.SetActive(false);
-	}
+    }
 
     void Awake()
     {
@@ -191,7 +198,13 @@ public class UIMenuManager : MonoBehaviour {
             Debug.Log("Goodbye, cruel world!");
             GameObject.Destroy(gameObject);
         }
+
+        foreach(var item in toInitList)
+        {
+            item.SetActive(true);
+        }
     }
+
 
     // Update is called once per frame
     void Update () {
