@@ -59,7 +59,7 @@ public class GameFieldManager : MonoBehaviour
     private const float DUMMY_GRAVITY = 3000f;
     private const float REVEAL_GLOW_TIME = 0.4f;
     private const float REVEAL_FADE_TIME = 0.25f;
-    private const float MULTICHOICE_BUTTON_ZOOM_TIME = 0.1f;
+    private const float MULTICHOICE_BUTTON_ZOOM_TIME = 0.35f;
     private const string SETTINGS_FILE_PATH = "UserSettings.qqs";
     private const float ANIMATION_MULTIPLIER_OFF = 100f;
     private const float ANIMATION_MULTIPLIER_FAST = 2f;
@@ -69,6 +69,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PROFILER_FRAME_RATE_THRESHOLD_HARD = 50f;
     private const float PROFILER_FRAME_RATE_LOOKBACK = 0.3f;
     private readonly Vector3 STREAK_COUNTER_OFFSET = Vector3.up * 40f;
+    private readonly FloatCurveData MULTICHOICE_ZOOM_EASING_CURVE = new FloatCurveData(0,1,4,0);
     //public data
     public List<QuizItem> activeQuizItems;
     public bool quickplayEnabled;
@@ -853,7 +854,7 @@ public class GameFieldManager : MonoBehaviour
         }
         while(time < MULTICHOICE_BUTTON_ZOOM_TIME && animationIndex == rightAnswerCount + wrongAnswerCount)
         {
-            float zoom = time / MULTICHOICE_BUTTON_ZOOM_TIME;
+            float zoom = MULTICHOICE_ZOOM_EASING_CURVE.GetFloatValue(time / MULTICHOICE_BUTTON_ZOOM_TIME);
             foreach(var button in choiceButtonText)
             {
                 button.transform.parent.localScale = Vector3.one * zoom;
