@@ -845,6 +845,11 @@ public class GameFieldManager : MonoBehaviour
 
     private IEnumerator DisplayNewMultiChoice()
     {
+        foreach(var button in choiceButtonText)
+        {
+            button.transform.parent.gameObject.SetActive(true);
+        }
+
         int animationIndex = rightAnswerCount + wrongAnswerCount;
         promptDisplay.text = currentPrompt;
         float time = 0f;
@@ -1073,6 +1078,10 @@ public class GameFieldManager : MonoBehaviour
                 if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
                 {
                     multiChoiceCanvas.gameObject.SetActive(true);
+                    foreach (var button in choiceButtonText)
+                    {
+                        button.transform.parent.gameObject.SetActive(false);
+                    }
                 }
                 gameplayCanvas.gameObject.SetActive(true);
                 interfaceCanvas.gameObject.SetActive(true);
