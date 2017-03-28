@@ -10,7 +10,6 @@ public class QuizItem : CameraDragger
     //subclasses
 
     //consts and static data
-    const float WIDTH_FACTOR = 0.6f, HEIGHT_FACTOR = 1.1f;
     public const float CORRECT_FADE_TIME = .4f;
     public const float CORRECT_SCALE_AMOUNT = 1.3f;
     public const float INCORRECT_GRAVITY = 6500f;
@@ -81,7 +80,6 @@ public class QuizItem : CameraDragger
         transform.localPosition = position;
         transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
-        GetComponent<RectTransform>().sizeDelta = new Vector2(answerText.fontSize * newData.value.Length * WIDTH_FACTOR, answerText.fontSize * HEIGHT_FACTOR);
 
         gameObject.SetActive(true);
     }
