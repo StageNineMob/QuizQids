@@ -27,13 +27,13 @@ public class FileViewer : MonoBehaviour
     [SerializeField] private Scrollbar scrollbar;
     [SerializeField] private InputField _inputField;
     private float _scrollAreaMinHeight;
-    private float _listElementHeight;
     private int _currentlySelectedElement = NO_ELEMENT;
     [SerializeField] private Image metadataThumbnail;
     [SerializeField] private Text metadataText;
 
     private UnityAction _doubleClickCallback;
-    private bool shouldReset;
+    private bool shouldReset = false;
+    private bool shouldResize = false;
 
     //public properties
     public UnityAction doubleClickCallback
@@ -100,13 +100,7 @@ public class FileViewer : MonoBehaviour
                 }
             }
         }
-        // Resize scroll area to fit text and move to top of list
-        if(elements.Count * _listElementHeight > _scrollAreaMinHeight)
-        {
-            GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().rect.width, elements.Count * _listElementHeight);
-            scrollbar.value = SCROLLBAR_TOP;
-            transform.localPosition = new Vector3(0,(GetComponent<RectTransform>().rect.height - _scrollAreaMinHeight) * -0.5f);
-        }
+        shouldResize = true;
     }
 
     public void NextInList()
@@ -217,7 +211,8 @@ public class FileViewer : MonoBehaviour
     public void JumpToElementIndex(int index)
     {
         var elementYPos = transform.localPosition.y + elements[index].transform.localPosition.y;
-        var limit = (_scrollAreaMinHeight - _listElementHeight) * .5f;
+        var elementHeight = elements[index].GetComponent<RectTransform>().rect.height;
+        var limit = (_scrollAreaMinHeight - elementHeight) * .5f;
         if (elementYPos > limit)
         {
             transform.localPosition += new Vector3(0, limit - elementYPos);
@@ -290,6 +285,23 @@ public class FileViewer : MonoBehaviour
         UIMenuManager.singleton.EnableGameModeButtons();
     }
 
+    private void ResizeFileViewer()
+    {
+        // Resize scroll area to fit text and move to top of list
+        float listHeight = 0f;
+        foreach (var element in elements)
+        {
+            listHeight += element.GetComponent<RectTransform>().rect.height;
+            Debug.Log("Height: " + listHeight);
+        }
+        if (listHeight > _scrollAreaMinHeight)
+        {
+            GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().rect.width, listHeight);
+            scrollbar.value = SCROLLBAR_TOP;
+            transform.localPosition = new Vector3(0, (GetComponent<RectTransform>().rect.height - _scrollAreaMinHeight) * -0.5f);
+        }
+    }
+
     #endregion
 
     #region monobehaviors
@@ -299,12 +311,16 @@ public class FileViewer : MonoBehaviour
     {
         elements = new List<FileViewListElement>();
         _scrollAreaMinHeight = GetComponent<RectTransform>().rect.height;
-        _listElementHeight = listElementPrefab.GetComponent<LayoutElement>().minHeight;
         shouldReset = false;
     }
 
     void Update()
     {
+        if (shouldResize)
+        {
+            ResizeFileViewer();
+            shouldResize = false;
+        }
         if (shouldReset)
         {
             HighlightDisplayName(_inputField.text);
