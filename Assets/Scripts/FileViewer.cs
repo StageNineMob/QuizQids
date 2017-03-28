@@ -291,8 +291,9 @@ public class FileViewer : MonoBehaviour
         float listHeight = 0f;
         foreach (var element in elements)
         {
-            listHeight += element.GetComponent<RectTransform>().rect.height;
-            Debug.Log("Height: " + listHeight);
+            var elementHeight = element.GetComponent<RectTransform>().rect.height;
+            listHeight += elementHeight;
+            element.transform.localPosition = Vector3.down * (listHeight - (_scrollAreaMinHeight +  elementHeight) * 0.5f);
         }
         if (listHeight > _scrollAreaMinHeight)
         {
