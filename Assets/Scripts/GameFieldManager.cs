@@ -77,6 +77,7 @@ public class GameFieldManager : MonoBehaviour
     public UserSettings currentSettings;
     public float animationTimeMultiplier = 1;
     public bool simulateCollisions = true;
+    public float collisionBumpScale = 1f;
 
     //private data
     private Stack<QuizItem> inactiveQuizItems;
@@ -631,8 +632,10 @@ public class GameFieldManager : MonoBehaviour
         while(time < PREGAME_WAIT_TIME)
         {
             time += Time.deltaTime;
+            collisionBumpScale = (time / PREGAME_WAIT_TIME);
             yield return null;
         }
+        collisionBumpScale = 1f;
 
         time = 0f;
         while(time < PREGAME_FADE_TIME)

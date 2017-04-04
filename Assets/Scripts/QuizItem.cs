@@ -184,7 +184,7 @@ public class QuizItem : CameraDragger
 #endif
                         var offsetVector = (Vector2)(transform.localPosition - item.transform.localPosition);
                         var magnitude = Mathf.Pow(GetOverlapArea(otherRect) / GetMaximumOverlapArea(otherRect.rect),NUDGING_CURVE_POWER);
-                        linearVelocity += offsetVector.normalized * magnitude * Time.deltaTime * NUDGING_ACCEL;
+                        linearVelocity += offsetVector.normalized * magnitude * Time.deltaTime * NUDGING_ACCEL * GameFieldManager.singleton.collisionBumpScale;
                     }
                 }
             }
