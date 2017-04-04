@@ -35,7 +35,8 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_WAIT_TIME = 1.5f;
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
-    private const float INITIAL_TIME = 121f;
+    private const float INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE = 10f;
+    private const float INITIAL_TIME = 120f;
     private const int CENTER_FONT_SIZE = 60;
     private const int TIMER_FONT_SMALL = 50;
     private const int TIMER_FONT_BIGGER = 15;
@@ -307,8 +308,12 @@ public class GameFieldManager : MonoBehaviour
         }
         else
         {
-            xx = Random.Range(cameraMinX, cameraMaxX);
-            yy = Random.Range(cameraMinY, cameraMaxY);
+            float cameraX = (cameraMinX + cameraMaxX) * 0.5f;
+            float cameraY = (cameraMinY + cameraMaxY) * 0.5f;
+            xx = Random.Range(cameraX - INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE, cameraX + INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE);
+            yy = Random.Range(cameraY - INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE, cameraY + INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE);
+            //xx = Random.Range(cameraMinX, cameraMaxX);
+            //yy = Random.Range(cameraMinY, cameraMaxY);
         }
         float vx = Random.Range(-linearMaxSpeed, linearMaxSpeed);
         float vy = Random.Range(-linearMaxSpeed, linearMaxSpeed);
