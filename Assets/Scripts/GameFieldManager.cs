@@ -36,7 +36,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
     private const float INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE = 10f;
-    private const float INITIAL_TIME = 120f;
+    private const float INITIAL_TIME = 10f;
     private const int CENTER_FONT_SIZE = 60;
     private const int TIMER_FONT_SMALL = 50;
     private const int TIMER_FONT_BIGGER = 15;
@@ -69,6 +69,7 @@ public class GameFieldManager : MonoBehaviour
     private const float ANIMATION_MULTIPLIER_SLOWEST = .5f;
     private const float PROFILER_FRAME_RATE_THRESHOLD_HARD = 50f;
     private const float PROFILER_FRAME_RATE_LOOKBACK = 0.3f;
+    private const float HISTORY_VIEWER_HEIGHT = 160f;
     private readonly Vector3 STREAK_COUNTER_OFFSET = Vector3.up * 40f;
     private readonly FloatCurveData MULTICHOICE_ZOOM_EASING_CURVE = new FloatCurveData(0,1,4,0);
     //public data
@@ -126,7 +127,9 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text pauseButtonText;
     [SerializeField] private Button replayButton;
     [SerializeField] private Button endGameButton;
-    
+    [SerializeField] private GameObject historyListElementPrefab;
+    [SerializeField] private Transform correctAnswerViewer;
+    [SerializeField] private Transform wrongAnswerViewer;
 
     private float worldUnitsPerPixel;
     private string currentPrompt = null, gracePrompt = null;
@@ -139,8 +142,12 @@ public class GameFieldManager : MonoBehaviour
     private float chanceOfRightAnswer = .5f;
     private float currentPromptDuration = 0f;
 
+    private int needResizeHistoryScreen;
+
     private Queue<float> updateTimes;
     private float lastFPS;
+
+    private List<KeyValuePair<TriviaPair, string>> historyList;
 
     //public properties
 
@@ -203,6 +210,7 @@ public class GameFieldManager : MonoBehaviour
 
     public void PressedChoiceButton(int buttonIndex)
     {
+        AddAnswerToHistory(TriviaParser.singleton.rightAnswers[rightAnswerIndex], choiceButtonText[buttonIndex].text);
         if (TriviaParser.singleton.rightAnswers[rightAnswerIndex].prompts.Contains(choiceButtonText[buttonIndex].text))
         {
             //like they got it right
@@ -268,9 +276,14 @@ public class GameFieldManager : MonoBehaviour
 
     public bool QuizCorrectAnswer(TriviaPair trivia)
     {
-        if (currentPrompt != null)
+        return QuizCorrectAnswer(trivia, currentPrompt);
+    }
+
+    public bool QuizCorrectAnswer(TriviaPair trivia, string prompt)
+    {
+        if (prompt != null)
         {
-            if (trivia.prompts.Contains(currentPrompt))
+            if (trivia.prompts.Contains(prompt))
                 return true;
             if (gracePrompt != null)
             {
@@ -339,6 +352,7 @@ public class GameFieldManager : MonoBehaviour
             --wrongAnswersInPlay;
             PlaySound(wrongAnswerSound, wrongAnswerVolume);
         }
+        AddAnswerToHistory(toRemove.data, currentPrompt);
         if (_timedMode)
         {
             GenerateQuizItem();
@@ -662,8 +676,10 @@ public class GameFieldManager : MonoBehaviour
     {
         activeQuizItems = new List<QuizItem>();
         inactiveQuizItems = new Stack<QuizItem>();
+        historyList = new List<KeyValuePair<TriviaPair, string>>();
         updateTimes = new Queue<float>();
         UpdateWorldUnitsPerPixel();
+        needResizeHistoryScreen = 0;
     }
 
     private void GenerateQuizItem()
@@ -750,6 +766,7 @@ public class GameFieldManager : MonoBehaviour
             collisionToggle.isOn = true;
 
             TriviaParser.singleton.RandomizeAnswerLists();
+            historyList.Clear();
 
             rightAnswerIndex = -1; // in multi choice, index is immediately incremented
             wrongAnswerIndex = 0;
@@ -795,8 +812,50 @@ public class GameFieldManager : MonoBehaviour
         interfaceCanvas.gameObject.SetActive(false);
         scoreCanvas.gameObject.SetActive(true);
         replayButton.gameObject.SetActive(quickplayEnabled);
+        PopulateHistoryScreen();
     }
 
+    private void PopulateHistoryScreen()
+    {
+        foreach(var pair in historyList)
+        {
+            GameObject newObject = Instantiate(historyListElementPrefab);
+            newObject.transform.GetChild(0).GetComponent<Text>().text = pair.Key.value;
+            if (QuizCorrectAnswer(pair.Key, pair.Value))
+            {
+                newObject.transform.SetParent(correctAnswerViewer);
+            }
+            else
+            {
+                newObject.transform.SetParent(wrongAnswerViewer);
+            }
+            newObject.transform.localScale = Vector3.one;
+        }
+        needResizeHistoryScreen = 2;
+    }
+
+    private void ResizeHistoryScreen()
+    {
+        ResizeHistoryViewer(correctAnswerViewer);
+        ResizeHistoryViewer(wrongAnswerViewer);
+        needResizeHistoryScreen -= 1;
+    }
+
+    private void ResizeHistoryViewer(Transform viewer)
+    {
+        float viewerHeight = 0f;
+        foreach (Transform child in viewer)
+        {
+            viewerHeight += child.GetComponent<RectTransform>().rect.height;
+        }
+        if (viewerHeight < HISTORY_VIEWER_HEIGHT)
+        {
+            viewerHeight = HISTORY_VIEWER_HEIGHT;
+        }
+        RectTransform rect = viewer.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(rect.rect.width, viewerHeight);
+        viewer.localPosition = (viewerHeight - HISTORY_VIEWER_HEIGHT) * .5f * Vector3.down;
+    }
 
     private void ClearGameData()
     {
@@ -1110,6 +1169,12 @@ public class GameFieldManager : MonoBehaviour
                 break;
         }
     }
+
+    private void AddAnswerToHistory(TriviaPair triviaPair, string prompt)
+    {
+        historyList.Add(new KeyValuePair<TriviaPair, string>(triviaPair, prompt));
+    }
+
     #endregion
 
     #region monobehaviors
@@ -1133,6 +1198,10 @@ public class GameFieldManager : MonoBehaviour
             {
                 TimerUpdate();
             }
+        }
+        if (needResizeHistoryScreen > 0)
+        {
+            ResizeHistoryScreen();
         }
     }
 
