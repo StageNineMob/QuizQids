@@ -36,7 +36,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
     private const float INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE = 10f;
-    private const float INITIAL_TIME = 10f;
+    private const float INITIAL_TIME = 15f;
     private const int CENTER_FONT_SIZE = 60;
     private const int TIMER_FONT_SMALL = 50;
     private const int TIMER_FONT_BIGGER = 15;
@@ -838,15 +838,35 @@ public class GameFieldManager : MonoBehaviour
         foreach (var pair in historyList)
         {
             GameObject newObject = Instantiate(historyListElementPrefab);
-            newObject.transform.GetChild(0).GetComponent<Text>().text = pair.Key.value;
+            string objectText = pair.Key.value;
             if (QuizCorrectAnswer(pair.Key, pair.Value))
             {
                 newObject.transform.SetParent(correctAnswerViewer);
+                if(pair.Value != null)
+                {
+                    // playing in specific or multiple choice mode
+                    objectText += " - " + pair.Value;
+                }
+                else
+                {
+                    // playing in general mode
+                    int rand = Random.Range(0, pair.Key.prompts.Count);
+                    string rightPrompt = pair.Key.prompts[rand];
+                    objectText += " - " + rightPrompt;
+                }
             }
             else
             {
                 newObject.transform.SetParent(wrongAnswerViewer);
+                // can't categorize general mode always-wrong answers
+                if(pair.Key.prompts.Count > 0)
+                {
+                    //prompt order was already randomized, in multichoice we want to use the prompt that was presented as an option
+                    string rightPrompt = pair.Key.prompts[0];
+                    objectText += " - " + rightPrompt + " (You picked: " + pair.Value + ")";
+                }
             }
+            newObject.transform.GetChild(0).GetComponent<Text>().text = objectText;
             newObject.transform.localScale = Vector3.one;
         }
         needResizeHistoryScreen = 2;
