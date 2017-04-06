@@ -884,7 +884,9 @@ public class GameFieldManager : MonoBehaviour
         float viewerHeight = 0f;
         foreach (Transform child in viewer)
         {
-            viewerHeight += child.GetComponent<RectTransform>().rect.height;
+            var childHeight = child.GetComponent<RectTransform>().rect.height;
+            viewerHeight += childHeight;
+            child.localPosition = Vector3.down * (viewerHeight - (HISTORY_VIEWER_HEIGHT + childHeight) * 0.5f);
         }
         if (viewerHeight < HISTORY_VIEWER_HEIGHT)
         {
