@@ -1185,9 +1185,13 @@ public class GameFieldManager : MonoBehaviour
                 if(TriviaParser.singleton.triviaMode == TriviaParser.TriviaMode.MULTIPLE_CHOICE)
                 {
                     multiChoiceCanvas.gameObject.SetActive(true);
-                    foreach (var button in choiceButtonText)
+                    // at start of game, hide buttons so they don't immediately twitch
+                    if (prevState == GameState.PREGAME)
                     {
-                        button.transform.parent.gameObject.SetActive(false);
+                        foreach (var button in choiceButtonText)
+                        {
+                            button.transform.parent.gameObject.SetActive(false);
+                        }
                     }
                 }
                 gameplayCanvas.gameObject.SetActive(true);
