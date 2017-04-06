@@ -823,10 +823,19 @@ public class GameFieldManager : MonoBehaviour
         PopulateHistoryScreen();
         SetHistoryPanelActive(false);
     }
+    private void ClearTransform(Transform xform)
+    {
+        foreach (Transform child in xform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
 
     private void PopulateHistoryScreen()
     {
-        foreach(var pair in historyList)
+        ClearTransform(correctAnswerViewer);
+        ClearTransform(wrongAnswerViewer);
+        foreach (var pair in historyList)
         {
             GameObject newObject = Instantiate(historyListElementPrefab);
             newObject.transform.GetChild(0).GetComponent<Text>().text = pair.Key.value;
