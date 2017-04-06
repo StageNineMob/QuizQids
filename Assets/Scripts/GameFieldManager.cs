@@ -69,7 +69,7 @@ public class GameFieldManager : MonoBehaviour
     private const float ANIMATION_MULTIPLIER_SLOWEST = .5f;
     private const float PROFILER_FRAME_RATE_THRESHOLD_HARD = 50f;
     private const float PROFILER_FRAME_RATE_LOOKBACK = 0.3f;
-    private const float HISTORY_VIEWER_HEIGHT = 160f;
+    private const float HISTORY_VIEWER_HEIGHT = 140f;
     private readonly Vector3 STREAK_COUNTER_OFFSET = Vector3.up * 40f;
     private readonly FloatCurveData MULTICHOICE_ZOOM_EASING_CURVE = new FloatCurveData(0,1,4,0);
     //public data
@@ -120,6 +120,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Toggle collisionToggle;
     [SerializeField] private Image screenDimmer;
     [SerializeField] private Text screenCenterText;
+    [SerializeField] private GameObject scorePanel;
     [SerializeField] private Text scoreUIRightText;
     [SerializeField] private Text scoreUIWrongText;
     [SerializeField] private Text scoreUIAccuracyText;
@@ -127,6 +128,7 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text pauseButtonText;
     [SerializeField] private Button replayButton;
     [SerializeField] private Button endGameButton;
+    [SerializeField] private GameObject historyPanel;
     [SerializeField] private GameObject historyListElementPrefab;
     [SerializeField] private Transform correctAnswerViewer;
     [SerializeField] private Transform wrongAnswerViewer;
@@ -454,10 +456,16 @@ public class GameFieldManager : MonoBehaviour
     {
         StartCoroutine(StreakCounterAnimation(screenPos));
     }
+
+    public void SetHistoryPanelActive(bool newSetting)
+    {
+        historyPanel.SetActive(newSetting);
+        scorePanel.SetActive(!newSetting);
+    }
     #endregion
 
-    #region private methods
-    private void PauseGame()
+        #region private methods
+        private void PauseGame()
     {
         pauseButtonText.text = "Resume";
         screenDimmer.color = Color.black * DIMMER_MAX_ALPHA;
@@ -813,6 +821,7 @@ public class GameFieldManager : MonoBehaviour
         scoreCanvas.gameObject.SetActive(true);
         replayButton.gameObject.SetActive(quickplayEnabled);
         PopulateHistoryScreen();
+        SetHistoryPanelActive(false);
     }
 
     private void PopulateHistoryScreen()
@@ -1199,7 +1208,7 @@ public class GameFieldManager : MonoBehaviour
                 TimerUpdate();
             }
         }
-        if (needResizeHistoryScreen > 0)
+        if (needResizeHistoryScreen > 0 && historyPanel.activeSelf)
         {
             ResizeHistoryScreen();
         }
