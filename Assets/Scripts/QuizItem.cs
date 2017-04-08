@@ -6,6 +6,12 @@ using StageNine;
 public class QuizItem : CameraDragger
 {
     //enums
+    private enum AnimationState
+    {
+        NORMAL = 0,
+        CORRECT = 1,
+        INCORRECT = 2,
+    }
 
     //subclasses
 
@@ -33,6 +39,11 @@ public class QuizItem : CameraDragger
     private bool overlapNudging;
     private bool speedDampening;
     private bool speedBoosting;
+
+    private AnimationState animationState;
+    float time;
+    float twistRate;
+
     //public properties
 
     //methods
@@ -51,14 +62,14 @@ public class QuizItem : CameraDragger
             {
                 image.color = Color.green;
                 image.raycastTarget = false;
-                StartCoroutine(AnswerCorrectVanish());
+                AnswerCorrectVanishBegin();
                 GameFieldManager.singleton.DisplayStreakCounter(Camera.main.WorldToScreenPoint(transform.position));
             }
             else
             {
                 image.color = Color.red;
                 image.raycastTarget = false;
-                StartCoroutine(AnswerIncorrectVanish());
+                AnswerIncorrectVanishBegin();
             }
         }
     }
@@ -81,17 +92,24 @@ public class QuizItem : CameraDragger
         transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
 
+        animationState = AnimationState.NORMAL;
+
         gameObject.SetActive(true);
     }
 
     #endregion
 
     #region private methods
-    private IEnumerator AnswerCorrectVanish()
+    private void AnswerCorrectVanishBegin()
     {
-        float time = 0f;
+        animationState = AnimationState.CORRECT;
+        time = 0f;
         transform.SetAsLastSibling();
-        while (time < CORRECT_FADE_TIME)
+    }
+
+    private void AnswerCorrectVanishUpdate()
+    {
+        if(time < CORRECT_FADE_TIME)
         {
             time += Time.deltaTime;
             float alpha = (CORRECT_FADE_TIME - time) / CORRECT_FADE_TIME;
@@ -100,34 +118,43 @@ public class QuizItem : CameraDragger
             answerText.color = new Color(0f, 0f, 0f, alpha);
             GetComponent<Image>().color = new Color(0f, 1f, 0f, alpha);
             transform.localScale = Vector3.one * scale;
-            yield return null;
         }
-        gameObject.SetActive(false);
-        GameFieldManager.singleton.ReturnQuizItemToPool(this);
+        else
+        {
+            gameObject.SetActive(false);
+            GameFieldManager.singleton.ReturnQuizItemToPool(this);
+        }
     }
 
-    private IEnumerator AnswerIncorrectVanish()
+    private void AnswerIncorrectVanishBegin()
     {
-        float time = 0f;
+        animationState = AnimationState.INCORRECT;
+        time = 0f;
         transform.SetAsLastSibling();
         float randomAngle = Random.Range(-1f, 1f);
-        float twistRate = INCORRECT_ROTATION_SPEED;
+        linearVelocity += (Vector2.left * Mathf.Sin(randomAngle) + Vector2.up * Mathf.Cos(randomAngle)) * INCORRECT_BUMP_VELOCITY;
+        twistRate = INCORRECT_ROTATION_SPEED;
         if (Random.Range(0, 2) == 0)
         {
             twistRate = -INCORRECT_ROTATION_SPEED;
         }
-        linearVelocity += (Vector2.left * Mathf.Sin(randomAngle) + Vector2.up * Mathf.Cos(randomAngle)) * INCORRECT_BUMP_VELOCITY;
-        while (transform.position.y < Camera.main.transform.position.y + DISTANCE_OFFSCREEN)
+    }
+
+    private void AnswerIncorrectVanishUpdate()
+    {
+        if(transform.position.y < Camera.main.transform.position.y + DISTANCE_OFFSCREEN)
         {
 
             time += Time.deltaTime;
             linearVelocity += Vector2.down * INCORRECT_GRAVITY * Time.deltaTime;
             transform.localRotation = Quaternion.Euler(0, 0, twistRate * time);
             GetComponent<Image>().color = new Color(1f - time * INCORRECT_DARKEN_RATE, 0f, 0f);
-            yield return null;
         }
-        gameObject.SetActive(false);
-        GameFieldManager.singleton.ReturnQuizItemToPool(this);
+        else
+        {
+            gameObject.SetActive(false);
+            GameFieldManager.singleton.ReturnQuizItemToPool(this);
+        }
     }
 
     private bool IsColliding(RectTransform otherRect)
@@ -164,6 +191,15 @@ public class QuizItem : CameraDragger
     #region monobehaviors
     void Update()
     {
+        switch(animationState)
+        {
+            case AnimationState.CORRECT:
+                AnswerCorrectVanishUpdate();
+                break;
+            case AnimationState.INCORRECT:
+                AnswerIncorrectVanishUpdate();
+                break;
+        }
         transform.localPosition = GameFieldManager.singleton.ScreenWrapInBounds((Vector2)transform.localPosition + (linearVelocity * Time.deltaTime));
         if (overlapNudging && GameFieldManager.singleton.simulateCollisions)
         {
