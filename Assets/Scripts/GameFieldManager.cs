@@ -1311,7 +1311,7 @@ public class GameFieldManager : MonoBehaviour
         }
         ResetApplicationSettings();
 
-        UIMenuManager.singleton.HidePlayMenuPanel();
+        UIMenuManager.singleton.ResetMainMenu();
 
         ChangeState(GameState.MAIN_MENU);
         endGameButton.gameObject.SetActive(false);
