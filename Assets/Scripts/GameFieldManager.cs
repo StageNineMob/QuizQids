@@ -505,7 +505,7 @@ public class GameFieldManager : MonoBehaviour
         pauseButtonText.text = "Pause";
         screenDimmer.color = Color.clear;
         screenCenterText.color = Color.clear;
-        if(TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.PROFILER)
+        if(TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.PROFILER && TriviaParser.singleton.triviaMode != TriviaParser.TriviaMode.GENERAL)
         {
             promptDisplay.gameObject.SetActive(true);
         }
