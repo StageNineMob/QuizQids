@@ -36,7 +36,7 @@ public class GameFieldManager : MonoBehaviour
     private const float PREGAME_FADE_TIME = 0.5f;
     private const float DIMMER_MAX_ALPHA = 0.7f;
     private const float INITIAL_QUIZ_ITEM_SPAWN_LOCATION_RANGE = 10f;
-    private const float INITIAL_TIME = 15f;
+    private const float INITIAL_TIME = 120f;
     private const int CENTER_FONT_SIZE = 60;
     private const int TIMER_FONT_SMALL = 50;
     private const int TIMER_FONT_BIGGER = 15;
@@ -106,6 +106,16 @@ public class GameFieldManager : MonoBehaviour
     [SerializeField] private Text incorrectButtonDummyText;
     [SerializeField] private Text streakText;
 
+    [SerializeField] private Vector3 correctParticlePosition;
+    [SerializeField] private Vector3 correctParticlePositionVariation;
+    [SerializeField] private Vector3 correctParticleVelocity;
+    [SerializeField] private Vector3 correctParticleVelocityVariation;
+    [SerializeField] private Vector3 correctParticleAcceleration;
+    [SerializeField] private float correctParticleDuration;
+    [SerializeField] private float correctParticleDurationVariation;
+    [SerializeField] private int correctParticleCount;
+
+
     private int _rightAnswerCount = 0;
     private int _wrongAnswerCount = 0;
     private int rightAnswerStreak = 0;
@@ -171,6 +181,10 @@ public class GameFieldManager : MonoBehaviour
         get { return _rightAnswerCount; }
         set
         {
+            if(value > _rightAnswerCount)
+            {
+                UIParticleManager.singleton.MakeParticles(interfaceCanvas.transform, correctParticlePosition, correctParticlePositionVariation, correctParticleVelocity, correctParticleVelocityVariation, correctParticleAcceleration, correctParticleDuration, correctParticleDurationVariation, correctParticleCount);
+            }
             _rightAnswerCount = value;
             rightAnswersCounter.text = "Right: " + _rightAnswerCount; 
         }

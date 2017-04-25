@@ -237,7 +237,10 @@ public class UIMenuManager : MonoBehaviour {
         {
             Debug.Log("Hello, world!");
             singleton = this;
-            //InitializeFields();
+            foreach (var item in toInitList)
+            {
+                item.SetActive(true);
+            }
         }
         else
         {
@@ -245,10 +248,7 @@ public class UIMenuManager : MonoBehaviour {
             GameObject.Destroy(gameObject);
         }
 
-        foreach(var item in toInitList)
-        {
-            item.SetActive(true);
-        }
+
     }
 
 
